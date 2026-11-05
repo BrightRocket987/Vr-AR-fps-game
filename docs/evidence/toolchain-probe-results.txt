@@ -1,0 +1,34 @@
+[22:25:52] BLENDER: apt-get install start
+[22:26:22] BLENDER: installed -> Blender 4.0.2
+[22:26:23] BLENDER: headless script FAILED
+    bpy.ops.export_scene.gltf(filepath=out, export_format='GLB')
+  File "/usr/share/blender/scripts/modules/bpy/ops.py", line 109, in __call__
+    ret = _op_call(self.idname_py(), kw)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Error: Python: Traceback (most recent call last):
+  File "/usr/share/blender/scripts/addons/io_scene_gltf2/__init__.py", line 752, in execute
+    from .blender.exp import gltf2_blender_export
+  File "/usr/share/blender/scripts/addons/io_scene_gltf2/blender/exp/gltf2_blender_export.py", line 16, in <module>
+    from . import gltf2_blender_gather
+  File "/usr/share/blender/scripts/addons/io_scene_gltf2/blender/exp/gltf2_blender_gather.py", line 11, in <module>
+    from . import gltf2_blender_gather_nodes
+  File "/usr/share/blender/scripts/addons/io_scene_gltf2/blender/exp/gltf2_blender_gather_nodes.py", line 15, in <module>
+    from . import gltf2_blender_gather_tree
+  File "/usr/share/blender/scripts/addons/io_scene_gltf2/blender/exp/gltf2_blender_gather_tree.py", line 7, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+Location: /usr/share/blender/scripts/modules/bpy/ops.py:109
+
+
+Blender quit
+[22:26:34] DOTNET: apt sdk installed -> 8.0.133
+[22:26:34] TTS: piper install start
+[22:26:55] TTS: piper-tts installed
+[22:27:01] TTS: piper synth OK (160300 bytes), kid pitch-shift OK (148246 bytes)
+[22:27:01] WEB: npm install start
+WEBGL2=WebGL 2.0 (OpenGL ES 3.0 Chromium) NAVIGATOR_XR=false
+[22:27:11] GODOT: release download URL HTTP 200
+[22:27:11] PROBES DONE
+[22:29] BLENDER: after apt-get install python3-numpy -> headless procedural model + glTF export OK (stool.glb, 35784 bytes)
+[22:29] WEB: npm deps OK -> three=0.170.0 iwer=2.8.0 @iwer/sem=2.8.0 @iwer/devui=2.8.0 @dimforge/rapier3d-compat=0.21.0 vite=6.4.5 @gltf-transform/cli=4.5.1
+[22:33] XR: IWER emulated immersive-ar session under headless Playwright/Chromium: 30 frames, blend=alpha-blend, features=[local-floor,hand-tracking,plane-detection,mesh-detection,hit-test,anchors], inputSources=2, labels=[mesh:couch, mesh:global mesh, mesh:lamp, mesh:shelf, mesh:table, plane:ceiling, plane:couch, plane:floor, plane:table, plane:wall, plane:wall art, plane:window]
