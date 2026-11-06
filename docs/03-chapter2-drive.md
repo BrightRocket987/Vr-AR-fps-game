@@ -15,8 +15,9 @@ chapter without desynchronising anything; times shown are at 100% speed.
 
 7:02 pm, the parking lot of {BAR}. Gus has set you down beside the family car (type and colour from the Family Sheet; default a
 "regret beige" minivan). You hold the Plate. Pickle ({KID1}, 4½) is buckled behind the passenger seat with her broken tablet;
-Bean ({KID2}, 2) is rear-facing behind you with Mister Hop, and he has plugged the Dreamgate into the USB port beside his seat so
-the moon can "see outside". The BINKY sits in the console holster at Tier 1 (the player arrives with 20–28 lifetime pops).
+Bean ({KID2}, 2) is rear-facing behind you with Mister Hop, and he has plugged the Dreamgate into the USB port on the door pillar
+beside his seat so the moon can "see outside". The BINKY sits in the console holster at Tier 1 (the player arrives with 20–24
+lifetime pops).
 Patience is the coffee cup in the left cup holder, full.
 
 Three jobs: deliver the brief's two lines, "my tablet broke" and "I have to pee", as systems (the first costs a hand, the
@@ -25,19 +26,24 @@ promote the BINKY to Tier 2 on a beat (the hood Scamp or the window Clinger, at 
 
 | Segment | Clock | Spline speed (speedometer) | What happens | Pops | Checkpoint |
 |---|---|---|---|---|---|
-| A · Parking lot and Main Street | 0:00–2:10 | 0 → 30 km/h (30) | tutorial grabs, honk, first needs, crosswalk Scamps, Brad's pickup, marching band, the glove box hand, "I have to pee" | 4–5 | A at 0:50 |
-| B · Pump 'n' Go hold-out | 2:10–3:40 (or 3:10) | 0 | Pickle walks to the restroom; you cover her from the driver's seat for 90 s (60 s) | 8–11 | B at 2:10 |
-| C · Highway | 3:40–7:00 | 50 km/h (90) | cones, the NAPS R US semi, hood Scamp, roof Climbers, mattress, glare, window Clinger, deer, a need every 25–45 s, Mr. Jingles 5:30–7:00 | 4–5 + 5–8 arms | C at 3:40, D at 5:30 |
+| A · Parking lot and Main Street | 0:00–2:10 | 0 → 30 km/h (30) | tutorial grabs, honk, first needs, crosswalk Scamps, Brad's pickup, marching band, the glove box hand, "I have to pee" | 3–5 (honking the crosswalk pops nothing) | A at 0:50 |
+| B · Pump 'n' Go hold-out | 2:10–3:40 (or 3:10) | 0 | Pickle walks to the restroom; you cover her from the driver's seat for 90 s (60 s) | 8–10 | B at 2:10 |
+| C · Highway | 3:40–7:00 | 50 km/h (90) | cones, the NAPS R US semi, hood Scamp, roof Climbers, mattress, glare, window Clinger, deer, a need every 25–45 s, Mr. Jingles 5:30–7:00 | 4–5 + 5–7 arms | C at 3:40, D at 5:30 |
 | D · Home street | 7:00–8:15 | 25 km/h (25) | exit ramp, ducks, the diaper chord, sprinkler, trampoline Scamps, bins, two window Clingers, garbage truck, speed bumps | 2–3 | none (§15) |
 | E · Driveway | 8:15–8:40 | 10 → 0 | the garage door opens by itself; stop between the bins; engine off; the handoff | 0 | — |
 
-Expected pops 23–32, matching the core pacing table's 22–30 (+ 20 token): cumulative 62–80 entering chapter 3.
+Expected pops 22–30 (the segment column sums to it), matching the core pacing table's 22–30 (+ 20 token): cumulative 62–74
+entering chapter 3.
 
 ## 2. The cockpit
 
 The cockpit is a rigid object locked to the player's head **position** (never rotation) on the first wheel grab, so dash,
-A-pillars, roof and mirror form a constant reference frame. Everything the hands touch is within 0.75 m of the seated head.
-Positions are metres from the head origin: +X right, +Y up, −Z forward.
+A-pillars, roof and mirror form a constant reference frame. Everything the hands touch is within 0.75 m of the seated head **and
+never behind it**: Quest's tracking cameras face forward, sideways and down, so a controller behind the head falls to IMU-only
+pose (`emulatedPosition`, drifting within about a second) and hand tracking stops entirely. Every interaction point therefore has
+Z ≤ +0.30 (at most 30 cm behind the eyes, which is still beside the head), the back-seat kids lean forward between the seats to
+meet the hand, and poses flagged `emulatedPosition` are accepted for at most 0.7 s before the interaction pauses and a crayon
+arrow points the hand back into view. Positions are metres from the head origin: +X right, +Y up, −Z forward.
 
 | Zone | Position | Contents |
 |---|---|---|
@@ -47,22 +53,27 @@ Positions are metres from the head origin: +X right, +Y up, −Z forward.
 | Sun visor | (0, 0.38, −0.40) | flip down for glare; photo strip of the kids |
 | Console tray | (0.32, −0.32, −0.15), 0.24 × 0.30 | BINKY holster between the seats; Patience cup (left holder); the Plate with the {DRINK} glass wedged beside it (right holder); Snack Bag; juice boxes ×2; the Pacifier; drops land here |
 | Radio, AC, door switches | knobs at (0.30, −0.05, −0.60); door panel at (−0.45, −0.20, −0.20) | radio knob (3 stations), AC dial, child lock, window switches |
-| Glove box | (0.60, −0.20, −0.65), 0.40 × 0.18 lid | Spare Tablet, Spare Mag, a Pacifier charge, and the hand |
+| Glove box | (0.44, −0.24, −0.54), 0.30 × 0.18 lid (0.74 m from the head, the far edge of the envelope) | Spare Tablet, Spare Mag, a Pacifier charge, and the hand |
 | Driver's window plane | X = −0.52, 0.9 × 0.5 opening | stuck down since the argument with Gus; a hand beyond it is "out of the window" |
 | Sunroof | (0, 0.45, −0.20), 0.6 × 0.4 | open; roof Climbers hang in here |
-| Seat plane | Z = +0.40 | a hand behind it is "reaching back": left half to Bean, right half to Pickle; Mister Hop ends up on the floor at (−0.15, −0.75, +0.55) |
+| Seat plane | Z = +0.15 | the back of the front seats; nothing the player touches lies behind it except the handoff zones below |
+| Handoff zones | right: X 0.40–0.55, Y −0.35–0, Z 0–+0.30 (Pickle); left: the mirror image (Bean) | "reaching back" is a hand inside a zone, beside the seat and inside the camera volume; the kid leans forward between the seats and takes the item within 0.25 m of its hands |
+| Arm-barrier point | (0.20, −0.20, +0.10), 0.15 m radius | an empty hand held here 2 s is the arm barrier |
+| USB port and the Dreamgate | driver-side B-pillar, (−0.50, −0.20, +0.10) | a 9 cm crescent beside Bean's seat; the unplug at arrival |
+| Mister Hop (when lost) | on the floor between the seats at (−0.40, −0.55, +0.20) | squeaks when a hand is within 0.4 m |
 
 Pickle's forward-facing booster is right-rear (visible in the mirror or by turning 110°); Bean's rear-facing seat is left-rear,
 so the player sees its back and his hand waving over it. Both kids are the real-kid heads on the shared `gremlin_base` rig
 without goblin ears or eye glow, with crayon seat stickers in the Family Sheet's exact spelling. Pickle's drawing "{PARENT} IN A
-FITE" is taped to the passenger seat. The Dreamgate is a 9 cm crescent on the left C-pillar; its emissive intensity is
-`0.3 + 0.7 × mean(both kids' need-timer fractions)`: a quiet back seat is a dim moon, a double meltdown a lighthouse.
+FITE" is taped to the passenger seat. The Dreamgate is the 9 cm crescent in the B-pillar USB port at the driver's left shoulder;
+its emissive intensity is `0.3 + 0.7 × mean(both kids' need-timer fractions)`: a quiet back seat is a dim moon, a double meltdown
+a lighthouse.
 
 **Car type and colour.** Six Kenney exteriors (minivan, SUV, hatchback, wagon, pickup, sedan) re-UV'd to the atlas and tinted
 by one of 8 palette rows; hood, mirrors and the parking-lot view use them. The interior is one scripted dash in two variants:
 low (hatchback, sedan, wagon) and high (minivan, SUV, pickup: dash 5 cm higher, hood 30 cm longer). Registration, gas-station
-sign, parking ticket and Goose receipt are 512 × 128 `CanvasTexture`s rendered once at load from the sheet's free text (6
-textures, never spoken).
+sign, parking ticket and Goose receipt are six 512 × 128 regions of the shared 1024² RGBA8 **sheet atlas** (`02` §13), drawn
+once at load from the sheet's free text (never spoken); the two KTX2 atlases stay static.
 
 ## 3. The road rail
 
@@ -73,7 +84,7 @@ The player controls lateral position and the horn; the world moves past a statio
 |---|---|---|---|---|---|
 | A Main Street | 1.0 km | 30 km/h (8.3 m/s) | 2 + parking lane, 3.5 m each | downtown straight ×2, crosswalk ×1 | one 8° left into the gas station |
 | B Pump 'n' Go | 0 | 0 | forecourt, 4 pumps | gas station ×1 | none |
-| C Highway | 2.7 km | 50 km/h (13.9 m/s; the speedometer reads 90 and the kids will never know) | 3 + shoulder | highway straight ×5, overpass ×2 | two 12° curves at 4:30 and 6:20, 10 s each at 1.2°/s |
+| C Highway | 2.7 km | 50 km/h (13.9 m/s; the speedometer reads 90 and the kids will never know) | 3 + shoulder | highway straight ×5, overpass ×2 | two 12° curves at 4:30 and 6:20, 10 s each at 1.2°/s (straight under Comfort+, §13) |
 | D Home street | 0.5 km | 25 km/h (6.9 m/s) | 1 each way; the oncoming lane usable for 3 s | suburb ×2 | exit ramp: 90° right over 8 s at 11°/s, the only hard bend |
 | E Driveway | 0.1 km | 10 → 0 over 10 s | between two bins 2.6 m apart | driveway ×1 | none |
 
@@ -95,8 +106,10 @@ hand may slide. Range ±60°, dead zone ±3°, a haptic tick 0.15/10 ms every 10
 
 **The mapping.** `targetOffset = (wheelAngle / 60°) × 1.2 lanes`. The actual offset follows the target with a critically damped
 spring at 0.40 s (0.25 s with two hands, which also cancels road jolts) and a hard cap of **1.5 m/s** lateral speed: a full lane
-change takes 2.3 s, a half-lane dodge 1.2 s. The camera never rotates: the hood model yaws up to 4° about the head position as a
-child of the cockpit, the bobblehead leans and the tyres hiss, but the view translates only.
+change takes 2.3 s, a half-lane dodge 1.2 s. **What the camera does, stated once:** it never rolls or pitches and never yaws
+relative to the road; the whole rig (cockpit and camera together) translates laterally and yaws with the spline heading, at
+≤ 1.2°/s on the two highway curves and 11°/s only on the 8 s exit ramp under a 60% vignette (§3, §13). Steering itself never turns
+the view: the hood model yaws up to 4° about the head position as a child of the cockpit, the bobblehead leans and the tyres hiss.
 
 **Letting go.** With no hand on the wheel it self-centres over 1.2 s. After **2 s** with no hand, the target drifts toward the
 nearest lane edge at 0.15 lanes/s (0.53 m/s), both controllers wobble at 0.15 and the bobblehead shakes its head. On the highway
@@ -126,8 +139,8 @@ the wheel; drift begins 2 s after the second hand leaves, so a 1.5 s action with
 | Wipers | flick the stalk up (> 1 m/s) | 0.5 s | clears splats and sprinkles over 1.2 s; never cracks |
 | Mirror | grab and tilt ±15° | 1.0 s | aims the 256 × 128 render target (Quest 3) at the kids or the rear window; on Quest 2 the painted picture swaps among four states (calm, {KID1} crying, {KID2} crying, truck behind) |
 | Glove box | pull the latch | 1.5 s + the grab | Spare Tablet (once), Spare Mag (one per checkpoint), a Pacifier charge (once); at 1:55 a clawed hand pops it from inside |
-| Reach back ("hand the thing") | the held item crosses the seat plane; the kid takes it within 0.25 m of its hands | 2.0–2.5 s | resolves Hungry, Thirsty, Tablet, Lost toy; Parent of the Year if the need is under 8 s old |
-| Arm barrier | the empty hand between the seats (behind the seat plane, within 0.15 m of the centre line) for **2 s** | 2.5 s | resolves Touching; both kids go quiet with a small "hmph" |
+| Reach back ("hand the thing") | the held item enters the kid's handoff zone (§2: beside the seat, Z ≤ +0.30); the kid leans forward between the seats and takes it within 0.25 m of its hands | 2.0–2.5 s | resolves Hungry, Thirsty, Tablet, Lost toy; Parent of the Year if the need is under 8 s old |
+| Arm barrier | the empty hand held at the arm-barrier point (0.20, −0.20, +0.10) between the seats for **2 s** | 2.5 s | resolves Touching; both kids go quiet with a small "hmph" |
 | AC dial | rotate 90° | 1.5 s | resolves Hot/cold; fan whoosh; the air freshener spins |
 | Child lock and window switches | press | 1.0 s | closes and locks Bean's window; a Clinger on a rear window pinched by rising glass pops ("Fingers!", +50% style, scored as Sitting Duck) |
 | Radio knob | station 1 (DJ), 2 (jukebox polka), 3 (the shark song) | 1.0 s | station 3 satisfies Show for 60 s, but for 20 s every hazard arrives on the beat |
@@ -138,7 +151,7 @@ the wheel; drift begins 2 s after the second hand leaves, so a 1.5 s action with
 | BINKY | grab from the holster; tap the gun on the tray to switch tiers (the car's toolbelt) | the whole hand | shoots through windshield and side glass, which the Dreamgate has turned to jelly (a ripple decal per shot; Pickle: "Why is the window gooey?"); a hand beyond the driver's window plane fires "out of the window" (+25% style) |
 | Reload | Tier 1 Pump needs the off hand on the slide (0.5 s): let go of the wheel; Tier 2 Shake is one-handed; the core's 1.5 s auto-reload and 2 s flail fallback apply | 0–2 s | Spare Mag drops land in the tray with a "plink" |
 | The Look | head yaw toward a kid's seat, or the mirror aimed at it, for 2 s | 0 | pauses that kid's need timer 4 s; 15 s cooldown per kid |
-| Buckle | tap Pickle's buckle | 2.5 s | silences the buckle alarm after a Touching meltdown |
+| Reach toward her | the empty hand held at the right edge of Pickle's handoff zone (0.50, −0.20, +0.25) for 2 s; she buckles herself | 2.5 s | silences the buckle alarm after a Touching meltdown (the buckle itself is behind the head and is never a target) |
 
 ## 6. Hazard table
 
@@ -154,7 +167,7 @@ Damage is to Patience (100, regenerating 4/s after 5 s without damage). The line
 | 1:55 | — | The glove box hand steals the Snack Bag if it is still in the tray | the latch rattles 1.0 s | shoot the hand when it pokes out at 2:05 (3 s exposure, HP 2, 1 pop; the bag drops back) | the bag is gone until the hand pops |
 | 2:10 | — | Automatic pull-in to the Pump 'n' Go | — | — | — |
 | 2:10–3:40 | — | **Hold-out** (§9) | — | shoot, lure, slam the car door | by type |
-| 3:50 | 1–3 | Ten-cone slalom over 8 s, alternating lanes | 1.5 s each | weave; the Grandma Brake buys two | 3 each |
+| 3:50 | 2, 1, 2, 3, 2, 1 | Six-cone slalom over 8 s: one cone every 1.6 s in lanes 2, 1, 2, 3, 2, 1, so each dodge is a half-lane move (1.2 s under the §4 cap) | 1.5 s each | weave; the Grandma Brake buys two | 3 each |
 | 3:55 | 3 | NAPS R US semi holds lane 3 for 40 s | permanent | stay out of lane 3 | 5 per second of scrape |
 | 4:05 | hood | A Scamp drops from the overpass onto the hood, face to the windshield (30% view block), slapping the glass 2 every 2 s | 1.0 s falling shadow | shoot it through the jelly glass (HP 2, 1 pop) or two honks within 1 s fling it off (no pop); a Pacifier on the hood lures it to a corner | 2 per slap |
 | 4:15 | roof | Two Curtain Climbers drop from the overpass sign and hang in through the sunroof, grabbing at the wheel (aim and offset knock 5° / 0.2 lanes) | 1.5 s growing blob shadow on the dash, "hee hee" | shoot upward through the sunroof (HP 4 each, 2 pops); a Wipe slap stuns one 2 s; two Clingers if the Climber is cut | drop 10 if ignored 6 s |
@@ -174,8 +187,9 @@ Damage is to Patience (100, regenerating 4/s after 5 s without damage). The line
 | 8:10 | all | Three speed bumps | 1.0 s | none; lift your feet | 0 |
 | 8:15 | driveway | The garage door rises by itself, teal light under it; the car stops between the bins | 3.0 s | be centred (offset within ±0.3) | a bin hit spills recycling, −50 score |
 
-Total possible road damage outside the hold-out and the boss is 93 over seven minutes; with 4/s regeneration the only way to
-lose Patience on the road is to ignore a Clinger on the wheel hand while hitting cones.
+Total possible one-shot road damage outside the hold-out and the boss is 88 over seven minutes (per-second scrapes, rumble and
+clings excluded); with 4/s regeneration the only way to lose Patience on the road is to ignore a Clinger on the wheel hand while
+hitting cones.
 
 ## 7. Exterior gremlins and the director in a car
 
@@ -191,7 +205,8 @@ skinned characters); the hold-out uses the §16 override. Intensity is the core 
 anything on the hood, roof or windows.
 
 **Comedy triggers remapped (each at most once per 60 s).** "Three on the couch" becomes **three on the hood**: three Scamps
-sing "The Wheels on the Bus" in rounds and block 60% of the view; two honks evict one, a Pacifier on the hood lines them up.
+sing the `01` couch song in rounds (here "The Scamps on the hood go bounce bounce bounce.", the same original tune) and block 60%
+of the view; two honks evict one, a Pacifier on the hood lines them up.
 "8 s without firing" is **off while driving** and **on at the hold-out** (a Siren climbs the ice freezer and inhales). "Standing
 still 20 s" becomes **no lane change for 25 s**: a Clinger arrives on the driver's window. "Combo ≥ ×3" at the hold-out makes the
 next spawn a Breacher knocking on the driver's door. The Stinky-cloud trigger does not exist here.
@@ -208,15 +223,15 @@ guarantees Tier 2 before chapter 3 for everyone.
 ## 8. The back-seat kid system
 
 Each kid has one **need slot**. The director fills it from the schedule plus, after 3:40, one random need from the pool every
-45 s, with a 25 s minimum gap per kid and never inside a boss telegraph. Every scheduled need lands **5 s before a hazard**, so
-the player always chooses between the kid and the road. Needs are locked at Whine from 5:30 to 7:00 so Mr. Jingles stays
-readable; no need fires after 8:00.
+45 s, with a 25 s minimum gap per kid and never inside a boss telegraph. Every scheduled need lands **5–15 s before a hazard**
+and its full 20 s clock **ends before any boss lock**, so the player always chooses between the kid and the road and a need is
+never cut off by a boss. Needs are locked at Whine from 5:30 to 7:00 so Mr. Jingles stays readable; no need fires after 8:00.
 
 **Timers.** A need runs a 20 s clock in three stages: **Ask** (0–8 s: one polite line; the thought bubble appears as an
 outline), **Whine** (8–14 s: the line again at +2 st and ×1.15 tempo; the bubble half full; a minor effect), **Cry** (14–20 s: a
 new line; the bubble full and shaking; a major effect). At 20 s the need becomes a **Meltdown**. Resolving at any stage ends
 it; resolving inside 8 s is **Parent of the Year** (+250, and the combo is frozen rather than decaying for the whole time the
-hand is behind the seat plane). The Look (§5) pauses the clock 4 s. The bubbles show in the mirror and by turning the head, and
+hand is inside a handoff zone). The Look (§5) pauses the clock 4 s. The bubbles show in the mirror and by turning the head, and
 their fill drives the Dreamgate's glow.
 
 **Meltdown (6 s).** Both kids scream ("WAAAAAH!", synthesised, −12 dB under "Less Screaming"); every enemy audio tell is masked
@@ -226,14 +241,14 @@ the badge "Nobody Is Getting Dessert" and forfeit the segment's no-damage bonus.
 
 | Need | Owner | Ask | Whine effect | Cry effect | Resolution (hand cost) | Scheduled |
 |---|---|---|---|---|---|---|
-| Tablet broke | Pickle | "My tablet broke." | kicks your seat: wheel jitter 0.2 lanes every 2 s | throws the tablet at the windshield: a 15% crack decal until the chapter ends; the tablet lands on the dash as a throwable | glove box → Spare Tablet → reach back right (2.5 s); the second time the Spare Tablet is gone: hand her the phone from the dash mount (2.0 s), which sets up Grandma's call | 0:55 (Ask only, damage off) and 5:15 ("My tablet broke AGAIN.") |
+| Tablet broke | Pickle | "My tablet broke." | kicks your seat: wheel jitter 0.2 lanes every 2 s | throws the tablet at the windshield: a 15% crack decal until the chapter ends; the tablet lands on the dash as a throwable | glove box → Spare Tablet → reach back right (2.5 s); the second time the Spare Tablet is gone: hand her the phone from the dash mount (2.0 s), which sets up Grandma's call | 0:55 (Ask only, damage off; Brad's pickup at 1:00) and 4:45 ("My tablet broke AGAIN."; the deer at 4:55; it ends at 5:05, before the 5:30 lock) |
 | Pee | Pickle | "I have to pee." | bouncing sounds, "I have to pee really bad." | "I'm not going to make it."; then **Holding**: the windows fog 10% per 10 s from the bottom and she bounces (0.5 cm wheel jitter) until the pull-in | **cannot be resolved by hand**: the car pulls into the Pump 'n' Go at 2:10 (§9) | 1:35 |
-| Hungry | Bean | "Nack." | "NACK." on a 3 s loop | eats Mister Hop's ear; Hop screams 15 s and masks hazard audio | Snack Bag from the tray → reach back left (2.0 s); if the hand stole it, pop the hand at 2:05 or 5:05 | 0:30 (tutorial) and 5:10 |
+| Hungry | Bean | "Nack." | "NACK." on a 3 s loop | eats Mister Hop's ear; Hop screams 15 s and masks hazard audio | Snack Bag from the tray → reach back left (2.0 s); if the hand stole it, pop the hand at 2:05 or 5:05 | 0:30 (tutorial; the cart at 0:45) and 5:00 (the glove-box hand at 5:05; it ends at 5:20, before the lock) |
 | Thirsty | Pickle | "I'm thirsty." | "My mouth is a desert." | squeezes the juice box: a purple splat on the mirror (30%, 20 s; the Wipe hand wipes it) | juice box → reach back right (2.0 s) | 3:45 |
 | Show | Pickle | "Put on {SHOW}!" | sings the {SHOW} theme off-key over the radio | recites the whole episode; every exterior tell is 0.3 s shorter while she talks | tap the handed Spare Tablet (a 2 s {SHOW} loop, 60 s of quiet) or radio station 3 (1.0 s; the shark song, hazards on the beat) | 1:20 and random |
-| Touching | both | "He's touching me." (defaults) / "{KID2} is touching me." | both bubbles fill together | Pickle unbuckles: a buckle alarm beeps until you tap her buckle (2.5 s) | arm barrier 2 s, or hand Mister Hop to Bean (2.5 s) | 4:20 and random |
+| Touching | both | "He's touching me." (defaults) / "{KID2} is touching me." | both bubbles fill together | Pickle unbuckles: a buckle alarm beeps until you reach toward her (a 2 s hold at the right edge of her handoff zone; she buckles herself) | arm barrier 2 s, or hand Mister Hop to Bean (2.5 s) | 4:20 (the mattress at 4:25) and random |
 | Hot/cold | Bean | "Cold." / Pickle: "I'm hot." | Bean opens his window: wind noise, dash papers fly | a Clinger climbs in through the window, sits on his lap ("Hi."), then climbs to the front seat: shoot it there (HP 2, 1 pop) | AC dial (1.5 s) and the child lock (1.0 s) | 4:50 and random |
-| Lost toy | Bean | "Hop?" | "HOP." | throws his shoe at the mirror (30% blocked for 10 s; wipe it) | Mister Hop is on the floor behind your seat: reach down and back (he squeaks within 0.4 m), then hand him over (4 s total) | 7:05 and random |
+| Lost toy | Bean | "Hop?" | "HOP." | throws his shoe at the mirror (30% blocked for 10 s; wipe it) | Mister Hop is on the floor between the seats at (−0.40, −0.55, +0.20): reach down beside your hip (he squeaks within 0.4 m), then hand him into Bean's zone (4 s total) | 7:05 (the ducks at 7:10) and random |
 | Diaper | Bean | "Poo." | Pickle: "He pooped. I'm dying." | the windows open by themselves; every exterior gremlin flees (the silver lining); −10 score/s until engine-off | **cannot be resolved while driving**: the ominous Dreamgate chord plays and the diaper becomes chapter 3's first problem | 7:20 |
 | Scared | either, after a boss hit | "Beep beep?" | silence, the worst sound | never reaches Cry: it lasts 10 s | two honks within 1 s (0.6 s), or a juice box | boss only |
 
@@ -243,7 +258,7 @@ child, who is the one who walks to the restroom.
 
 **How needs cost steering, stated once.** Every resolution takes a hand off the wheel for 1.5–4 s, and because the other hand
 is usually on the BINKY, the resolving hand is the steering hand: letting go starts the 2 s countdown to drift, and the drift
-starts in a hazard window because the schedule puts the need 5 s before the hazard. Letting a need run to Cry is always
+starts in a hazard window because the schedule puts the need 5–15 s before the hazard. Letting a need run to Cry is always
 survivable and always funnier, but it lowers rank and spawns a gremlin at Meltdown. There is never a correct answer; the design
 target is a sitcom rhythm of small failures, and the playtest metric is that the owner laughs at a meltdown, not that they
 prevent one.
@@ -262,7 +277,7 @@ commentary ("Pee.").
 
 **Objective.** Keep gremlins off the restroom door for 90 s. A gremlin that reaches it knocks; Pickle yells "OCCUPIED!" and the
 hold-out extends 5 s (at most three extensions, so the worst case is 105 s). If **no other need reached Cry before 2:10**, Pickle
-says "I can hold it. Maybe." as the car pulls in, and the hold-out is **60 s**, ending at 3:10. Expected pops 8–11.
+says "I can hold it. Maybe." as the car pulls in, and the hold-out is **60 s**, ending at 3:10. Expected pops 8–10.
 
 **The forecourt.** Four pumps (Scamp cover), the ice freezer (the Siren's perch), a tyre stack, an air hose, the booth, the
 restroom door, a tricycle rack, and two glowing cracks in the tarmac (the universal spawn fallback). A Breacher that knocks on
@@ -296,7 +311,7 @@ the duration; only Scared can fire.
 | 3 · Jingle Overdrive | 6:46–7:00 (20 s, extendable) | accelerates 30 m ahead, then **reverses toward you** at 1 lane/s weaving; the jingle doubles speed and rises 5 st; the roof cone (**HP 40**) is the target | shoot the cone until it cracks; the Grandma Brake buys 2 s of easy aim; an intact cone when the truck arrives means a 15 bump, then it pulls ahead and reverses again 10 s later until the cone cracks | bump 15 per 10 s | Truck: "Come back." |
 | Finish | +4 s | the cone cracks with a cowbell; the truck swerves right into a hedge and sprays soft-serve; the car slides through it as 300 white confetti quads (no camera motion); the jingle slows to half speed, which is Queen Pickle's theme, and stops | the token lands and, for most players, Tier 2 arrives here if it has not already | — | Truck: "Have a nice night." / Pickle: "I didn't want ice cream anyway." |
 
-Expected arm pops 5–8 (nobody gets all ten the first time). A scoop of soft-serve stays on the hood as a decal until the
+Expected arm pops 5–7 (nobody gets all ten the first time). A scoop of soft-serve stays on the hood as a decal until the
 driveway, where Bean points at it: "Nack."
 
 ## 11. Dialogue
@@ -304,14 +319,15 @@ driveway, where Bean points at it: "Nack."
 All lines obey the core's rules: twelve words or fewer, one idea, Family Sheet tokens only at the start or end of a line, kids
 never sarcastic. Pickle uses the Big Kid set, Bean the Toddler set (one word, always the wrong one); gremlins use their roster
 lines plus the car lines below. `repeat3` renders three rising takes. Pronoun lines ("He's touching me.") are used only with the
-default sheet; a named sheet uses the token variant. Every line renders in 2–3 takes through Piper and ffmpeg.
+default sheet; a named sheet uses the token variant. Every line renders in 2–3 takes through the `01` casting chain (Kokoro, Piper
+fallback) and ffmpeg.
 
 | # | Speaker | Line | When |
 |---|---|---|---|
 | 1 | Pickle | "My tablet broke." | Tablet Ask, 0:55 |
 | 2 | Pickle | "{PARENT}, my tablet broke." | Tablet Whine |
 | 3 | Pickle | "It's got a crack and it's glowing." | Tablet Cry, then she throws it |
-| 4 | Pickle | "My tablet broke AGAIN." | 5:15 |
+| 4 | Pickle | "My tablet broke AGAIN." | 4:45 |
 | 5 | Pickle | "My show stopped." | Tablet Ask, both kids 2–3 |
 | 6 | Pickle | "I have to pee." | Pee Ask, 1:35 |
 | 7 | Pickle | "I have to pee really bad." | Pee Whine |
@@ -387,8 +403,8 @@ stops between the bins at 8:25. Engine off: the dash lights die one by one, the 
 instantly with a synchronised snore. The Dreamgate is now the brightest thing in the car and pulses with the four-note chord:
 "Take me inside."
 
-**The handoff is physical.** The player reaches back left and **unplugs the Dreamgate** (grab, pull 10 cm against 0.3 s of
-resistance, a USB "pop"). While it is held, the broken tablet on the dash glows the same teal in sympathy and Bean's thought
+**The handoff is physical.** The player reaches to the B-pillar at the left shoulder (−0.50, −0.20, +0.10), beside the head and
+inside the tracking volume, and **unplugs the Dreamgate** (grab, pull 10 cm against 0.3 s of resistance, a USB "pop"). While it is held, the broken tablet on the dash glows the same teal in sympathy and Bean's thought
 bubble shows a tiny moon. The Plate in the right cup holder is optional: grab it or leave it; in chapter 3 it is on your real
 coffee table either way (Pickle carried it; she will tell you). Bean's Diaper need, if it reached Whine, is still active: "He
 pooped" is the last subtitle before the fade and the first problem of chapter 3.
@@ -401,11 +417,13 @@ starts. Saved at the fade: chapter complete, score, rank, badges, lifetime pops 
 ## 13. Comfort design
 
 - **Fixed cockpit.** Dash, A-pillars, roof, mirror and seat are locked to the head position, recentred on the first wheel grab
-  or from the wrist menu; the cockpit never rotates with the head and never rolls or pitches. Seated is the default; "Standing"
-  raises the cockpit by the measured head height minus 1.15 m.
+  or from the wrist menu; the cockpit never rotates with the head and never rolls or pitches. The camera never rolls or pitches
+  and never yaws relative to the road: the whole rig yaws with the spline heading (§4), so the cockpit is always exactly where it
+  was relative to the view. Seated is the default; "Standing" raises the cockpit by the measured head height minus 1.15 m.
 - **Motion.** Constant forward speed per segment with 3 s ease ramps; lateral speed ≤ 1.5 m/s on a 0.4 s critically damped
-  spring; spline bends ≤ 1.2°/s on the highway and 11°/s for the single 8 s exit ramp; horizon always level. No roll, pitch,
-  shake, FOV change or speed lines; speed is read from road texture, passing props and the engine loop.
+  spring; rig yaw ≤ 1.2°/s on the two highway curves and 11°/s for the single 8 s exit ramp (under a 60% vignette); horizon
+  always level. No roll, pitch, shake, FOV change or speed lines; speed is read from road texture, passing props and the engine
+  loop.
 - **Vignette.** Default 30% (0 / 30 / 60%), +15% while lateral speed exceeds 1 m/s, 60% during the exit ramp, 0.3 s fades.
 - **Impacts** are haptics, sound, the wheel kick, dash props jiggling, the bobblehead, decals and the kids. Slow motion slows
   the world, never the camera; under reduced-flash the pink tint is off.
@@ -413,7 +431,9 @@ starts. Saved at the fade: chapter complete, score, rank, badges, lifetime pops 
   half of the cockpit, both kids and the one tile behind. Quest 2: a painted quad with four painted states; a toggle hides it.
   Clinger arrivals have an audio tell on both headsets, so the Quest 2 player loses only the view.
 - **Scenery speed slider** 60–100% scales spline speed; hazards are placed by distance, so the chapter simply takes longer.
-- **Comfort+ preset:** vignette 60%, slider 60%, no slow-motion tint, mirror off, Taxi mode suggested.
+- **Comfort+ preset:** vignette 60%, slider 60%, no slow-motion tint, mirror off, the two 12° highway curves straightened (the
+  spline is re-sampled straight; hazards keep their distances), Taxi mode suggested. The exit ramp stays, at 11°/s under the
+  vignette, because the home street has to turn off the highway.
 - **Frame rate:** 72 Hz on Quest 2 (fixed foveation level 2, dynamic resolution 0.8–1.0); 90 Hz on Quest 3 when the budget
   holds. The chapter can be skipped after one attempt and replayed in Taxi mode at any time.
 
@@ -462,7 +482,7 @@ Production methods: **K** = Kenney kit piece re-UV'd to the shared gradient atla
 | 35 | Shopping cart; Brad's pickup with "BRAD" plate | hazards | K (+ C) |
 | 36 | Marching band, six musicians | one BatchedMesh with a vertex-shader bob, not skinned | adult_base poses baked, B |
 | 37 | Gremlin arm (glove box hand, serving arms ×10) | one mesh, HP 2 | RIG arm segment, B |
-| 38 | Traffic cones ×10, mattress, NAPS R US semi, recycling bins ×5, garbage truck | hazards | K |
+| 38 | Traffic cones ×6, mattress, NAPS R US semi, recycling bins ×5, garbage truck | hazards | K |
 | 39 | Deer-Scamp (Scamp plus antler accessory) | hazard; jumps the car | RIG |
 | 40 | Ducks ×14 | InstancedMesh, shader flap | K animal + B |
 | 41 | Trampoline, sprinkler, hedge | hazards and the boss finish | K + B |
@@ -500,8 +520,8 @@ average first run scores about 3,200 (B); the owner's third run should reach A.
 
 ## 16. Performance budget
 
-The `05` budgets for chapter 2 (≤ 120 draw calls, ≤ 250k triangles, ≤ 6 skinned + window Clingers, 2 × 2048² atlases, ≤ 60
-Rapier bodies, ≤ 250 MB heap, 72 Hz on Quest 2) are allocated below. **Named override:** during the hold-out the car is
+The `05` budgets for chapter 2 (≤ 120 draw calls, ≤ 250k triangles, ≤ 6 skinned + window Clingers, 2 × 2048² KTX2 atlases plus
+the shared 1024² RGBA8 sheet atlas, ≤ 60 Rapier bodies, ≤ 250 MB heap, 72 Hz on Quest 2) are allocated below. **Named override:** during the hold-out the car is
 stopped, tile streaming is paused and the three live tiles drop to one, so the skinned budget rises to **12 on Quest 3 / 10 on
 Quest 2** (the two kids included); at 3:40 the cap returns to 8 as the merge tile streams in.
 
@@ -531,8 +551,9 @@ music, 1 MB textures beyond the shared atlas).
 | Layer | Test | Pass criterion |
 |---|---|---|
 | Unit (Vitest) | `SteeringMapper`: angle → offset, smoothing, 1.5 m/s cap, drift after 2 s, self-centre 1.2 s | offsets within 1% of the formula; lateral speed never exceeds 1.5 m/s in a 10,000-step fuzz |
-| Unit | `RailSampler`: 4.3 km spline, hazards by distance, slider 60–100% | every hazard's clock at 100% matches §6 within 0.5 s; at 60% every hazard still fires in order |
-| Unit | `NeedScheduler`: schedule, random pool, 25 s per-kid gap, 5 s before a hazard, boss lock, nothing after 8:00 | 1,000 seeded runs with zero violations; Pee never resolves by hand; the 60 s rule triggers only when no need reached Cry before 2:10 |
+| Unit | `RailSampler`: 4.3 km spline, hazards by distance, slider 60–100% | every hazard's clock at 100% matches §6 within 0.5 s; the slalom is six cones 1.6 s apart in lanes 2, 1, 2, 3, 2, 1 and every consecutive pair is a half-lane apart; at 60% every hazard still fires in order; under Comfort+ the highway heading is constant |
+| Unit | `NeedScheduler`: schedule, random pool, 25 s per-kid gap, 5–15 s before a hazard, the 20 s clock ends before a boss lock, nothing after 8:00 | 1,000 seeded runs with zero violations against every rule in §8's first paragraph; Pee never resolves by hand; the 60 s rule triggers only when no need reached Cry before 2:10 |
+| Unit | `CockpitReach`: every §2 and §5 interaction point (zones by their farthest corner) | each lies within 0.75 m of the head origin and has Z ≤ +0.30; the handoff zones, arm-barrier point, USB port and Mister Hop are included; an `emulatedPosition` pose is accepted for ≤ 0.7 s and then pauses the interaction |
 | Unit | `MeltdownRules`: 8/14/20 s stages, Parent of the Year under 8 s, combo freeze, three-in-a-segment badge | exact stage transitions; the badge fires on the third meltdown and never fails the chapter |
 | Unit | `DirectorChapter2`: 0.5 credits/s driving, 1/s hold-out, caps 4+2 and 12/10, remapped triggers, catch-up at 4:30 | the alive count never exceeds the cap; the bonus burst fires only below 36 pops |
 | Unit | `JinglesPhases`: 30/40/20 s, 8 cones, 10 arms with 4 s exposure, cone HP 40, a bump every 10 s until cracked, token 20 | phase clocks exact; the token granted once |
@@ -542,7 +563,7 @@ music, 1 MB textures beyond the shared atlas).
 | Performance (`renderer.info` per frame) | every segment and the hold-out on both presets | draw calls ≤ 120, triangles ≤ 250k, skinned ≤ 8 driving / ≤ 12 and 10 at the hold-out, Rapier ≤ 60; the mirror RT adds ≤ 8 draw calls averaged; frame time ≤ 13.7 ms in the emulator's cost model |
 | Comfort | record the XR camera transform for the whole chapter | roll and pitch exactly 0; yaw equals the spline heading only, ≤ 1.2°/s except the 8 s ramp at ≤ 11°/s; lateral velocity ≤ 1.5 m/s; no luminance change above 3 Hz; fades ≤ 0.4 s with the camera stationary |
 | Content lint (`lines.yaml`) | every chapter 2 line | ≤ 12 words; tokens only at the start or end; `repeat3` where listed; every need has Ask, Whine and Cry lines; both age-band variants present |
-| Audio lint | all chapter 2 clips | −16 LUFS ± 1; 120 ms name-splice gaps; the shark song shares no four-note interval sequence with a list of children's songs |
+| Audio lint | all chapter 2 clips | −16 LUFS ± 1; 120 ms name-splice gaps; the shark song and the couch song share no four-note interval sequence with a list of children's songs, and no sung or chanted lyric matches a line of a copyrighted children's song (a text check against the same list) |
 | Asset review | contact sheets and turntables of §14 | every prop readable from the driver's seat at headset resolution; the kids have no goblin ears and no eye glow |
 | Owner playtest (M5) | one playthrough with the comfort questionnaire | no nausea at the default vignette; the owner names both kid lines unprompted; at least one meltdown made them laugh; Tier 2 landed before the boss ended |
 

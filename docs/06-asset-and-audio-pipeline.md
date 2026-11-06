@@ -44,17 +44,19 @@ auditable and the download script is re-runnable.
   retargets the 32 Kenney clips by joint name (a 7→18 mapping is lossless). Toddler proportions (head 40 % of height),
   ≈ 1,800 tris body, 600 tris head, 4 bone influences max. Starting from shipped sit/shoot/melee/die clips removes most of
   the animation risk; only the comedy-specific clips are authored by script.
-- Variants are **mesh swaps on the same rig**: 7 heads (bowl cut, pigtails, pacifier, helmet, pumpkin bucket, diaper-on-head,
-  boss crown), 5 outfits (onesie, pyjama, dinosaur hoodie, school uniform, zombie rags), 6 palettes. 7 × 5 × 6 = 210
-  combinations from ~12 meshes; the roster in `01` picks fixed combos per enemy type.
+- Variants are **mesh swaps on the same rig**: 8 heads (bowl cut, pigtails, pacifier, helmet, pumpkin bucket, diaper-on-head,
+  bear, boss crown), 5 outfits (onesie, pyjama, dinosaur hoodie, school uniform, zombie rags), 8 palettes. 8 × 5 × 8 = 320
+  combinations from ~13 meshes; the roster in `01` picks fixed combos per enemy type.
 - **Adult base rig** for chapter 1 (bartender, bouncer, 4 patron variants, the player's hands/arms): the same Kenney Mini
   Characters rig at adult proportions (keeps the shared clip set), with Quaternius Universal Animation Library clips
   (`Punch_*`, `Hit_*`, `Sitting_*`) retargeted by bone name where needed.
 - **Animations**: the Kenney clips cover locomotion, sit, shoot, melee and death. The comedy-specific clips are **scripted
   keyframes** in Blender Python (pose library + easing helpers in `assets-src/blender/anim.py`): waddle, crawl, climb (table,
   wall), sit_bounce, sit_throw, door_kick ×3, breach_push, cling (car window, weapon hand), swipe, tantrum (diaper), scream
-  inhale/exhale, pop (inflate), peek (window), carry (toy), taunt (raspberry), dizzy. ≈ 20 scripted clips + the shipped set
-  = the 36 clips the roster references, all on one rig and shared by every variant.
+  inhale/exhale, pop (inflate), peek (window), carry (toy), taunt (raspberry), dizzy, dance (lured), bow, hand-over, eat,
+  trip, shove, greet, collapse, reach, arm-sweep. ≈ 30 scripted clips + the shipped set = the **48 gremlin clips** that `01`'s
+  state machines reference (a lint rule fails the build on any state without a clip), all on one rig and shared by every
+  variant. The adult rig carries **18 named clips** (Kenney set + Quaternius `Punch_*`/`Hit_*`/`Sitting_*` retargets).
 - Facial expression = 6 swappable face decals on the head UV (happy, angry, screaming, sleepy, dizzy, X-eyes), switched at runtime.
 
 ### 3.3 Props
@@ -105,7 +107,7 @@ needs KTX-Software 4.4.2's `toktx` installed.
 
 ## 4. Audio production method
 
-### 4.1 Voices (≈150 lines)
+### 4.1 Voices (≈280 lines → ≈1,100 clips with takes, plus a 320-name bank ≈ 960 name clips; ≈ 40 CPU-minutes to render)
 - Source of truth: `assets-src/dialogue/lines.yaml` (id, speaker, text, emotion, triggers, cooldown, priority). The chapter docs list
   the lines; this file is generated from them.
 - **Kokoro-82M** (Apache-2.0, 54 voices, the best CPU quality; verified twice in `uv` venvs with CPU torch at real-time

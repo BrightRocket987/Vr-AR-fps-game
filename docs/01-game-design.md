@@ -124,7 +124,7 @@ field is rendered only as text. Skipping the sheet gives the defaults.
 |---|---|---|---|---|
 | Kid 1 name (older) | searchable dropdown of 320 first names, or typed | Pickle | subtitles, signage, "Queen {KID1}" | name-bank clip spliced at line start or end |
 | Kid 2 name (younger) | same bank | Bean | subtitles, signage, "Big {KID2}" | name-bank clip |
-| Kid ages | 2–9 each | 4 and 2 | pitch band, real-kid line-set | +10 st (2–3), +8 st (4–6), +6 st (7–9) |
+| Kid ages | 2–9 each | 4 and 2 | pitch band, real-kid line-set | kid preset `toddler` (2–3), `bigkid` (4–6), `older` (7–9); the chain ratios are in Audio direction |
 | What the kids call you | Mom, Dad, Papa, Mama, Daddy, Mommy, Pop, Mum | "Hey!" | every `{PARENT}` token; Pickle's drawing "{PARENT} IN A FITE" | 8 address clips per register |
 | Favourite snack | fish crackers, gummy worms, cheese puffs, apple slices, fruit snacks, pretzels, animal crackers, raisins, popcorn, yogurt tube, cereal bar, string cheese | fish crackers | snack-bag label, Bean's "NACK" subtitle, gremlin lines | 12 clips per register |
 | Favourite show | Bubble Bunnies, Robo Rangers Go, Princess Pony Palace, Truck Friends, Blippo's Big Day, Space Kittens, Dino Doctors, The Counting Crew, Super Sandwich, Glitter Vets | Bubble Bunnies | tablet loop, "Put on {SHOW}!", TV overlay | 10 clips per register |
@@ -133,8 +133,8 @@ field is rendered only as text. Skipping the sheet gives the defaults.
 | Bar name | free text, 24 characters | The Tipsy Goose | neon sign, receipt, chalkboard | never spoken; lines say "the Goose" only with the default, else "the bar" |
 | Town name | free text, 20 characters | Pleasant Falls | licence plates, gas-station sign, DJ ticker text | never spoken |
 
-**The name bank.** 320 common English first names rendered through Piper in three registers (toddler, big kid, adult for
-Marlene, Gus and Grandma): 960 clips of 0.4–0.6 s, about 6 MB. Each line carrying a name token is rendered without the name,
+**The name bank.** 320 common English first names rendered through the casting table's engine (Kokoro, Piper fallback) in
+three registers (toddler, big kid, adult for Marlene, Gus and Grandma): 960 clips of 0.4–0.6 s, about 6 MB. Each line carrying a name token is rendered without the name,
 and the runtime stitches `[name] + 120 ms + [body]` or `[body] + 120 ms + [name]`, loudness-matched with ffmpeg `loudnorm` at
 build time. A typed name outside the bank is shown exactly as spelled in every subtitle and sign; its audio falls back to one of
 12 nicknames the player picks (Bug, Peanut, Boo, Pickle, Bean, Monkey, Pumpkin, Chicken, Goose, Sprout, Button, Nugget), and
@@ -182,8 +182,8 @@ answer, only a funnier one.
 ## The gremlin-kid roster (full table + per-type behaviour state machines + tells + room use + 5+ voice lines each)
 
 **Shared rules.** Every gremlin uses one base rig, `gremlin_base` (head 40% of height, 18 bones including jaw and two ear
-bones; see `06`), scaled per type; variants are a head swap (7), an accessory (10) and a palette row (8), and all 36 clips are
-shared. **HP is in Tier 0 dart hits.** Movement is kinematic on a navmesh baked from the floor minus furniture; only props and
+bones; see `06`), scaled per type; variants are a head swap (8), an accessory (10) and a palette row (8), and all 48 clips are
+shared (the clip list and the state-to-clip mapping rule are in Art direction). **HP is in Tier 0 dart hits.** Movement is kinematic on a navmesh baked from the floor minus furniture; only props and
 projectiles use Rapier. Every gremlin has a blob shadow, emissive eyes and a rim glow for grayscale passthrough. Every attack
 has a 0.4–2.5 s tell with an animation, a sound and, if the player is the target, a haptic cue. Shared interrupts: **LURED**
 (walks to a thrown Pacifier and dances 4 s), **SHUSHED** (frozen 0.5 s), **DIZZY** (2 s, stars), **POPPED**.
@@ -226,7 +226,9 @@ chapter 3 bosses; the game is complete at that floor.
 ### 2. Clinger
 - **States:** STALK (from outside the central 60° of view) → LEAP (from 1.5 m onto the weapon hand) → CLING (aim sway ±6°,
   reload blocked, 1 per second of tiny bites) → SHAKEN (weapon hand angular speed above 6 rad/s for 0.5 s, or a Wipe slap: it
-  flies off, stunned 2 s) → STALK. Popped while clinging, the weapon recoils 10° upward with a "Weee!"
+  flies off, stunned 2 s) → STALK. Popped while clinging, the weapon recoils 10° upward with a "Weee!" **Safety auto-shake:**
+  the Clinger also drops off if the weapon hand is held within 0.2 m of the headset for 0.3 s or during any recognised reload
+  gesture; a normally aimed gun sits 0.3–0.55 m from the head, so this never fires by accident (the chapter 3 doc tests it).
 - **Tell:** crouches and wiggles its bottom like a cat for 0.7 s, saying "Up!".
 - **Room use:** leaps from couch arms and table edges; drops from windows in the final wave; two slip into any active Stinky
   cloud and slide (comedy trigger).
@@ -237,8 +239,9 @@ chapter 3 bosses; the game is complete at that floor.
   (invulnerable for the 0.5 s of the sit) → BOUNCE (every 2 s) → THROW (every 3 s: popcorn 2; every third throw a cushion, 6,
   blocks view 1 s) → EVICTED (three Wipe slaps or the cushion overlay shot off) → ROAM at Scamp speed, "I was WATCHING that!"
 - **Tell:** raises the remote and says "Shh, this is the good part" before every cushion.
-- **Room use:** the couch. Three sitters of any type sing "The Wheels on the Bus" in rounds and the couch bounces to the beat;
-  the director then sends a Potato to evict them. Without a couch it sits cross-legged in the room centre. Pops into popcorn and
+- **Room use:** the couch. Three sitters of any type sing the **couch song** ("The cushions on the couch go bounce bounce
+  bounce.", an original tune and an original lyric) in rounds and the couch bounces to the beat; the director then sends a Potato
+  to evict them. Without a couch it sits cross-legged in the room centre. Pops into popcorn and
   leaves a confetti stain on the cushion for the rest of the wave.
 - **Lines:** "Shh, this is the good part." / "You're in the way of the TV." / "One more episode." / "Scoot." / "I had this
   spot FIRST." / "Snack. Snack. Snack." / "Put on {SHOW}."
@@ -249,8 +252,9 @@ chapter 3 bosses; the game is complete at that floor.
   0.3 s; anything within 1 m takes 10; two escort Scamps file in) → TA-DA (1.2 s pose, takes 2× damage) → RUSH → HEADBUTT (8,
   0.5 s tell) → DIZZY (2 s) → RUSH.
 - **Tell:** three knocks, the third louder; players learn to time slams.
-- **Counter, the Door Slam:** pushing the virtual panel shut with the Wipe hand during KNOCK squashes it: 5 damage, a DIZZY
-  entrance, "Ow my whole face.", and **×2 score** if popped while dizzy. The escort arrives through the nearest floor crack. A
+- **Counter, the Door Slam:** swinging the virtual door leaf shut with the Wipe hand during KNOCK (the leaf hangs 60° into the
+  room, clear of the real door; see THE WIPE) squashes it: 5 damage, a DIZZY entrance, "Ow my whole face.", and **×2 score** if
+  popped while dizzy. The escort arrives through the nearest floor crack. A
   door with a Tablet Zombie in its frame cannot be slammed.
 - **Room use:** doors only. In a one-door room Breachers are the arrival rhythm and alternate with Stack arrivals. The colander
   lands with a clang as a grabbable prop and cosmetic.
@@ -345,27 +349,53 @@ chapter 3 bosses; the game is complete at that floor.
 - **Tell:** the squeak and "Giddy up!"
 - **Room use:** charges couches and sits on everyone; leaks a milk-splash decal from its portal. Unstuffs into a cotton cloud
   that is cover for 5 s.
+- **Rig:** `gremlin_base` scaled 2.2× with the `bear` head and the pillow-armour accessory (fur is a palette row, not a mesh);
+  the rider is a 0.5 m Bean variant parented to the bear's head bone. A Tank therefore counts as **two** skinned characters
+  against the alive cap, which is why its cap is 2.
 - **Lines:** "Giddy up!" / "Mister Hop's cousin." / "Charge!" / "He's soft. You're not." / "Hug attack." / "Owie."
 
 **Zombie-kids (not a roster entry).** Twelve instanced grey gremlins shuffle inside the portal sub-scene with glowing tablets
 and never leave it. Popping one through a portal scores 1 point, capped at 50 per wave. Lines: "One more episode." / "Is it
 tomorrow yet?" / "Mom's not here. Dad's not here." / "We never nap." / "Hi!"
 
+**Pickups (every "Drop" in the roster, what it does).** Drops are Rapier bodies that land ≥ 0.3 m from blockers, glow, and
+are collected by touching them with either hand; uncollected pickups fade after 30 s. Chapter 3's prop list (`04` §19) instances
+these twelve.
+
+| Pickup | Dropped by | Effect on pickup |
+|---|---|---|
+| Juice Box | Scamp, Chucker | a throwable (medium, 6); caught in flight and returned it deals 10 |
+| Pacifier charge | Clinger | +1 Shush-time charge (max 3) |
+| Popcorn Bag | Couch Potato | 10 light throwables (2 each), thrown one per trigger pull from the off hand |
+| Spare Mag | Breacher | a full magazine for the current tier (Tier 5: +100 energy) |
+| Diaper | Stinky | Diaper Cannon ammo (+1); from a changed Stinky it also fires the +50 flat bonus |
+| Earmuffs | Siren | immune to the next Siren scream's reticle shake and speed buff, for 20 s |
+| Battery | Tablet Zombie | +50 Tier 5 energy, or an instant reload on any other tier |
+| Raisin | Crawler | +5 score and the ghost line "Found a raisin."; nothing else, which is the joke |
+| Candy | Sugar Rusher | the combo window stretches from 4 s to 6 s for 10 s |
+| Participation Trophy | Kayden | a BINKY cosmetic (a tiny trophy on the sight) and the pay-off to Brad's chapter 1 line |
+| Rubber Duck | Curtain Climber | a squeaky light throwable; counts toward **A Duck Lived** if it is never thrown |
+| Fedora | The Stack | a BINKY cosmetic (the fedora sits on the muzzle) |
+
+The Teddy Tank's Stuffing Cloud is a 5 s cover prop, not a pickup; boss drops (Golden Diaper, Crown of Pacifiers) are cosmetics.
+
 ## Chapter 1 humans (patrons, bartender, bouncer)
 
 Chapter 1's enemies are adults in a food fight; every pop is a knockout with cartoon stars and a snore, and counts as one pop
-toward the BINKY. All use one `adult_base` rig (1,600 tris) with seven heads and six palette rows.
+toward the BINKY. All use one `adult_base` rig (1,600 tris) with seven heads, six palette rows and the 18 clips listed in Art
+direction; the "Clips" column maps each tell and action to a clip, and the asset lint fails on any behaviour without one.
 
-| Human | HP | Attack (dmg) | Tell | Behaviour | XP |
-|---|---|---|---|---|---|
-| Trucker Hat | 3 | peanut 2, every 3 s from 4 m | reaches into the bowl | sniper from the bar; shooting the bowl spills 20 peanuts, ends his supply and makes two patrons slip | 10 |
-| Jersey Guy | 4 | chest-bump 6; foam finger 4 | claps twice and yells | rusher; three bumps within 10 s knock the player down (3 s stars, dart basket lost) | 10 |
-| Book Club Lady | 2 | hardback 3, at patrons | reads the title aloud | ally 70% of the time; a dart hit flips her side for 10 s | 10 |
-| Brad | 6, forehead only | shove 5 | adjusts his quarter-zip | chest darts bounce off ("Woah woah, buddy"); forehead darts make him sneeze and sit | 50 |
-| Marlene | invulnerable ally | towel snap KOs one patron per minute | snaps the towel twice | ducks behind the bar, slides the dart basket, calls Gus off | — |
-| Kayden | non-targetable | one nacho | — | throws once, then narrates; darts pass through with a "Nope" sprite | — |
-| Staff | non-targetable | — | sparkler sundae | everyone pauses to sing for 3 s of free hits | — |
-| Gus | unwinnable boss | see Bosses | | | 50 per stagger |
+| Human | HP | Attack (dmg) | Tell | Behaviour | XP | Clips (tell → clip) |
+|---|---|---|---|---|---|---|
+| Trucker Hat | 3 | peanut 2, every 3 s from 4 m | reaches into the bowl | sniper from the bar; shooting the bowl spills 20 peanuts, ends his supply and makes two patrons slip | 30 | tell `bowl-reach`; `throw`; `slip-ragdoll`; `knocked-out` |
+| Jersey Guy | 4 | chest-bump 6; foam finger 4 | claps twice and yells | rusher; three bumps within 10 s knock the player down (3 s stars, dart basket lost) | 30 | tell `double-clap`; `walk` at 1.5× speed; `chest-bump`; `foam-finger-swing`; `knocked-out` |
+| Book Club Lady | 2 | hardback 3, at patrons | reads the title aloud | ally 70% of the time; a dart hit flips her side for 10 s | 30 | tell `read-title`; `throw`; `knocked-out` |
+| Brad | 6, forehead only | shove 5 | adjusts his quarter-zip | chest darts bounce off ("Woah woah, buddy"); forehead darts make him sneeze and sit | 100 | tell `quarter-zip-adjust`; `shove`; `sneeze-and-sit`; `knocked-out` |
+| Marlene | invulnerable ally | towel snap KOs one patron per minute | snaps the towel twice | ducks behind the bar, slides the dart basket, calls Gus off | — | tell `towel-snap` (×2); `idle`; `walk` |
+| Kayden | non-targetable | one nacho | — | throws once, then narrates; darts pass through with a "Nope" sprite | — | `throw` (once); `sit-idle` |
+| Staff | non-targetable | — | sparkler sundae | everyone pauses to sing for 3 s of free hits | — | `walk` with the sundae in the hand socket; patrons `sing` |
+| Birthday family | non-targetable | — | — | seated all chapter; raise glasses at 9:35 | — | `sit-idle`; `sing` with a glass in the hand socket |
+| Gus | unwinnable boss | see Bosses | | | 50 per stagger | `walk`; `stagger`; `earbud-pull` |
 
 **Lines.** Trucker Hat: "Who threw that." / "Not the hat." / "I've seen worse. Not much worse." / "That's my bowl." /
 "Marlene, he's got a Nerf." Jersey Guy: "Defence! DEFENCE!" / "Foam finger says no." / "This is my Tuesday." / "Ref!" / "Nachos
@@ -443,7 +473,7 @@ and never lock again.
 | 3 | Sippy SMG | 90 | automatic, 9/s | 1 | 40 | 12 m hitscan, milk tracers | **Twist the cap:** off hand grabs the top and rotates 90° (0.6 s) | Rattle, haptic 0.4 continuous; overheats after 4 s held (rate halves 2 s). |
 | 4 | Diaper Cannon | 160 | lob, 1 per 1.5 s | 6 in a 1.2 m radius | 4 | 10 m arc, Rapier kinematic | **Burp it:** pat the back of the gun twice with the off hand (0.8 s) | "Fwump", powder puff; everything in it sneezes (1 s stun). Haptic 0.9/120 ms. Patting makes it say "Ba." |
 | 5 | Lullaby Laser | 250 | continuous beam | 4/s; chord 20 | 100 energy, 1/s drain | 15 m raycast | **Blow on it:** gun within 0.12 m of the headset for 0.8 s (the game plays the blow; no mic) | Pink beam of notes; targets sleep ("Zzz") then pop into feathers 1 s later; hum 0.3. 2× vs Tablet Zombies. |
-| 6 | Bedtime Bazooka | 400 | 1 pillow per 3 s | 25 in a 2 m radius | 1 | 12 m arc, Rapier kinematic | **Stuff the pillow:** off hand takes the pillow from the hip hook and shoves it into the muzzle (1 s) | Feather explosion; everything in radius pops in 0.5× slow motion for 1 s while the ghost choir sings. Haptic ramp 0→1, then 1.0/200 ms. |
+| 6 | Bedtime Bazooka | 400 | 1 pillow per 3 s | 25 in a 2 m radius | 1 | 12 m arc, Rapier kinematic | **Stuff the pillow:** off hand takes the pillow from the toolbelt hook and shoves it into the muzzle (1 s) | Feather explosion; everything in radius pops in 0.5× slow motion for 1 s while the ghost choir sings. Haptic ramp 0→1, then 1.0/200 ms. |
 
 **Lullaby Chord (Tier 5 alt-fire).** Hold grip and trigger 1.2 s, release: a piercing chord (20). Three chords into an open
 portal close it ("Portal Tucked In", +100): the view crumples like paper and the real door reappears.
@@ -456,8 +486,14 @@ never strands you: holding the trigger 1 s on an empty mag fires Tier 0 darts fr
 **Promotion moment.** Live, mid-fight: enemies slow to 30% for 1.5 s (never the camera), the gun inflates and glows, a
 toddler-voiced jingle says the new name ("Ooh. Diaper Cannon."), haptics ramp 0.1→1.0 over 0.6 s, a toy-xylophone arpeggio
 plays and a confetti ring fires from the muzzle. Any unlocked tier can be selected by tapping the gun against the off hand held
-at the hip (the **toolbelt**). Ammo is physical and visible on the gun; refills come from Spare Mag drops, the Diaper Bag
-(chapter 3), Marlene's dart basket (chapter 1) and the glove box (chapter 2).
+at the **toolbelt**. Ammo is physical and visible on the gun; refills come from Spare Mag drops, the Diaper Bag (chapter 3),
+Marlene's dart basket (chapter 1) and the glove box (chapter 2).
+
+**The toolbelt (defined once; there is no body tracking).** The toolbelt is a head-relative anchor: 0.65 m below the headset
+(0.45 m when the seated toggle is on), 0.15 m forward of it, yawing with the head through a 0.5 s lag and never pitching or
+rolling, drawn as a faint crayon ring 0.3 m across. A **tier tap** is the gun within 0.15 m of the off hand while that hand is
+within 0.2 m of the anchor (each tap cycles one unlocked tier; the ring shows the tier icons). The Pacifier and the Tier 6
+pillow hook render at the ring; in chapter 2 the console tray plays the toolbelt's part (chapter 2 doc).
 
 **Hit feedback.** A "POW" sprite in the target's palette colour; consecutive hits climb a three-step pitch ladder; headshots
 show "BONK" with a cowbell; Shushed, Door Slam and Caught & Returned show their tag in crayon. Tiers 0–1 aim with an iron bead,
@@ -467,11 +503,13 @@ Tier 2 onward adds a laser dot; a two-hand grip (Tier 1+) reduces sway 60%.
 
 | Where | Expected pops | Cumulative | Tier that lands, and where |
 |---|---|---|---|
-| Chapter 1 fights | 20–28 (Brad, 15 patrons, 6–8 Gus staggers) | 20–28 | **Tier 1** in the Bar-node fight, just before Gus |
-| Chapter 2 drive, gas station, Mr. Jingles | 22–30 + 20 token | 62–78 | **Tier 2** at the hood Scamp or window Clinger, at the latest from the token |
-| Chapter 3 waves 1–5 | 110–150 | 172–228 | **Tier 3** in "Snack Time", **Tier 4** in "Screen Time"/"Diaper Hour", before Big Bean |
-| Big Bean token + wave 6 | 80–110 + 30 | 280–370 | **Tier 5** in "Everyone", before Queen Pickle; Tier 6 for fast players |
-| Queen Pickle token, Bedtime Rush | 50 + endless | 330+ | **Tier 6** in-campaign for about a third of players, otherwise in Bedtime Rush |
+| Chapter 1 fights | 20–24 (Brad 1, 13–15 patrons, 6–8 Gus staggers; 27 with the catch-up burst) | 20–24 | **Tier 1** in the Bar-node fight, just before Gus |
+| Chapter 2 drive, gas station, Mr. Jingles | 22–30 + 20 token | 62–74 | **Tier 2** at the hood Scamp or window Clinger, at the latest from the token |
+| Chapter 3 waves 1–5 | 110–150 | 172–224 | **Tier 3** in "Snack Time", **Tier 4** in "Screen Time"/"Diaper Hour", before Big Bean |
+| Big Bean token + wave 6 | 80–100 + 30 | 282–354 | **Tier 5** in "Everyone", before Queen Pickle |
+| Queen Pickle token, Bedtime Rush | 50 + endless | 332–404 | **Tier 6** in Bedtime Rush's first wave for nearly everyone; the Queen's token carries only the fastest players to 400 in-campaign |
+
+Every cumulative range is the sum of the rows above it; the chapter docs quote these numbers and may not restate them differently.
 
 **Boss gates and catch-up.** Big Bean expects Tier 4, Queen Pickle Tier 5. If the player is below the gate 60 s before a boss,
 the director spawns a bonus burst (15 credits of Scamps and Rushers) in the last build phase; if still below when the boss music
@@ -489,13 +527,20 @@ driven by hand position and velocity so they work with controllers or hands:
 3. **Grab / Catch** (grip near a prop or projectile): hold, throw. Thrown damage by mass: light (sippy cup, raisin, colander)
    2, medium (juice box, cushion, book) 6, heavy (pickle jar, remote, trike) 12. A catch within 0.2 m of a projectile in flight
    makes the return Caught & Returned (+100%); returned juice boxes deal 10; cushions knock down up to three.
-4. **Slam** (push the virtual door panel shut while a Breacher knocks): 5 damage, a dizzy entrance, Door Slam ×2 on the pop.
-5. **Shush** (hand within 0.15 m of the headset for 1 s): cancels any Siren inhale within 3 m and freezes every gremlin within
-   3 m for 0.5 s, exactly as long as a real "shh" works. Cooldown 8 s.
-6. **Hand the thing** (chapter 2: hand crosses the seat plane 0.4 m behind the head): delivers a snack, tablet or pacifier to
-   the back seat; the same reach held between the car seats for 2 s is the **arm barrier** ("He's touching me").
+4. **Slam** (swing the virtual door leaf shut while a Breacher knocks): 5 damage, a dizzy entrance, Door Slam ×2 on the pop.
+   The leaf is never drawn flat on the real door: it hangs on the frame's hinge side swung 60° into the room, so its free edge
+   stands ≥ 0.45 m in front of the real door plane, and the slam registers when the Wipe hand pushes that free edge through 30°
+   toward the frame. A slam never counts with the hand inside 0.25 m of a real door or wall plane or proxy; getting there
+   vibrates the controller and shows "stop" (the chapter 3 doc has the geometry and the safety test).
+5. **Shush** (empty off hand within 0.15 m of the headset for 1 s): cancels any Siren inhale within 3 m and freezes every
+   gremlin within 3 m for 0.5 s, exactly as long as a real "shh" works. Cooldown 8 s.
+6. **Hand the thing** (chapter 2: the held item enters the **handoff zone** beside the seat, inside the headset's camera
+   tracking volume; the kid leans forward between the seats to take it): delivers a snack, tablet or pacifier to the back seat;
+   an empty hand held between the seats for 2 s is the **arm barrier** ("He's touching me"). Coordinates are in the chapter 2
+   doc; nothing in the game asks a hand to go behind the head, where Quest controllers lose camera tracking.
 
-**The Pacifier (toolbelt item; one object, two uses).** A glowing pacifier on the hip, grabbed with the off hand.
+**The Pacifier (toolbelt item; one object, two uses).** A glowing pacifier hooked on the toolbelt ring, grabbed with the off
+hand.
 - **Throw it (the lure):** always available, 10 s cooldown. Every gremlin within 3 m of where it lands paths to it and dances
   4 s (bosses ignore it, except Big Bean in Peek-a-boo, who follows it to a frame). Tier 2+: it sticks to walls and couches.
   Tier 5+: lured gremlins fall asleep instead of dancing. The lure is the answer to a full couch and the set-up for a lob.
@@ -503,6 +548,12 @@ driven by hand position and velocity so they work with controllers or hands:
   for everything but the player, a soft pink tint (off under reduced-flash), no camera effect. Charges come from Clinger drops
   and the floor pacifier at Booth 7; the player holds at most 3. Chapter 2's **Grandma Brake** is the same effect on a dash
   button with a 20 s cooldown.
+
+**Face-gesture precedence (stated once; the chapter docs reference it).** Three gestures bring a hand near the headset and they
+never overlap: a hand **holding the Pacifier** triggers only Shush-time (0.12 m, 0.6 s) and never Shush; an **empty off hand**
+triggers only Shush (0.15 m, 1 s); the **weapon hand** triggers only the Tier 5 "Blow on it" reload (0.12 m, 0.8 s) and the
+Clinger auto-shake (0.2 m, 0.3 s). Which hand is which is decided when the hand enters the 0.2 m zone and does not change until
+it leaves it.
 
 **Melee and physics.** Melee is the Slap plus thrown props. Gremlins are kinematic, so a thrown prop applies scripted knockback
 and damage; props, debris, darts, diapers, pillows, cushions and juice boxes are Rapier bodies.
@@ -525,8 +576,11 @@ needs, in chapter 3 the full roster. It thinks in **credits** and **intensity**.
 0, 100)`. Above 70 during a build the director holds its spend until intensity drops below 55; below 25 for 10 s it fires a
 comedy trigger.
 
-**Cycle.** **Build** (45–75 s): spend 1 credit/s on the cheapest type that fits the chapter's allowed list and the caps.
-**Peak** (20–30 s): dump 15 credits at once and hold the alive count at the cap. **Relax** (12–18 s): spawn nothing, glitter
+**Cycle.** **Build** (45–75 s): spend 1 credit/s. Each spend walks the wave's allowed list **in rotation by weight**: the
+chapter doc gives every wave a weight per type (chapter 3 doc, table B); the director draws the next type from those weights,
+skips any type at its cap or costlier than the credits in hand, and when nothing drawn is affordable it buys the most expensive
+affordable type, so Breachers, Stacks, Sirens and Tanks appear in their waves without scripting; 1-credit types soak up the
+remainder. **Peak** (20–30 s): dump 15 credits at once by the same rule and hold the alive count at the cap. **Relax** (12–18 s): spawn nothing, glitter
 drifts down, the kids' room snores, and one scripted **lull beat** plays, performed by a single gremlin (a Stack walks in, bows,
 leaves; a Scamp straightens a picture frame; a Potato changes the TV channel and leaves). A chapter 3 wave is one cycle; wave
 names and allowed lists are in the chapter 3 doc. Bedtime Rush raises the credit rate 15% per wave.
@@ -546,7 +600,8 @@ behind the screen (a Potato walks around the TV); (6) storage labels and the lau
 no source uses a floor crack.
 
 **Door and portal rules.**
-- Every door becomes a portal when the moon lands on it; the largest first, one more per wave until all are open.
+- Every door becomes a portal when the moon lands on it: the largest at set-up, the second at wave 2, and every remaining door
+  in the wave 3 breach chord (the chapter 3 doc gives the clock).
 - A **Breacher knock** on a closed door reopens it when the kick lands; a Door Slam keeps it closed for that knock.
 - A **Tablet Zombie** in a door frame keeps the portal open; the door cannot be slammed until it leaves or pops.
 - Three **Lullaby Chords** close a portal; so does slamming an open door with nothing in the frame.
@@ -587,8 +642,8 @@ scratch and one flat parent line ("I need a minute."), 3 s, then the chapter res
 cleared, the director resumed at that checkpoint's cycle and the wave's score reset. Lifetime pops and tiers are never taken
 back; a death still moved the BINKY forward. Chapter-specific soft fails (a meltdown, a hit duck) lower rank, never restart.
 
-**XP and score.** Pop XP by type is in the roster table; Brad 50; Gus 50 per stagger, Mr. Jingles 500, Big Bean 800, Queen
-Pickle 1,500.
+**XP and score.** Pop XP by type is in the roster table; patrons 30 each, Brad 100; Gus 50 per stagger, Mr. Jingles 500, Big
+Bean 800, Queen Pickle 1,500.
 - **Combo** = 1.0 + 0.1 × pops in the last 4 s, capped at 3.0; reset by damage; frozen while Parent of the Year is active.
 - **Style multipliers** on a pop: BONK +25%, Shushed +50%, Sitting Duck (seated gremlin) +50%, Mid-air +30%,
   Through-the-portal +10%, Caught & Returned +100%; these add, then **Door Slam ×2** doubles.
@@ -605,10 +660,12 @@ Clean Floor (every confetti pile wiped).
 
 **Persistence.** One versioned JSON blob in `localStorage` under `gotobed.save.v1` (under 64 kB): `schemaVersion`,
 `familySheet`, `progression {lifetimePops, tiersUnlocked, selectedTier, cosmetics[], census{}}`, `chapters {id: {completed,
-bestScore, bestRank, badges[], checkpoint}}`, `settings`, `rooms[≤5] {code, proxies[], anchorIds[], originTransform}`. Written
-at every checkpoint, wave end and boss phase; chapter 3 resumes at the start of the interrupted wave with the room intact.
-Persistent anchors (max 8 per site) with a floor-relative fallback; if storage is unavailable the game warns once and runs
-anyway. An export/import code (base64 on the 2D page) guards against browser data loss. Replaying chapter 1 at Tier 6 is a
+bestScore, bestRank, badges[], checkpoint}}`, `settings`, `rooms[≤5] {code, proxies[], anchorIds[≤2], originTransform,
+lastPlayed}`. Written at every checkpoint, wave end and boss phase; chapter 3 resumes at the start of the interrupted wave with
+the room intact. Persistent anchors are budgeted **per site, not per room**: the platform allows 8, so each room keeps at most
+two (origin, boss door) and only the four most recently played rooms hold any; older rooms fall back to the floor-relative
+layout plus the 10 s "line up the door" step (eviction rule in the chapter 3 doc). If storage is unavailable the game warns once
+and runs anyway. An export/import code (base64 on the 2D page) guards against browser data loss. Replaying chapter 1 at Tier 6 is a
 valid power trip.
 
 **Replay hooks.** **Bedtime Rush** (endless chapter 3, +15% credit rate per wave, a boss every fifth wave). **Daily Tantrum** (a
@@ -616,8 +673,10 @@ date-seeded wave set with one modifier: Everyone Is a Stack, The Floor Is Lava A
 Silent Night: tells but no barks, Lights Out: emissive eyes only). The **Style Report** end card turns the run's five funniest
 event tags into sentences ("You slammed a door on a toddler twice.", "A trenchcoat lied to you.", "You changed 7 diapers under
 fire.", "A duck lived.") beside the **kill census** ("You popped 212 copies of {KID1} and 198 of {KID2}") as a crayon chart.
-BINKY cosmetics: Golden Diaper, Fedora, Crown of Pacifiers, colander. Photo mode in chapter 3 saves a PNG; the 2D page renders a
-shareable score card via canvas; leaderboards are local, 10 entries per mode.
+BINKY cosmetics: Golden Diaper, Fedora, Crown of Pacifiers, colander. Photo mode in chapter 3 saves a PNG of the **virtual layer
+over a crayon backdrop** (a web page cannot read passthrough pixels, so a true mixed-reality photo needs the headset's own capture
+button, which the photo-mode sign says); the 2D page renders a shareable score card via canvas; leaderboards are local, 10
+entries per mode.
 
 ## UX, menus, comfort and accessibility
 
@@ -641,24 +700,32 @@ tally on the active portal's frame. Subtitles sit on a quad 1.5 m away at eye he
 lag, with speaker colours and the typed spellings.
 
 **Room setup (shared rules; full flows in the chapter 3 doc).**
-- **Quest 3/3S, scan import.** The session requests `plane-detection`, `mesh-detection`, `hit-test`, `anchors`,
-  `hand-tracking` and `depth-sensing`; if no planes arrive in 3 s it calls `initiateRoomCapture()` once, then offers "Build it
-  by hand instead". Labels convert to gameplay: floor → navmesh; door → portal frame; window → peephole and Clinger/Climber
-  entry; couch → seat slots, one per 0.6 m of width; table → crawl-under volume and perch; bed → "do not wake" zone; storage and
-  shelf → diaper vault and sniper nest; screen → what Couch Potatoes face; lamp and plant → knock-over virtual copies; wall →
-  climb surface and occluder; ceiling → Climber traverse and attic hatch. A 20 s walkthrough stamps a hovering cartoon label on
-  every detected object with a rubber-stamp sound, narrated by the Dreamgate ("Couch detected. Three Potatoes fit."). EDIT
-  retags, hides or adds. If no door was detected, **door painting is mandatory**: two pinches at the bottom corners, auto height
-  2.0 m. Depth sensing and the room mesh occlude gremlins behind real furniture and stop projectiles at real walls.
+- **Which path.** The session requests `plane-detection`, `mesh-detection`, `hit-test`, `anchors`, `hand-tracking` and
+  `depth-sensing` as optional features. The **scan path** runs when `enabledFeatures` includes `mesh-detection` or
+  `depth-sensing` (Quest 3/3S only); everything else goes to **Blueprint**. A Quest 2 that has run Space Setup also delivers
+  `XRPlane`s with labels (walls, doors, windows, couch, desk), so Blueprint reads any planes that arrive within 3 s as pre-placed,
+  editable proxies instead of ignoring them. The panel says "Room scan found" or "No scan found", never a headset name.
+- **Quest 3/3S, scan import.** If no planes arrive in 3 s the game offers "Run Space Setup" (which calls
+  `initiateRoomCapture()` once) beside "Build it by hand instead". Labels convert to gameplay: floor → navmesh; door → portal
+  frame; window → peephole and Clinger/Climber entry; couch → seat slots, one per 0.6 m of width; table and **desk** →
+  crawl-under volume and perch; bed → "do not wake" zone; storage and shelf → diaper vault and sniper nest; screen → what Couch
+  Potatoes face; lamp and plant → knock-over virtual copies; wall → climb surface and occluder; ceiling → Climber traverse and
+  attic hatch. A 20 s walkthrough stamps a hovering cartoon label on every detected object with a rubber-stamp sound, narrated
+  by the Dreamgate ("Couch detected. Three Potatoes fit."). EDIT retags, hides or adds. If no door was detected, **door painting
+  is mandatory**: one pinch on each vertical edge of the door at any comfortable height, projected to the floor and extruded to
+  2.0 m; nothing in set-up asks the player to stoop. Depth sensing and the room mesh occlude gremlins behind real furniture and
+  stop projectiles at real walls.
 - **Quest 2, Blueprint mode (object creation).** Passthrough is grayscale, so proxies render as saturated wireframes with soft
   fills: a cartoon drawn on a photograph. Wrist palette: Door, Window, Couch, Table, Wall, Shelf, Screen, Bed, Floor-crack,
   Kids' Room Door. Point and pull the trigger to place at default size (door 0.9 × 2.0 m; couch 1.8 × 0.9 × 0.8 m; table
   1.2 × 0.8 × 0.75 m) using hit-test where the browser provides it, otherwise the controller ray to the floor-plane height.
-  Two-hand grab scales, thumbstick rotates in 15° steps, grip-drag moves, hold 1 s deletes ("Weee"); a wall is a floor line
-  extruded 2.4 m. In play, proxies become invisible depth-writers, so a gremlin behind the placed couch is occluded. **Minimum
-  setup** is a floor plus one door; the prompt reads "Just mark the door you're most afraid of." Layouts save under a
-  three-letter room code against the play-area origin, with persistent anchors where available (max 8 per site) and otherwise a
-  10 s "line up the door" re-alignment on launch.
+  Two-hand grab scales, thumbstick rotates in 15° steps, grip-drag moves, hold 1 s deletes ("Weee"); a wall is two presses at
+  hand height projected to the floor and extruded 2.4 m. Planes from a Quest 2 Space Setup arrive as pre-placed proxies (wall →
+  Wall, door → Door, couch → Couch, desk or table → Table, window → Window) that the player confirms or edits. In play, proxies
+  become invisible depth-writers, so a gremlin behind the placed couch is occluded. **Minimum setup** is a floor plus one door;
+  the prompt reads "Just mark the door you're most afraid of." Layouts save under a three-letter room code against the play-area
+  origin, with two persistent anchors per room where available (the per-site budget above) and otherwise a 10 s "line up the
+  door" re-alignment on launch.
 - **Both headsets.** EDIT from the wrist (time freezes); exactly one Kids' Room Door, never a portal, emitting snoring; the 10 s
   **Room Test** (one Scamp runs in through each door, sits on the couch, waves and leaves); missing furniture replaced by a
   beanbag, a toy chest and a laundry basket; the player starts on a 1 × 1 m safe-spot rug and may walk freely.
@@ -666,10 +733,19 @@ lag, with speaker colours and the typed spellings.
 **Comfort.** 72 Hz on Quest 2 with fixed foveation level 2 and dynamic resolution 0.8–1.0; 90 Hz on Quest 3 when the budget
 allows. Chapters 1 and 3 have no artificial locomotion (node teleport with a 0.3 s fade; real walking); chapter 2 uses a fixed
 cockpit, locked horizon, lateral motion ≤ 1.5 m/s, vignette (default 30%), a scenery speed slider (60–100%) and a
-seated/standing toggle. No snap turn anywhere. Fades are at most 0.4 s and never cover a camera move. Impacts never shake the
-camera; slow motion slows the world, never the camera; no flashes above 3 Hz. Chapter 2 can be skipped after one attempt without
-losing progression, or played in **Taxi mode** (the car auto-steers; the player only shoots and tends the kids). A Guardian
-nudge in chapter 3 pauses on boundary contact.
+seated/standing toggle. No snap turn anywhere. Fades are at most 0.4 s and never cover a **continuous** camera move. The only
+camera relocations in the game are chapter 1's node teleport (a single-frame jump under a 0.3 s fade; the chapter 1 doc and its
+`teleport.nodes` test reference this sentence) and the seated eye-height offset applied once at a fade; chapter 3 has none, and
+chapter 2's rig translates and yaws with the road only, as its comfort section states. Impacts never shake the camera; slow
+motion slows the world, never the camera; no flashes above 3 Hz. Chapter 2 can be skipped after one attempt without losing
+progression, or played in **Taxi mode** (the car auto-steers; the player only shoots and tends the kids).
+
+**The boundary in every chapter.** The system boundary may not be drawn inside an `immersive-ar` session, and chapters 1–2
+hide the real room behind an opaque world, so the game draws its own fence: the bounds polygon renders as a virtual crayon rope
+that fades in when the head is within 0.5 m of it, and crossing it cuts to passthrough over 0.4 s (the world pauses) until the
+player steps back inside, when the world fades back over 0.4 s. In chapter 1 this makes "the player never walks" a tested
+invariant (the bot that walks off the node sees passthrough, not the bar); in chapter 3 the same pause fires on boundary contact
+and on a head crossing a portal plane.
 
 **Accessibility.** Subtitles on by default at 1.5° text height with speaker colours and three sizes, including "[SCREAM]";
 one-handed mode; hand-tracking mode; left-handed swap; hold-to-toggle grips; reduced-flash (no glitter strobes, no slow-motion
@@ -696,15 +772,27 @@ diaper, colander, cereal bowl, tablet, bandolier, trenchcoat, hood). Every tell 
 wiggle), never a facial change. Gremlins stay under 0.75 m except the Stack, the Tank and the bosses, which hides Quest 2
 occlusion errors behind furniture and keeps the crowd below the player's view of the room. Adults are 1.8 m; Gus 2.1 m.
 
-**One-rig variant system.** `gremlin_base` (1,400 tris, 18 bones) carries 7 heads (Pickle, Bean, Potato bowl, Breacher
-colander, Siren mouth, Kayden visor, Climber hood; about 400 tris each), 10 accessories (cape, diaper, tablet, bandolier,
-trenchcoat segment, fedora, onesie feet, pillow armour, crown, long-arm bone-scale preset) and 8 palette rows. Fourteen types, the
-two real kids, twelve zombie-kids, Big Bean and Queen Pickle (the rig scaled with head-scale overrides) render from one skinned
-geometry batched by head and accessory with a per-instance palette index. 36 clips are authored once in Blender Python: idle,
-idle-fidget, waddle, run, zigzag, crawl, crawl-hide, sit-down, sit-idle, couch-bounce, throw, knock, door-kick, ta-da,
-cling-leap, cling-idle, shaken-off, inhale, scream, exhausted, diaper-squat, diaper-detonate, changed-happy, zombie-shuffle,
-bump, panic-run, tantrum-floor-slap, charge, dizzy, yawn-sleep, pop-inflate, wave, point-command, page-turn, royal-sit,
-climb-wall. `adult_base` (1,600 tris) carries 7 heads and 10 clips. Two rigs, 14 heads, 46 clips: the entire cast.
+**One-rig variant system.** `gremlin_base` is the Kenney Mini Character mesh (CC0) re-proportioned in Blender (head to 40% of
+height, ≤ 1,400 tris) on an 18-joint superset of Kenney's skeleton (spine, forearms, shins, jaw and two ear bones added), so
+Kenney's shipped clips retarget losslessly and only the comedy clips are authored by script (`06` §3.2). It carries 8 heads
+(Pickle, Bean, Potato bowl, Breacher colander, Siren mouth, Kayden visor, Climber hood, Teddy bear; about 400 tris each), 10
+accessories (cape, diaper, tablet, bandolier, trenchcoat segment, fedora, onesie feet, pillow armour, crown, long-arm bone-scale
+preset) and 8 palette rows. Fourteen types, the two real kids, twelve zombie-kids, Big Bean, Queen Pickle (the rig scaled with
+head-scale overrides) and the Teddy Tank (the rig at 2.2× with the bear head and a Bean rider on the head bone) render from one
+skinned geometry batched by head and accessory with a per-instance palette index. **48 clips** are authored once in Blender
+Python: idle, idle-fidget, waddle, run, zigzag, crawl, crawl-hide, sit-down, sit-idle, couch-bounce, throw, knock, door-kick,
+ta-da, cling-leap, cling-idle, shaken-off, inhale, scream, exhausted, diaper-squat, diaper-detonate, changed-happy,
+zombie-shuffle, bump, panic-run, tantrum-floor-slap, charge, dizzy, yawn-sleep, pop-inflate, wave, point-command, page-turn,
+royal-sit, climb-wall, **dance** (LURED, the real Bean's Pacifier fetch), **taunt-raspberry** (Scamp TAUNT), **bow** (the Stack
+lull), **hand-over** (the leaflet, the crayon), **eat** (the Plate, Kayden's chip, the slushie), **trip** (the set-piece
+Breacher), **shove** (EVICT), **peek** (Crawler PEEK), **greet** (Stack GREET and ADULT TALK, with idle-fidget), **collapse**
+(the Stack), **reach** (straightening a frame, the glove-box hand) and **arm-sweep** (Big Bean's Grabby). Beats without a clip of
+their own reuse one: the Clingers' face-slide is `dizzy` on a moving root, the Stack's stroll is `waddle`, the Rusher's bed
+tiptoe is `crawl-hide`, and ch 2's seat-kick is `couch-bounce`. `adult_base` (1,600 tris) carries 7 heads and **18 clips**:
+idle, walk, sit-idle, throw, double-clap, chest-bump, foam-finger-swing, read-title, sing, knocked-out (the snore),
+slip-ragdoll, shove, sneeze-and-sit, towel-snap, stagger, earbud-pull, bowl-reach, quarter-zip-adjust (the humans table maps
+every tell to one of these). Two rigs, 15 heads, 66 clips: the entire cast. **Rule:** every state in the roster and humans
+tables names an existing clip, and the asset lint (`06`) fails on any state or tell without one.
 
 **Why gore-free.** Three reasons that agree. The comedy register: a pop is a punchline, a wound is not. The player fantasy: a
 parent who is competent, not violent; the enemies are tantrums, and putting one to bed is a relief. The platform: Meta's content
@@ -713,34 +801,46 @@ kids are never targets, adults are knocked out with stars, and the HUD says POPS
 
 ## Audio direction (TTS casting per character, pitch rules, SFX palette, music)
 
-**Casting.** Every line is Piper TTS shaped by ffmpeg (`asetrate` for pitch, `atempo` to restore tempo, `rubberband` for
-formant when available, `loudnorm` to −16 LUFS); nothing is recorded, there is no microphone. The build fails on any Piper voice
-without a permissive licence (see `06`).
+**Casting.** One casting table, keyed by role, drives `tools/build-voices.sh` (`06` §4.1). **Kokoro-82M** (Apache-2.0) is the
+primary engine and **Piper** the fallback when a Kokoro voice is unavailable in the build container; every role names both.
+Nothing is recorded, there is no microphone. Each role is a tuple {engine voice, pitch, formant ratio, tempo}: pitch and
+formant are applied by the verified chain below, never by a bare semitone shift, because a shifted adult voice without formant
+work sounds like a chipmunk, not a child.
 
-| Character | Piper base | Pitch | Tempo | Treatment |
+**The kid recipe (verified chain, `06`).** `asetrate × r → atempo 1/r → rubberband pitch p formant=preserved → loudnorm −16
+LUFS → aresample 48000`. The `asetrate`/`atempo` pair raises pitch and formants together by `r` with the duration kept; the
+`rubberband` stage adds pitch `p` with formants held, so the result lands at a child's 260–300 Hz median with child-sized
+formants. Three age presets: **toddler** (2–3): r 1.18, p 1.15; **bigkid** (4–6): r 1.15, p 1.10; **older** (7–9): r 1.12,
+p 1.06. The Family Sheet's age bands pick the preset for each real kid, and every gremlin follows its kid's preset.
+
+| Role | Kokoro voice (Piper fallback) | Pitch / formant | Tempo | Treatment |
 |---|---|---|---|---|
-| Pickle / `{KID1}` | en_US-amy | +8 st (age band) | 1.10 | bright EQ, 2–3 takes per line |
-| Bean / `{KID2}` | en_US-amy | +10 st | 0.90 | stretched vowels, slight lisp via formant |
-| Gremlins | the kid's profile | type offset: Siren +2, Potato −1, Breacher −2, Zombie +2 flattened, Stack three voices | 1.0 | 20% ring-mod "goblin" layer, giggle tail |
-| Zombie-kids | Pickle's profile | +8 st | 0.80 | long reverb, low-pass |
-| Ghost | Bean's profile | +12 st | 1.0 | chorus |
-| Dreamgate | en_US-lessac | −6 st | 0.85 | chorus, lullaby-robot cadence |
-| Big Bean / Queen Pickle | the kid's profile | −4 st | 0.9 | sub-octave layer, room reverb |
-| Marlene | en_US-amy | −1 st | 1.0 | warm, close |
-| Brad | en_US-ryan | 0 | 1.05 | smile EQ |
-| Gus | en_US-ryan | −5 st | 0.9 | chest resonance |
-| Trucker Hat / Jersey Guy / Book Club Lady / Staff | en_US-lessac / en_US-ryan / en_US-kathleen / en_US-joe | −3 / +1 / 0 / 0 | 1.0 / 1.15 / 1.0 / 1.0 | one profile each |
-| Kayden | en_US-amy | +6 st | 1.0 | no goblin layer (not mutated, somehow) |
-| Mr. Jingles | en_US-ryan | +3 st | 1.0 | tiny-speaker band-pass 300–3,400 Hz over the jingle |
-| Grandma | en_US-kathleen | −2 st | 0.95 | phone band-pass, crackle |
-| Radio DJ | en_US-joe | 0 | 1.1 | heavy compression |
-| The Parent | en_US-lessac or en_US-amy by address choice | 0 | 0.95 | dead flat, no EQ; ten lines |
+| Pickle / `{KID1}` | `af_bella` (en_US-amy) | `bigkid` preset by default (age band) | 1.10 | bright EQ, 2–3 takes per line |
+| Bean / `{KID2}` | `af_heart` (en_US-amy) | `toddler` preset by default | 0.90 | stretched vowels, slight lisp (formant +3% on sibilants) |
+| Gremlins | the kid's voice | the kid's preset, then a type offset on `p`: Siren +0.03, Potato −0.02, Breacher −0.04, Zombie +0.03 flattened, Stack three voices | 1.0 | 20% ring-mod "goblin" layer, giggle tail |
+| Zombie-kids | Pickle's voice | `bigkid` | 0.80 | long reverb, low-pass |
+| Ghost | Bean's voice | `toddler`, p +0.06 | 1.0 | chorus |
+| Dreamgate | `bm_george` (en_US-lessac) | pitch 0.71 (−6 st), formants unchanged | 0.85 | chorus, lullaby-robot cadence |
+| Big Bean / Queen Pickle | the kid's voice | the kid's preset, then pitch 0.79 (−4 st) with formants unchanged | 0.9 | sub-octave layer, room reverb |
+| Marlene | `af_sarah` (en_US-amy) | pitch 0.94 | 1.0 | warm, close |
+| Brad | `am_adam` (en_US-ryan) | 1.0 | 1.05 | smile EQ |
+| Gus | `am_onyx` (en_US-ryan) | pitch 0.75 (−5 st) | 0.9 | chest resonance |
+| Trucker Hat / Jersey Guy / Book Club Lady / Staff | `am_michael` / `am_puck` / `bf_isabella` / `am_eric` (en_US-lessac / en_US-ryan / en_US-kathleen / en_US-joe) | 0.84 / 1.06 / 1.0 / 1.0 | 1.0 / 1.15 / 1.0 / 1.0 | one profile each |
+| Kayden | `af_bella` (en_US-amy) | `bigkid`, p −0.04 | 1.0 | no goblin layer (not mutated, somehow) |
+| Mr. Jingles | `am_fenrir` (en_US-ryan) | 1.19 (+3 st) | 1.0 | tiny-speaker band-pass 300–3,400 Hz over the jingle |
+| Grandma | `bf_emma` (en_US-kathleen) | 0.89 (−2 st) | 0.95 | phone band-pass, crackle |
+| Radio DJ | `am_liam` (en_US-joe) | 1.0 | 1.1 | heavy compression |
+| The Parent | `bm_lewis` or `bf_alice` by address choice (en_US-lessac / en_US-amy) | 1.0 | 0.95 | dead flat, no EQ; ten lines |
 
-**Pitch and prosody rules.** Twelve words or fewer because Piper's prosody flattens beyond that. Every line renders in 2–3
-takes with seeded prosody variation and ±3% pitch; `repeat3` lines render as a rising triple. Name and address tokens splice at
-the start or end with a 120 ms gap. Age bands move the whole kid register (+10, +8, +6 st) and each gremlin follows its kid.
-Screams, giggles, raspberries and "AAAAAAA" are synthesised from onomatopoeia text and pitched, layered with CC0 giggles from
-Kenney and OpenGameArt, six variants each.
+**Voice payload (what the table renders).** Chapters 1–4 define about 370 distinct lines; with 2–3 takes, the `repeat3`
+triples and the age-band variants that is **≈ 1,100 clips**, plus the **960 name-bank clips**, about 11 MB of Opus in all and
+roughly **40 CPU-minutes** of Kokoro on four cores (Kokoro runs at a real-time factor of 0.2–0.6; `06` carries the same figure).
+
+**Pitch and prosody rules.** Twelve words or fewer because TTS prosody flattens beyond that. Every line renders in 2–3 takes
+with seeded prosody variation and ±3% pitch; `repeat3` lines render as a rising triple (+0.02 on `p` per take, tempo ×1.08).
+Name and address tokens splice at the start or end with a 120 ms gap. Age bands move the whole kid register through the preset,
+and each gremlin follows its kid. Screams, giggles, raspberries and "AAAAAAA" are synthesised from onomatopoeia text and pitched
+through the same chain, layered with CC0 giggles from Kenney and OpenGameArt, six variants each.
 
 **Playback rules.** One gremlin speaks at a time per 1.5 s, chosen by priority (boss > tell > demand > ambient) with a per-line
 30 s cooldown; tells always win. `PositionalAudio` for every gremlin, knock and portal; Siren screams duck the mix to a muffled
@@ -787,6 +887,7 @@ and drops out entirely for the Breacher knock and the Siren inhale, which is how
 - **Shush-time**: 2 s of world time at 0.5× from a Pacifier charge or the Grandma Brake.
 - **Sitting Duck**: a seated gremlin; +50% style.
 - **Tell**: the 0.4–2.5 s readable warning before every attack.
-- **Toolbelt**: the hip position where tiers are selected and the Pacifier lives.
+- **Toolbelt**: the head-relative anchor (0.65 m below the headset, 0.15 m forward, yawing with a 0.5 s lag) where tiers are
+  selected and the Pacifier lives; drawn as a faint crayon ring.
 - **Un-Napped**: the collective name for the gremlin-kids.
 - **THE WIPE**: the off-hand glove: wipe, slap, grab/catch, slam, shush, hand the thing.

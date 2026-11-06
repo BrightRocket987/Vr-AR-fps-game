@@ -73,7 +73,7 @@ wedged in your doorway, and put Queen Pickle to bed on a throne of your own couc
 Kayden-somehow, Curtain Climber, The Stack, Teddy Tank (14 types, with a cut order down to a floor of 7); bar patrons and the
 bouncer in Chapter 1; bosses Gus, Mr. Jingles, Big Bean, Queen Pickle. All gremlins share one rig (derived from Kenney's CC0
 Mini Characters rig, which already ships sit, shoot, melee and death clips) with swappable heads, outfits, accessories and
-palettes, so 14 types cost ~12 meshes and 36 shared animation clips.
+palettes, so 14 types cost ~13 meshes and 48 shared animation clips.
 
 **Weapon.** The BINKY: Foam Dart Popper → Double Binky → Juicebox Pumper → Sippy SMG → Diaper Cannon → Lullaby Laser →
 Bedtime Bazooka, unlocked at 0 / 15 / 40 / 90 / 160 / 250 / 400 lifetime pops, each with a physical reload (pump, shake,

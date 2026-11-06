@@ -19,16 +19,19 @@ interior over the single `immersive-ar` session; the real room appears only in c
 | "3D tracking and everything" | grab, hand-off, catch, throw, aim, pump-reload, node-teleport and slow-motion, taught as parenting tasks in the first 6:30 |
 | "the more you kill, you level up your weapon" | Tier 0 Foam Dart Popper from the goodie bag; Tier 1 Double Binky at pop 15 in the Bar-node fight, before Gus |
 
-Targets: 12:40 nominal, 14:00 maximum with every tutorial timeout spent; 20–28 pops; Tier 1 between 9:20 and 10:30; zero camera
-motion; one scene under 20 MB of streamed assets.
+Targets: 12:40 nominal, 14:00 maximum with every tutorial timeout spent; 20–24 pops (27 with the catch-up burst); Tier 1 between
+9:20 and 10:30; zero camera motion; one scene under 20 MB of streamed assets.
 
 ## 2. The space: floor plan, nodes, sightlines
 
 `{BAR}` is a 14 × 9 m room, 3.2 m ceiling, warm wood and neon, three wall TVs looping a goose-hockey cartoon, a chalkboard reading
 "Tuesday: KIDS EAT FREE (regret extra)". The player never walks. Four **teleport nodes** are crayon circles on the floor (0.6 m
 diameter, pulsing teal when unlocked): point the off hand at one, pull the trigger or pinch, 0.3 s fade to black, one footstep,
-fade in at the node facing its default heading. The camera moves in exactly one frame, under the fade, and never otherwise. Seated
-players get the same nodes with eye height lowered 0.45 m.
+fade in at the node facing its default heading. The camera moves in exactly one frame, under the fade, and never otherwise: this is
+the one camera relocation `01`'s Comfort section allows ("fades never cover a continuous camera move"). Seated players get the same
+nodes with eye height lowered 0.45 m. "The player never walks" is enforced by `01`'s boundary fence: the play-area bounds render as
+a virtual crayon rope that fades in within 0.5 m of the head, and stepping across it cuts to passthrough over 0.4 s with the bar
+paused until the player steps back.
 
 ```
          x → east (metres)      1 character = 0.5 m        14.0 × 9.0 m interior
@@ -153,6 +156,8 @@ Patience damage is off for 0:00–6:30, **the chapter's first tutorial window** 
 | Lure throw (chapter override) | bring `{KID2}` back from the corridor | 10:00 | Pacifier lands within 1 m of him | "Throw him something shiny." | Marlene scoops him (soft fail) |
 
 Two-hand grip (Tier 1) is discovered, not taught: the off hand within 0.1 m of the front socket cuts sway 60% and prints "Steady" once.
+Face gestures follow `01`'s precedence rule: the hand holding the Pacifier triggers only Shush-time (0.12 m, 0.6 s), never Shush, so
+the 5:40 demo cannot misfire as a Shush; there are no Sirens in this chapter, so Shush itself is never needed here.
 
 ## 5. Set pieces
 
@@ -187,8 +192,8 @@ rusher who knocks you down, a sniper with a destroyable supply, an ally who can 
 ### 6.1 Director override
 
 The `01` director runs chapter 1 with three named overrides. **Pool, not stream:** the budget is exactly 27 credits (fifteen patrons:
-7 Jersey Guys at 2, 5 Trucker Hats at 2, 3 Book Club Ladies at 1, less 1 for the seated, scripted Lady at the Birthday Table) spent in
-a fixed order; an empty pool stops the director. **Caps:** alive patrons ≤ 4 in phase 1 and ≤ 6 in phase 2 on both headsets (the
+7 Jersey Guys at 2, 5 Trucker Hats at 2, 3 Book Club Ladies at 1; the Lady who starts seated at the Birthday Table is one of the
+three and is paid for) spent in a fixed order; an empty pool stops the director. **Caps:** alive patrons ≤ 4 in phase 1 and ≤ 6 in phase 2 on both headsets (the
 scene's skinned budget is 14 and the fixed cast uses 6). **Intensity** keeps the `01` formula: above 70 the next spawn waits until it
 falls below 55.
 
@@ -228,8 +233,9 @@ two adjacent spawns sharing a head.
 
 ### 6.4 Tier pacing and catch-up
 
-Expected pops: Brad 1, patrons 13–15 (Book Club Lady is an ally 70% of the time and often survives), Gus 6–8 staggers: 20–28, as the
-`01` pacing table says. Tier 1 (15 lifetime pops) is designed to land between 9:20 and 10:00; the tests assert 9:00–10:30. Catch-up,
+Expected pops: Brad 1, patrons 13–15 (Book Club Lady is an ally 70% of the time and often survives), Gus 6–8 staggers: 20–24, or 27
+when the catch-up burst's three extra Jersey Guys fire, as the `01` pacing table says (the `pops.perfect` test's 16 pops at 10:00
+plus eight staggers is the 24). Tier 1 (15 lifetime pops) is designed to land between 9:20 and 10:00; the tests assert 9:00–10:30. Catch-up,
 in order: (1) if lifetime pops < 12 at 9:50 the catch-up slot spends a bonus burst of 3 Jersey Guys (6 credits beyond the 27, the only
 time the pool grows); (2) if lifetime pops < 15 when Gus's music cue fires at 11:00, **Grandma's record** (a vinyl LP: "Your
 grandmother popped 400 of these before breakfast") appears in the jukebox slot 1.2 m from N2 and grabbing it grants Tier 1 for good.
@@ -265,7 +271,7 @@ Comfort shapes the finale: the player is thrown out of a bar without the camera 
 | `{KID1}` (Pickle, 4½) | `gremlin_base` kid variant, Pickle head, cape | non-targetable | colours, demands, climbs the table; meltdown bubble | 10 |
 | `{KID2}` (Bean, 2) | `gremlin_base` kid variant, Bean head, diaper | non-targetable | under the table; pushes the cup; carries Mister Hop and the Dreamgate; wanders at 100% bubble | 7 |
 | Marlene, bartender | `adult_base`, head 1, row 1 | invulnerable ally | menu reading, hints, the basket slide, a towel-snap KO once per minute, calls Gus off | 8 |
-| Brad, rival parent | `adult_base`, head 2, row 2 | 6, forehead only | shove at 0.8 m; chest darts bounce; sneezes on forehead hits; snores when out | 4 |
+| Brad, rival parent | `adult_base`, head 2, row 2 | 6, forehead only | shove at 0.8 m; chest darts bounce; sneezes on forehead hits; snores when out | 6 |
 | Kayden | `gremlin_base` kid variant, visor head, no goblin ears | non-targetable | one nacho, then narration; eats a chip with eye contact | 3 |
 | Trucker Hat (×5 over the chapter) | `adult_base`, head 3, rows 1–6 | 3 | sniper: peanuts from 4 m every 3 s; the hat flies off on a headshot | 3 |
 | Jersey Guy (×7) | `adult_base`, head 4, rows 1–6 | 4 | rusher: double clap, chest bump, foam finger | 3 |
@@ -283,7 +289,7 @@ snoring pose once out and the background family baked to a static batch whenever
 | Field | Where it shows in chapter 1 | Voiced? |
 |---|---|---|
 | Kid 1 and Kid 2 names | subtitles; the receipt ("KIDS EAT FREE ×2: {KID1}, {KID2}"); the drawing's signature | no spoken line carries a name in this chapter |
-| Kid ages | pitch band (+10 / +8 / +6 st) and line-set: Toddler for 2–3, Big Kid for 4–9; if both kids are 4+, `{KID2}` speaks the Big Kid set and stands instead of crawling | — |
+| Kid ages | voice preset (`toddler` / `bigkid` / `older`, the `01` kid recipe) and line-set: Toddler for 2–3, Big Kid for 4–9; if both kids are 4+, `{KID2}` speaks the Big Kid set and stands instead of crawling | — |
 | What the kids call you | every `[A]` line; the menu's back reads "{PARENT} IN A FITE" in crayon; default "Hey!" | 8 address clips |
 | Favourite snack | "[A] Can I have {SNACK}?" at 3:10; `{KID2}`'s "Nack." subtitle; the goodie bag label | 12 clips per register |
 | Favourite show | the tablet in the diaper bag plays 2 s of `{SHOW}` when the bag is bumped | 10 clips |
@@ -325,10 +331,10 @@ hand-off, −30% when the Pacifier lands within 1 m of `{KID2}`, −15% for both
 the kid says a warning line.
 
 **Score and rank.** Chapter score follows `01`: Σ(pop XP × combo × style) + flat bonuses + chapter bonus (staggers × 50) + 500 ×
-Patience left / 100. Inputs: Brad 50, patrons 10 each, Gus 50 per stagger, nacho SPLAT 5 (10 returned, 25 in the smoothie), goose
-"NICE" 20, dart-board landing 50, trophy ding 10. **Design par is 1,800** (Brad, 14 patrons, 7 staggers at a mean combo-and-style
-multiplier of 1.5 = 1,275; 120 in set-piece bonuses; 350 chapter bonus; 55 for Patience left): S at 1,710, A 1,440, B 1,080, C 720,
-"Tired" below. The score card is **the receipt** that slides from under the Plate: `{BAR}`, `{TOWN}`, "KIDS EAT FREE ×2: {KID1},
+Patience left / 100. Inputs: Brad 100, patrons 30 each, Gus 50 per stagger (the `01` humans table), nacho SPLAT 5 (10 returned, 25
+in the smoothie), goose "NICE" 20, dart-board landing 50, trophy ding 10. **Design par is 1,830** (Brad 100 + 14 patrons 420 + 7
+staggers 350 = 870, at a mean combo-and-style multiplier of 1.5 = 1,305; 120 in set-piece bonuses; 350 chapter bonus; 55 for
+Patience left): S at 1,739, A 1,464, B 1,098, C 732, "Tired" below. The score card is **the receipt** that slides from under the Plate: `{BAR}`, `{TOWN}`, "KIDS EAT FREE ×2: {KID1},
 {KID2}", five style sentences, the pop count, the rank letter and "Tab's on Brad".
 
 ## 11. Props
@@ -392,7 +398,7 @@ script and drop as grabbable Rapier bodies when their owner is knocked out.
 
 ## 12. Dialogue
 
-Fifty-three lines, all twelve words or fewer, cast per the `01` table. `[A]` prepends the address clip; tokens appear only at a line's
+Fifty-four lines, all twelve words or fewer, cast per the `01` table. `[A]` prepends the address clip; tokens appear only at a line's
 start or end. `{KID1}` speaks the Big Kid set and `{KID2}` the Toddler set by default; age bands swap sets as `01` describes.
 
 | # | Speaker | Trigger | Line | Tags |
@@ -450,6 +456,7 @@ start or end. `{KID1}` speaks the Big Kid set and `{KID2}` the Toddler set by de
 | 51 | `{KID2}` | parking lot | "Again." | |
 | 52 | The Parent | before the cut | "We're leaving." | flat |
 | 53 | Marlene | receipt prints | "Tab's on Brad." | |
+| 54 | Brad | 6:40, the first time the BINKY's muzzle ray crosses him | "That's a participation trophy, not a weapon." | the chapter 3 pay-off (Kayden's drop) |
 
 Three of the parent's ten lifetime lines are spent here (1, 43, 52). The only bank splice in this chapter is `{SNACK}` at the end of
 line 10, so the voice payload is the body clips × 3 takes plus 12 snack clips in two registers and the 8 address clips.
@@ -461,10 +468,10 @@ Chapter 1 spends the bar column of `05` as follows. Quest 2 at 72 Hz is the floo
 
 | Budget | Limit (`05`) | Chapter 1 plan | How |
 |---|---|---|---|
-| Draw calls | ≤ 150 | 96 at the phase 2 peak | shell 1 (`BatchedMesh`, vertex-baked lightmap); furniture 4 batches; 12 `InstancedMesh` groups for debris and VFX; skinned 14; TVs 1; signage 4; shimmer 1; hands and BINKY 3; HUD 4; discs 1; parking lot 6 (streamed at 11:50); headroom 45 |
+| Draw calls | ≤ 150 | 97 at the phase 2 peak | shell 1 (`BatchedMesh`, vertex-baked lightmap); furniture 4 batches; 12 `InstancedMesh` groups for debris and VFX; skinned 14; TVs 1; signage 4; sheet-atlas signage 1; shimmer 1; hands and BINKY 3; HUD 4; discs 1; parking lot 6 (streamed at 11:50); headroom 44 |
 | Triangles on screen | ≤ 300k | 236k | shell 58k, furniture 74k, props 42k, 14 characters at ≤ 3.5k = 49k, debris 8k, UI 5k; LOD1 at 50% beyond 6 m |
 | Skinned characters | ≤ 14 | 14 | 6 fixed + 4 background + ≤ 6 patrons; the background family bakes to a static batch when more than 4 patrons are alive |
-| Textures | 2 × 2048² KTX2 | 2 | the gradient atlas; the decal atlas with a reserved 1024² quadrant for six 512² Family Sheet canvases uploaded once at load |
+| Textures | 2 × 2048² KTX2 + 1 × 1024² RGBA8 | 3 | the gradient atlas and the decal atlas, both KTX2 and static (compressed textures cannot take `texSubImage2D` canvas uploads); the **sheet atlas**, one uncompressed 1024² RGBA8 `CanvasTexture` shared by all three chapters, holds the Family Sheet text (six 512² regions here: neon, chalkboard, receipt, drawing, plate label, trophy plaque) drawn once at load; it costs one material and one draw-call group |
 | Rapier bodies active | ≤ 120 | ≤ 110 | 30 chips (25 s lifetime), 20 peanuts, 12 pretzels, 6 glasses, 30 gumballs recycled oldest-first, 8 coasters; darts are decals, patrons kinematic capsules |
 | Audio voices | 24 | ≤ 20 | 12 positional, 4 UI and weapon, 1 music, 3 ambience |
 | JS heap | ≤ 250 MB | ≤ 180 MB | chapter assets 18 MB on disk: glb 9 MB, KTX2 4 MB, voice 2.4 MB, snack and address clips 0.6 MB, SFX 1.5 MB, two music loops 1.2 MB |
@@ -490,16 +497,19 @@ render counters under budget, and no NaN or Infinity in any `Object3D` world mat
   lifetime pop and 50 XP; the counter stops at 60 s or arrival.
 - `meltdown.bubble` and `patience`: the section 10 numbers exactly, including the 4 s gaze cooldown, the 5 s regen delay and the two
   damage-off windows.
-- `score.bar`: the par run totals 1,800 ± 1 and ranks S at 1,710, A at 1,440, B at 1,080, C at 720.
-- `dialogue.lint` and `familysheet.tokens`: all 53 lines ≤ 12 words; at most one token per line, at the start or end; "the Goose"
-  variants swap for a non-default bar name; a non-bank name resolves to the nickname clip and the exact spelling.
+- `score.bar`: the par run (Brad 100, 14 patrons at 30, 7 staggers at 50, multiplier 1.5, bonuses 120 + 350 + 55) totals 1,830 ± 1
+  and ranks S at 1,739, A at 1,464, B at 1,098, C at 732.
+- `dialogue.lint` and `familysheet.tokens`: all 54 lines ≤ 12 words; at most one token per line, at the start or end; "the Goose"
+  variants swap for a non-default bar name; a non-bank name resolves to the nickname clip and the exact spelling; line 54 fires
+  once, on the first muzzle-ray crossing of Brad after 6:30.
 
 **Playwright + IWER integration (per headset profile, about 4 minutes each; both profiles on every push, `screens` nightly).**
 
 | Test | Bot script | Asserts |
 |---|---|---|
 | `boot` | start from the 2D button, 300 frames idle at N1 | `immersive-ar` with an opaque bar; draw calls ≤ 150 and triangles ≤ 300k every frame; no NaN transforms; the Plate, the `{DRINK}` glass and both kids exist |
-| `teleport.nodes` | at each unlock time, teleport to every unlocked node and try every locked one | head equals the node ± 0.05 m and ± 5° after the fade; the camera rig moves in exactly one frame per teleport and in zero frames otherwise (the zero-camera-motion invariant); locked nodes refuse; N4 locked from 11:00 |
+| `teleport.nodes` | at each unlock time, teleport to every unlocked node and try every locked one | head equals the node ± 0.05 m and ± 5° after the fade; the camera rig moves in exactly one frame per teleport, inside the 0.3 s fade, and in zero frames otherwise (the `01` Comfort rule: fades never cover a continuous camera move; the node teleport is the one allowed relocation); locked nodes refuse; N4 locked from 11:00 |
+| `bounds.fence` | walk the headset 0.6 m past the play-area edge at 7:00, hold 2 s, walk back | the crayon rope fades in at 0.5 m; the bar cuts to passthrough within 0.4 s of the crossing with the director paused; no camera-rig movement at any time; the bar fades back within 0.4 s of return and the clock resumes |
 | `tutorial.gates` | each section 4 gesture with scripted poses (grip at the cup's predicted position, a 12 cm pump along the barrel, a 3.5 m/s release) | each gate closes within 2 s of the gesture; with no input the 20 s hint and 40 s fallback events fire and the clock resumes |
 | `pops.perfect` | perfect aim at the nearest patron's head at the tier's fire rate from 6:30 | exactly 15 patrons spawn; Brad is out on the sixth forehead hit; lifetime pops equal 16 at 10:00; `tier.promoted(1)` fires between 9:00 and 10:30; the promotion slow-motion lasts 1.5 s with no camera movement |
 | `pops.poor` | the same bot at a 50% miss rate | the catch-up burst fires at 9:50 if pops < 12; Grandma's record spawns at 11:00 if pops < 15 and grabbing it fires `tier.promoted(1)`; it never spawns at ≥ 15 |
