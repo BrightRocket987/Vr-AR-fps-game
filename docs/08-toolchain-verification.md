@@ -26,7 +26,15 @@ Probe scripts live in `tools/probes/`.
 
 - Real passthrough quality, real-room plane/mesh accuracy, Quest 2 vs Quest 3 frame rate, controller haptic feel, audio latency.
   These are exactly what the user's playtest sessions are for (see `07-production-roadmap.md`, "What I need from you").
-- `@iwer/sem` is still `0.x`-grade for mixed-reality emulation; its labels and geometry are plausible, not ground truth.
+- `@iwer/sem` is still `0.x`-grade for mixed-reality emulation; its labels and geometry are plausible, not ground truth. The exact
+  label vocabulary the real Quest Browser returns (`door`, `couch`, `table`…) is strongly indicated by the W3C registry and Meta's
+  own emulator but is confirmed only on the owner's headset in the first playtest.
+- IWER's stock `metaQuest2` preset advertises `mesh-detection`, which a real Quest 2 does not have; IWER also does not emulate
+  the Layers API, multiview or MSAA. CI therefore runs a stripped "real Quest 2" profile and never treats a green emulator run as
+  proof of on-device behaviour.
+- The Godot backup path was checked only by documentation plus the download URL; executing a downloaded editor binary needs a
+  permission rule the session did not have. The research found the current line is Godot 4.7.2 with a .NET 9 requirement for
+  Android C# export (the container's apt .NET is 8.0; .NET 9 is a one-line install).
 
 ## Notes for whoever runs the probes again
 

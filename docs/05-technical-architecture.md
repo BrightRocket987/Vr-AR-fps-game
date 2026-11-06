@@ -8,9 +8,9 @@ See `08-toolchain-verification.md` for what was actually executed.
 
 | Option | What the human must do | What the agent can test without a headset | Verdict |
 |---|---|---|---|
-| **WebXR** (TypeScript, three.js, Rapier) hosted on GitHub Pages | Open a URL in the headset browser; optionally "Add to library" as a PWA. Enable GitHub Pages once (1 click) if the API cannot. | The full game loop in an emulated Quest 2/3, including passthrough, labelled room planes/meshes, hit-test, anchors, hands, controllers, screenshots (verified, see `08`). | **Primary** |
-| Godot 4.x + C# + `godot_openxr_vendors` | Create a Meta developer account, enable developer mode, install Meta Quest Developer Hub or SideQuest on a PC, sideload every build. | Logic tests headless; no XR runtime in the container; rendering only via Xvfb + software GL; the APK can be built in CI but never run. | **Backup** (the C# path) |
-| Unity 6 + Meta XR SDK | Everything Godot needs **plus** a Unity account login for licence activation on the build machine and a GUI editor for many SDK setup steps. | Compilation in batch mode; nothing XR-related. | Rejected for this project |
+| **WebXR** (TypeScript, three.js, Rapier) hosted on GitHub Pages | Open a URL in the headset browser once, then Browser menu → "Add this page to your library" so it becomes a Library tile (Horizon OS v74+). A Web Launch link (`https://www.oculus.com/open_url/?url=…`) can push the URL from a phone. Enable GitHub Pages once (1 click) if the API cannot. Run Space Setup once per room. | The full game loop in an emulated Quest 2/3, including passthrough, labelled room planes/meshes, hit-test, anchors, hands, controllers, screenshots (verified, see `08`). | **Primary** |
+| Godot 4.7.2 + C# + `godot_openxr_vendors` 5.x | Create a verified Meta developer team, enable Developer Mode in the phone app, one USB session with adb or Meta Quest Developer Hub on a PC, then install every build (1–3 min each). | Logic tests headless (GdUnit4Net); no XR runtime on Linux (Meta XR Simulator is Windows/macOS only); screenshots only via Xvfb + llvmpipe with the Compatibility renderer; the APK can be built in CI but never run. C# Android export is still "experimental"; the Meta extension classes have **no C# bindings** (reach them through a thin GDScript bridge or `ClassDB`/`Call`). | **Backup** (the C# path) |
+| Unity 6000.3 LTS + Meta XR SDK 207 | Everything Godot needs **plus** a Unity ID sign-in with 2FA for licence activation (Unity Personal has no non-interactive activation and re-validates online every 30 days) and GUI-first SDK setup tools. | Compilation in batch mode; nothing XR-related. | Rejected for this project |
 
 Why WebXR wins under the "minimal help" constraint:
 
@@ -37,14 +37,14 @@ only the runtime code is rewritten.
 | Layer | Choice | Version (verified installs) | Notes |
 |---|---|---|---|
 | Language | TypeScript (strict) | 5.x | C#-style code conventions, see §10 |
-| Rendering + WebXR | three.js | 0.170.0 | `WebXRManager`, `SkinnedMesh`, `InstancedMesh`, `BatchedMesh`, stencil support, `PositionalAudio`, depth-sensing support |
+| Rendering + WebXR | three.js | 0.170.0 verified; r187 (Oct 2026) is current and will be used | `WebXRManager`, `SkinnedMesh`, `InstancedMesh`, `BatchedMesh`, `PositionalAudio`, depth-sensing textures, `setFoveation`. The renderer must be created with `{ stencil: true }` (default is `false` since r163) or portals silently break. No multiview in the classic renderer. |
 | Physics | Rapier (WASM) | `@dimforge/rapier3d-compat` 0.21 | Deterministic, fast, runs in a Web Worker if needed; used for props, throwables, door debris, vehicle hazards |
-| Bundler / dev server | Vite | 6.x | PWA plugin for offline cache + install |
+| Bundler / dev server | Vite | 6.x | Service worker for offline asset caching. No PWA packaging: the headset "install" is the Browser's "Add this page to your library" shortcut (packaged PWAs need a PC, adb and a developer account). |
 | Emulation / tests | `iwer`, `@iwer/sem`, `@iwer/devui`, Playwright, Vitest | iwer 2.8.0 | Headless XR integration tests; unit tests for pure logic |
 | Asset tooling | Blender (headless Python), `@gltf-transform/cli` | Blender 4.0.2, gltf-transform 4.5 | Procedural props, rig/animation bakes, Draco/meshopt + KTX2 textures |
 | Audio tooling | Piper TTS, ffmpeg (+ sox/rubberband optional) | piper-tts 1.x | Voice lines, pitch/formant shifting, loudness normalisation, ogg/opus encode |
 | Hosting | GitHub Pages via GitHub Actions | — | HTTPS (required for WebXR), custom domain optional |
-| Backup runtime | Godot 4.5 mono + .NET 8 | dotnet 8.0.133 verified | Only if the M2 gate fails |
+| Backup runtime | Godot 4.7.2 mono + .NET 9 SDK (Android C# export needs exactly `net9.0` in 4.7; 4.8 moves to `net10.0`) | dotnet 8.0.133 verified via apt; .NET 9 is an apt install away | Only if the M2 gate fails |
 
 ## 3. Repository layout
 
@@ -90,8 +90,14 @@ dropping the player out of the game between chapters, **the entire game runs in 
 - Fallback (if a device refuses AR features or the user chooses "VR only"): chapters 1–2 run as `immersive-vr`, and the
   chapter-3 transition shows a 2D "Put the headset in passthrough" button.
 
-Reference space: `local-floor` (fallback `local` + estimated floor height). Target frame rate: `session.updateTargetFrameRate(72)`
-on Quest 2, 90 on Quest 3 when the budget allows. Fixed foveation: `XRWebGLLayer.fixedFoveation = 1.0` during heavy waves.
+Reference space: `local-floor` (fallback `local` + estimated floor height). Target frame rate: WebXR sessions default to **90 Hz on
+Quest 2**, so the game calls `session.updateTargetFrameRate(72)` there and uses 90 on Quest 3 only when the budget allows. Fixed
+foveation: `renderer.xr.setFoveation(1.0)` during heavy waves. The Browser's single "Spatial" permission prompt covers planes,
+meshes and depth; if no planes arrive within 3 s of session start the game calls `session.initiateRoomCapture()` once, which
+launches Space Setup from inside the session.
+
+**Quest 2 horizon.** Meta ends feature development for Quest 2 with Horizon OS v2.13 (rolling out by March 2027). The browser
+keeps working after that, so Quest 2 stays a supported target, but new MR APIs after that date are Quest 3+ only.
 
 ## 5. Game layer ("make your own engine", kept small)
 
@@ -128,9 +134,13 @@ Sources, chosen at runtime by feature detection:
    returns labelled planes if the user ran manual Space Setup. The import step shows each detected object as a glowing outline
    with its label; the player can relabel, delete or add.
 2. **Object creation** (Quest 2 default, available everywhere): a palette on the off-hand wrist (Door, Couch, Table, Wall,
-   Blocker). Point at the floor, trigger to place, drag to size, grip to rotate; snaps to floor and to walls. The perimeter is
-   drawn by walking the controller along the walls (or skipped: the game then uses the Guardian-like play area polygon from
+   Blocker). Point at the floor, trigger to place, drag to size, grip to rotate; snaps to floor and to walls. Placement uses the
+   controller ray intersected with the `local-floor` plane (y = 0) on every device, because `hit-test` on Quest 2 is unconfirmed;
+   on Quest 3/3S the depth-based `hit-test` (Browser 40.4+) refines placement onto real surfaces. The perimeter is drawn by
+   walking the controller along the walls (or skipped: the game then uses the play-area polygon from
    `XRReferenceSpace.boundsGeometry`).
+   Persistence: the Browser allows **8 persistent anchors per site**, so only doors get anchors (up to 6) plus one origin anchor;
+   everything else is stored relative to that origin anchor, with a 10 s "line up the door" re-alignment when anchors are missing.
 3. **Edit mode** on both: identical UI, entered from the wrist menu or automatically when a label is missing.
 
 Minimum viable room: a floor polygon and one door. With nothing marked, the game places a virtual "portal door" on the nearest
@@ -208,7 +218,9 @@ no real-time shadows (blob shadows), fixed foveation, 0.9 render scale on Quest 
 
 ```
 push to main
- ├─ ci.yml:   npm ci → tsc --noEmit → eslint → vitest → playwright (IWER: quest2 + quest3 presets × 3 synthetic rooms) → upload screenshots
+ ├─ ci.yml:   npm ci → tsc --noEmit → eslint → vitest → playwright (IWER: quest3 preset + a "real Quest 2" profile × 3 synthetic rooms) → upload screenshots
+ │            (IWER's stock metaQuest2 preset advertises mesh-detection, which real Quest 2 lacks; the test profile strips
+ │             mesh-detection and depth-sensing and marks hit-test unavailable so Quest 2 code paths are actually exercised)
  ├─ assets:   tools/build-assets.sh is run by the agent locally and its outputs committed (CI only validates manifests)
  └─ pages.yml: vite build → deploy to GitHub Pages (https://<owner>.github.io/<repo>/)
 ```
@@ -217,8 +229,17 @@ Playtest builds carry a version stamp on the wrist menu so bug reports can say "
 
 ## 13. The Godot C# backup, in case the gate fails
 
-- Godot 4.5 mono (verified reachable), .NET 8 (verified installed), `godot_openxr_vendors` for Meta passthrough, scene
-  capture and anchors, Android export via `godot --headless --export-release` in GitHub Actions, APK published as a release asset.
+- Godot 4.7.2 mono (download verified reachable) with the .NET 9 SDK (Android C# export is still labelled experimental and pins
+  `net9.0` for template exports; 4.8 moves to `net10.0`), `godot_openxr_vendors` 5.x (Godot 4.6+) for Meta passthrough, Scene API
+  (labels `DOOR_FRAME`, `COUCH`, `TABLE`, `BED`, `STORAGE`, `SCREEN`, `WINDOW_FRAME`, `WALL_FACE`, `FLOOR`, `GLOBAL_MESH`…),
+  spatial anchors and hand tracking. Those extension classes ship **no C# bindings**, so all Meta calls sit behind a thin GDScript
+  bridge (a few hundred lines) and the gameplay stays in C#.
+- Build: `godot --headless --install-android-build-template --export-release "Meta Quest" build/game.apk` in GitHub Actions
+  (Temurin JDK 17, `sdkmanager` build-tools 35 / platform 35 / NDK r28b, mono export templates, keystore via
+  `GODOT_ANDROID_KEYSTORE_*` env vars; Gradle build is mandatory with the vendors plugin). APK published as a release asset.
+- Tests: GdUnit4Net via `dotnet test --settings .runsettings` (`GODOT_BIN`, `--headless`); screenshots via `xvfb-run` with the
+  Compatibility renderer on llvmpipe.
 - Carry-over: all `.glb` (Godot imports glTF natively), all `.ogg`, all JSON data, nav/spawn/progression logic ported line by line
   (TypeScript → C# is mechanical).
-- Extra human steps: Meta developer account + developer mode, Meta Quest Developer Hub on a PC, install each APK (≈1 min each).
+- Extra human steps: verified Meta developer team + Developer Mode toggle, one USB session with adb or Meta Quest Developer Hub
+  on a PC to authorise debugging and do the first install, then 1–3 min per build to install the APK.
