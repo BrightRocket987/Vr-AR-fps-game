@@ -54,7 +54,7 @@ Conclusion unchanged: Unity carries the largest help burden (account sign-in, GU
 | Optional GPU text-to-3D: TRELLIS / TRELLIS.2 (MIT, 16–24 GB VRAM), UniRig (MIT) auto-rigging; Hunyuan3D 2.1's licence excludes the EU/UK/South Korea; Meshy is paid; all need a human-funded GPU account | Confirmed | https://github.com/microsoft/TRELLIS.2 |
 | Meta budgets: Quest 2 < 100 draw calls and < 750k tris per frame at 72 Hz; Quest 3/3S < 200 draw calls and < 1.5M tris | Confirmed | https://developers.meta.com/vr/resources/device-optimization-comparison/ |
 
-Verification of this topic's three critical claims was still running when this file was written; see §8.
+Fact-check detail for this topic is in §8.
 
 ## 5. Audio, voices and music
 
@@ -89,6 +89,9 @@ Verification of this topic's three critical claims was still running when this f
 - Plane-first room model; doors and windows are the canonical spawn portals; wall destruction is not used (Quest 2 cannot and Meta's own sample reserves safety margins); portals fade to passthrough within 0.5 m of the player; the system boundary stays on; VR↔passthrough transitions are fades.
 - No gremlin approaches faster than a brisk walk from behind; nothing spawns inside a 0.8 m bubble around the player; nothing is placed beyond a real wall.
 - Gremlins are explicitly monsters (goblin ears, glowing eyes, toy-like proportions), pops are confetti, the HUD counts "POPS".
+  In-game text and any store copy call them "gremlins" or "the Un-Napped", never "kids"; the "copies of your children" framing
+  lives in the story, the enemies themselves never read as human. If the game is ever submitted to the Horizon Store it needs
+  the IARC questionnaire and Meta's age-group self-certification (13+), and key art must not point a gun at the viewer.
 - Chapter 2 is a driver-controlled fixed cockpit with optional vignette and a skip option, never a passenger ride.
 - Hand tracking is optional; controllers are the default for the shooter.
 - Room data can be exported from the in-game Report code so the agent can replay the owner's real room in the emulator.
@@ -100,9 +103,9 @@ Verification of this topic's three critical claims was still running when this f
 | WebXR on Quest | 3 | 3 upheld (two with qualifiers recorded above) |
 | Godot C# | 3 | 1 upheld, 2 refined (help cost can avoid a PC via release channels; boundary-visibility missing in prebuilt plugin) |
 | Unity | 3 | 1 upheld, 2 refined (an undocumented headless Personal activation exists; `ovr-platform-util` needs more flags and Dashboard steps) |
-| 3D assets | 3 | pending at time of writing (see the end of this file for the appended verdicts) |
-| Audio/TTS | 3 | pending |
-| Design references | — | no checkable claims (qualitative) |
+| 3D assets | 3 | 2 upheld, 1 refined: Kenney Mini Characters re-verified (12 characters, 700–900 tris, **7-joint skeleton**, 32 clips, texture is an external `Textures/colormap.png` that must be fetched too; pin mirror commit `3694c68`); Blender: use the **4.5.15** LTS tarball (not 4.5.9), it needs the X11/GL client libraries even in background mode; Meta's < 100 / < 200 draw-call figures confirmed (no Quest 3S-specific budget published) |
+| Audio/TTS | 3 | 2 refined, 1 upheld: Kokoro installs even on Python 3.13 when driven by `uv` (pin `kokoro==0.9.4 misaki==0.9.4`; plain pip silently picks an old version), `ESPEAK_DATA_PATH` is not needed; **Kenney's `download-link` endpoint is not reliable headlessly** (403 on re-check), so Kenney audio comes from the GitHub mirror `ETdoFresh/kenney.nl` or OpenGameArt; the ffmpeg/rubberband/loudnorm chain re-verified (append `aresample` after `loudnorm`, which upsamples to 192 kHz) |
+| Design references | 3 | 1 upheld, 2 refined: scene labels and Quest 2 limits confirmed; Meta's content guidelines are judged in review and violence toward defenceless human-looking characters is what raises IARC ratings, so enemies must be unambiguously non-human monsters and in-game/store copy should say "gremlins"/"the Un-Napped", not "kids"; the boundary/safety pages are best-practice guidance (not store requirements) and the exact wording is recorded in §6 |
 
 ## 9. Lead judgement that replaced the interrupted judge panel
 

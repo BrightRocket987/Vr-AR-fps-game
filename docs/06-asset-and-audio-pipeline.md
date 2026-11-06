@@ -36,11 +36,14 @@ auditable and the download script is re-runnable.
   which takes ~2 min per room in the verified container).
 
 ### 3.2 Characters (the important part)
-- **One gremlin base rig**, derived from Kenney's Mini Characters rig (CC0, skinned, 723 tris, already carrying `sit`, `idle`,
-  `walk`, `sprint`, `holding-right-shoot`, `attack-melee`, `die` and 25 more clips): the script imports it, adds jaw and two
-  ear bones for the goblin look, reproportions it to toddler shape (head 40 % of height) and re-exports. ≈ 1,800 tris body,
-  600 tris head, 4 bone influences max. Starting from a rig that ships with sit/shoot/melee/die clips removes most of the
-  animation risk; only the comedy-specific clips are authored by script.
+- **One gremlin base rig**, built in the Kenney Mini Characters style (CC0; 12 characters of 700–900 tris on a 7-joint
+  skeleton: root, legs, torso, arms, head; 32 clips incl. `sit`, `idle`, `walk`, `sprint`, `holding-right-shoot`,
+  `attack-melee`, `die`; mirror pinned at commit `3694c68`, texture is the external `Textures/colormap.png` fetched alongside).
+  The 7-joint rig cannot bend elbows or knees, so the script imports a Kenney body for proportions and palette, rebuilds the
+  skeleton as an 18-joint superset (adds spine, forearms, shins, jaw, two ears), auto-weights it (`ARMATURE_AUTO`) and
+  retargets the 32 Kenney clips by joint name (a 7→18 mapping is lossless). Toddler proportions (head 40 % of height),
+  ≈ 1,800 tris body, 600 tris head, 4 bone influences max. Starting from shipped sit/shoot/melee/die clips removes most of
+  the animation risk; only the comedy-specific clips are authored by script.
 - Variants are **mesh swaps on the same rig**: 7 heads (bowl cut, pigtails, pacifier, helmet, pumpkin bucket, diaper-on-head,
   boss crown), 5 outfits (onesie, pyjama, dinosaur hoodie, school uniform, zombie rags), 6 palettes. 7 × 5 × 6 = 210
   combinations from ~12 meshes; the roster in `01` picks fixed combos per enemy type.
@@ -93,9 +96,11 @@ tools/build-assets.sh
 Step 5 is how the agent "looks at" its own models without a GUI, and how the owner reviews art without a headset.
 
 Blender version: the apt build (4.0.2) is what was verified and is enough for modelling, rigging and uncompressed glTF export;
-it lacks Draco, so all compression happens in gltf-transform (verified). The official **Blender 4.5 LTS tarball** is the
-preferred build once the environment allows executing it (it adds Draco and a working headless Rigify); the PyPI `bpy` wheel
-(Python 3.13) is only for quick geometry scripts. Textures ship as WebP by default; KTX2/Basis is an optional upgrade that
+it lacks Draco, so all compression happens in gltf-transform (verified). The official **Blender 4.5 LTS tarball** (4.5.15,
+Oct 2026, monthly fixes until July 2027) is the preferred build once the environment allows executing it: it adds Draco and
+headless Rigify (verified by the fact-check agent), and needs the X11/GL client libraries from apt even in background mode
+(`libx11-6 libxrender1 libxfixes3 libxi6 libxkbcommon0 libxcb1 libxext6 libsm6 libice6 libgl1 libglx0 libglvnd0`). The PyPI
+`bpy` wheel (Python 3.13) is only for quick geometry scripts. Textures ship as WebP by default; KTX2/Basis is an optional upgrade that
 needs KTX-Software 4.4.2's `toktx` installed.
 
 ## 4. Audio production method
@@ -103,9 +108,10 @@ needs KTX-Software 4.4.2's `toktx` installed.
 ### 4.1 Voices (≈150 lines)
 - Source of truth: `assets-src/dialogue/lines.yaml` (id, speaker, text, emotion, triggers, cooldown, priority). The chapter docs list
   the lines; this file is generated from them.
-- **Kokoro-82M** (Apache-2.0, 54 voices, the best CPU quality; verified in a `uv` Python 3.12 venv with CPU torch at
-  real-time factor ≈ 0.5 on 4 cores, needs `apt install espeak-ng`) as the primary synthesiser, **Piper** (verified on Python
-  3.13; GPL, build-time only) as the fallback and for bulk placeholders. Then per-character processing with apt tools
+- **Kokoro-82M** (Apache-2.0, 54 voices, the best CPU quality; verified twice in `uv` venvs with CPU torch at real-time
+  factor 0.2–0.6 on 4 cores; install with `uv pip install kokoro==0.9.4 misaki==0.9.4` because plain pip on Python 3.13
+  silently picks an old version) as the primary synthesiser, **Piper** (verified on Python 3.13; GPL, build-time only) as the
+  fallback and for bulk placeholders. Then per-character processing with apt tools
   (`ffmpeg` with the `rubberband` filter, `rubberband-cli`, `sox`, `praat-parselmouth`):
   - Gremlin kids: no open TTS has a child voice, so one is manufactured from Kokoro's female voices (`af_heart`, `af_bella`,
     `bf_emma`): formants +15–25 % and pitch raised to a 260–300 Hz median with duration preserved (verified chain:
@@ -118,8 +124,8 @@ needs KTX-Software 4.4.2's `toktx` installed.
 - Each line is rendered in 2–3 takes (seeded prosody variation + ±3 % pitch) so repeats do not sound identical.
 - Output: lossless 48 kHz masters kept in `assets/audio/master/`, encoded per target: Opus 48 kbps mono for the WebXR build
   (≈ 31 KB per line, ≈ 5 MB for 150 lines), Ogg Vorbis for the Godot backup (Godot does not decode Opus). Two-pass
-  `ffmpeg loudnorm` to −16 LUFS / −1.5 dBTP for voice (verified exact), −18 for SFX, −20 for music. A manifest JSON carries
-  durations for subtitle timing.
+  `ffmpeg loudnorm` to −16 LUFS / −1.5 dBTP for voice (verified exact; `loudnorm` upsamples to 192 kHz internally, so the
+  chain appends `aresample=48000`), −18 for SFX, −20 for music. A manifest JSON carries durations for subtitle timing.
 - Quality ceiling: Kokoro is clear and characterful after processing but not "actor" quality, and the kid preset is a taste
   call ("cute" vs "chipmunk") that only the owner can judge on the headset. A GPU TTS on a rented box can replace the
   synthesiser for the ~30 most-heard lines with no other change.
@@ -127,9 +133,10 @@ needs KTX-Software 4.4.2's `toktx` installed.
   gremlins nearest the player get HRTF emitters; the rest use equal-power panning.
 
 ### 4.2 Sound effects (≈80)
-- Kenney audio packs (Impact Sounds 130, UI Audio 50, Casino Audio 50 for the bar, Voiceover Pack for adult grunts; CC0,
-  verified headless download) + OpenGameArt CC0 for cartoon boings, glass, doors, splashes, car hazards, portal hum, and
-  BigSoundBank for children's laughter.
+- Kenney audio packs (Impact Sounds 130, UI Audio 50, Casino Audio 50 for the bar, Voiceover Pack for adult grunts; CC0)
+  taken from the GitHub mirror `ETdoFresh/kenney.nl` or Kenney's own uploads on OpenGameArt, because `kenney.nl`'s download
+  endpoint is session-bound and refused a scripted re-check; plus OpenGameArt CC0 for cartoon boings, glass, doors, splashes,
+  car hazards, portal hum, and BigSoundBank for children's laughter.
 - Synthesised where cheaper: the weapon tiers (layered noise bursts + pitch envelopes via `jsfxr`/`zzfx` or `sox synth`),
   portal drone, tablet glitch, UI blips. Deterministic, scripted in `tools/synth_sfx.mjs`.
 - Mastered the same way (−18 LUFS, peak −1 dBTP), exported as ogg/opus 96 kbps, variants (×3) for hits and pops.

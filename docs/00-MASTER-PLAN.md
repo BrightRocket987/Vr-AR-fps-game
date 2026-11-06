@@ -156,6 +156,10 @@ screenshots or the in-game Report code. Never: a PC, cables, developer mode, eng
 3. **TTS voices too flat for comedy.** Short lines, pitch/tempo variation, SFX layering; the synthesiser is swappable.
 4. **Scripted animation stiffness.** Exaggerated squash-and-stretch, many short loops, owner reviews turntables.
 5. **Interruptions** (container restarts, usage limits). Every milestone commits continuously; pipelines are idempotent.
+6. **Rating/policy if ever published.** Violence toward human-looking, defenceless characters is what raises ratings and
+   review scrutiny, so the enemies stay unambiguously non-human monsters and in-game and store copy call them "gremlins" or
+   "the Un-Napped", never "kids". As a web page the game needs no store review; a store release would need the IARC
+   questionnaire and Meta's 13+ age-group self-certification.
 
 ## 9. Document map
 
