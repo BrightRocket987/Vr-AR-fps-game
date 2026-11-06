@@ -14,12 +14,12 @@ side without a visible seam. Nothing realistic, no blood, no textures over 2048 
 
 | Priority | Source | Licence | Used for | Access from the container |
 |---|---|---|---|---|
-| 1 | **Scripted in Blender** (`assets-src/blender/*.py`) | ours | Everything bespoke: gremlin bodies/heads/accessories, bar fixtures, car cockpit, portal frames, debris, weapon tiers, any prop the packs lack | Verified (`08`) |
-| 2 | **Kenney** packs (CC0) | CC0 | Furniture, food, city/road, car exteriors, weapons, UI icons, impact/UI audio | `kenney.nl` refuses scripted downloads (HTTP 403); the same packs are on `kenney.itch.io` (reachable). Vendored into `assets-src/packs/` with the licence file. |
-| 3 | **Quaternius** packs (CC0) | CC0 | Rigged, animated humanoids and zombies as the starting rig/animation set for adults; animal/monster references | `quaternius.com` reachable |
-| 4 | **Poly Haven** (CC0) | CC0 | Night-sky HDRI (drive), wood/leather/fabric textures baked into the atlas, a few hero props | API reachable (`api.polyhaven.com`) |
-| 5 | **OpenGameArt** CC0 filter | CC0 | Giggles, screams, crowd murmur, cartoon boings, jukebox-style loops | reachable |
-| — | Mixamo, Sketchfab downloads, Freesound, Pixabay | — | **Not used**: login or bot protection blocks automation; Freesound/Pixabay returned HTTP 403 | — |
+| 1 | **Kenney** packs (CC0) via the GitHub mirror `shorepine/kenney` (49 kits, 4,812 GLB models, login-free raw downloads; verified) | CC0 | **Mini Characters** as the gremlin and adult base (skinned, 723 tris, 32 clips incl. `sit`, `idle`, `walk`, `sprint`, `holding-right-shoot`, `attack-melee`, `die`, `drive`), Furniture Kit (lounge sofas, beds, doorways, kitchen), Food Kit, Weapon Pack + Blaster Kit (weapon tier parts), Car Kit / Toy Car Kit / Road Pack / City kits, Nature Kit, Fantasy Town & Graveyard (portal world), Kenney audio packs | `kenney.nl`'s own download endpoint refuses scripted clients; the mirror is pinned by commit hash and the needed files are vendored into `assets-src/packs/` with the CC0 licence file |
+| 2 | **Scripted in Blender** (`assets-src/blender/*.py`) | ours | Everything bespoke on top of the Kenney base: gremlin heads/accessories/outfits, custom animation clips, bar fixtures, minivan cockpit, portal frames, fractured breakables, boss bodies, any prop the packs lack | Verified (`08`) |
+| 3 | **Quaternius** Universal Animation Library (CC0), glTF mirror `J-Ponzo/gltf-universal-animation-library` (46 clips incl. `Sitting_Enter/Idle/Exit`, `Pistol_*`, `Punch_*`, `Death01`, `Hit_*`, on a 53-joint Rigify-named rig) | CC0 | Retarget source for adult NPC clips the Kenney set lacks; Universal Base Characters as hero NPC bodies (decimated to ≤ 4k tris) | Quaternius' licence forbids redistributing the packs *as assets*: only processed, game-specific GLBs are committed, raw packs stay out of the public repo |
+| 4 | **Poly Haven** (CC0) | CC0 | Night-sky HDRI (drive), a few baked textures | Key-less API (needs a named User-Agent); no site scraping |
+| 5 | **OpenGameArt** CC0 filter, **BigSoundBank** (CC0) | CC0 | Giggles, children's laughter, screams, creature SFX, doors, glass; Kenney's audio mirror | Direct downloads verified |
+| — | Mixamo, Sketchfab, Freesound, Pixabay, Sonniss, FreePD | — | **Not used**: login, bot protection (HTTP 403 to scripts) or closed (FreePD) | — |
 
 Every vendored file is listed in `assets-src/packs/MANIFEST.json` with source URL, licence and SHA-256, so the provenance is
 auditable and the download script is re-runnable.
@@ -36,18 +36,22 @@ auditable and the download script is re-runnable.
   which takes ~2 min per room in the verified container).
 
 ### 3.2 Characters (the important part)
-- **One gremlin base rig** (`gremlin_base.blend`, built by script): 18 bones (hips, spine, chest, neck, head, jaw, 2×clavicle,
-  2×upper arm, 2×forearm, 2×hand, 2×thigh, 2×shin, 2×foot), 1,800 tris body, 600 tris head, 4 bone influences max.
+- **One gremlin base rig**, derived from Kenney's Mini Characters rig (CC0, skinned, 723 tris, already carrying `sit`, `idle`,
+  `walk`, `sprint`, `holding-right-shoot`, `attack-melee`, `die` and 25 more clips): the script imports it, adds jaw and two
+  ear bones for the goblin look, reproportions it to toddler shape (head 40 % of height) and re-exports. ≈ 1,800 tris body,
+  600 tris head, 4 bone influences max. Starting from a rig that ships with sit/shoot/melee/die clips removes most of the
+  animation risk; only the comedy-specific clips are authored by script.
 - Variants are **mesh swaps on the same rig**: 7 heads (bowl cut, pigtails, pacifier, helmet, pumpkin bucket, diaper-on-head,
   boss crown), 5 outfits (onesie, pyjama, dinosaur hoodie, school uniform, zombie rags), 6 palettes. 7 × 5 × 6 = 210
   combinations from ~12 meshes; the roster in `01` picks fixed combos per enemy type.
-- **Adult base rig** for chapter 1 (bartender, bouncer, 4 patron variants, the player's hands/arms): Quaternius "Ultimate
-  Animated Character" rig as the base if its licence file confirms CC0 in the vendored copy; otherwise the same scripted
-  approach as the gremlin rig at adult proportions.
-- **Animations are scripted keyframes** in Blender Python (pose library + easing helpers in `assets-src/blender/anim.py`):
-  idle, walk, run, waddle, crawl, jump, climb (table), sit_down, sit_idle, sit_bounce, sit_throw, stand_up, door_kick ×3,
-  breach_push, cling (car window), swipe, tantrum (diaper), scream, hit_react, pop (death), peek (window), carry (toy).
-  26 clips × 1 rig = 26 clips total, shared by all variants. Scripted animation is why the whole roster costs weeks, not months.
+- **Adult base rig** for chapter 1 (bartender, bouncer, 4 patron variants, the player's hands/arms): the same Kenney Mini
+  Characters rig at adult proportions (keeps the shared clip set), with Quaternius Universal Animation Library clips
+  (`Punch_*`, `Hit_*`, `Sitting_*`) retargeted by bone name where needed.
+- **Animations**: the Kenney clips cover locomotion, sit, shoot, melee and death. The comedy-specific clips are **scripted
+  keyframes** in Blender Python (pose library + easing helpers in `assets-src/blender/anim.py`): waddle, crawl, climb (table,
+  wall), sit_bounce, sit_throw, door_kick ×3, breach_push, cling (car window, weapon hand), swipe, tantrum (diaper), scream
+  inhale/exhale, pop (inflate), peek (window), carry (toy), taunt (raspberry), dizzy. ≈ 20 scripted clips + the shipped set
+  = the 36 clips the roster references, all on one rig and shared by every variant.
 - Facial expression = 6 swappable face decals on the head UV (happy, angry, screaming, sleepy, dizzy, X-eyes), switched at runtime.
 
 ### 3.3 Props
@@ -80,51 +84,69 @@ auditable and the download script is re-runnable.
 ### 3.6 Build script
 ```
 tools/build-assets.sh
-  1. python3 tools/fetch_packs.py           # downloads + verifies vendored CC0 packs (idempotent)
-  2. blender -b -P assets-src/blender/build_all.py   # characters, props, fractures, bakes → build/raw/*.glb
-  3. gltf-transform optimize --compress meshopt --texture-compress ktx2 → game/public/assets/*.glb
-  4. node tools/validate-assets.mjs         # tri/texture budgets, naming, missing animations → fails the build
+  1. python3 tools/fetch_packs.py           # downloads + verifies vendored CC0 files from the pinned mirrors (idempotent)
+  2. blender -b --factory-startup -P assets-src/blender/build_all.py   # characters, props, fractures, bakes → build/raw/*.glb
+  3. gltf-transform optimize --compress meshopt --texture-compress webp (+ palette, join, instance, resample) → game/public/assets/*.glb
+  4. node tools/validate-assets.mjs         # tri/texture/draw-call budgets, naming, missing animations → fails the build
   5. node tools/render-contact-sheet.mjs    # Playwright/three.js turntable PNGs for every asset → docs/evidence/assets/
 ```
 Step 5 is how the agent "looks at" its own models without a GUI, and how the owner reviews art without a headset.
+
+Blender version: the apt build (4.0.2) is what was verified and is enough for modelling, rigging and uncompressed glTF export;
+it lacks Draco, so all compression happens in gltf-transform (verified). The official **Blender 4.5 LTS tarball** is the
+preferred build once the environment allows executing it (it adds Draco and a working headless Rigify); the PyPI `bpy` wheel
+(Python 3.13) is only for quick geometry scripts. Textures ship as WebP by default; KTX2/Basis is an optional upgrade that
+needs KTX-Software 4.4.2's `toktx` installed.
 
 ## 4. Audio production method
 
 ### 4.1 Voices (≈150 lines)
 - Source of truth: `assets-src/dialogue/lines.yaml` (id, speaker, text, emotion, triggers, cooldown, priority). The chapter docs list
   the lines; this file is generated from them.
-- **Piper TTS** (CPU, verified): base voices per speaker role, then **ffmpeg** processing per character:
-  - Gremlin kids: pitch +30–45 % (`asetrate`), tempo restored (`atempo`), slight formant shift via `rubberband` when available,
+- **Kokoro-82M** (Apache-2.0, 54 voices, the best CPU quality; verified in a `uv` Python 3.12 venv with CPU torch at
+  real-time factor ≈ 0.5 on 4 cores, needs `apt install espeak-ng`) as the primary synthesiser, **Piper** (verified on Python
+  3.13; GPL, build-time only) as the fallback and for bulk placeholders. Then per-character processing with apt tools
+  (`ffmpeg` with the `rubberband` filter, `rubberband-cli`, `sox`, `praat-parselmouth`):
+  - Gremlin kids: no open TTS has a child voice, so one is manufactured from Kokoro's female voices (`af_heart`, `af_bella`,
+    `bf_emma`): formants +15–25 % and pitch raised to a 260–300 Hz median with duration preserved (verified chain:
+    `asetrate ×1.18 → atempo 1/1.18 → rubberband pitch 1.15 formant=preserved`, or Praat "Change gender"), per-type presets,
     0.5 % tremolo for the zombie variants, a 150 Hz high-pass and a touch of saturation for "screaming through a door".
-  - Player's own kids (chapters 1–2, not monstrous yet): pitch +25 %, no distortion, warmer EQ.
-  - Bartender/bouncer/patrons: distinct Piper voices (e.g. `en_US-lessac`, `en_US-ryan`, `en_GB-alan`, `en_US-amy`), −5–10 % pitch.
-  - Screams/giggles/raspberries: synthesised from onomatopoeia text ("AAAAAH", "hehehehe") then pitched, layered with CC0 samples.
+  - Player's own kids (chapters 1–2, not monstrous yet): a gentler preset (+12 % formants, ~250 Hz), no distortion, warmer EQ.
+  - Bartender/bouncer/patrons: distinct Kokoro voices, −5–10 % pitch for Gus.
+  - Screams, giggles, cries: TTS cannot do these convincingly; they come from CC0 recordings (BigSoundBank children's laughter,
+    OpenGameArt giggles/screams/creature SFX) run through the same pitch/formant chain and layered.
 - Each line is rendered in 2–3 takes (seeded prosody variation + ±3 % pitch) so repeats do not sound identical.
-- Output: 48 kHz mono `.ogg` (opus 48 kbps), loudness-normalised to −16 LUFS (`ffmpeg loudnorm`), plus a manifest JSON with
+- Output: lossless 48 kHz masters kept in `assets/audio/master/`, encoded per target: Opus 48 kbps mono for the WebXR build
+  (≈ 31 KB per line, ≈ 5 MB for 150 lines), Ogg Vorbis for the Godot backup (Godot does not decode Opus). Two-pass
+  `ffmpeg loudnorm` to −16 LUFS / −1.5 dBTP for voice (verified exact), −18 for SFX, −20 for music. A manifest JSON carries
   durations for subtitle timing.
-- Quality ceiling: Piper is intelligible and characterful after processing but not "actor" quality. Optional upgrade with zero
-  design change: Kokoro-82M (Apache-2.0, CPU) or a GPU TTS on a rented Runpod box for the ~30 most-heard lines. The pipeline
-  only swaps the synthesiser.
+- Quality ceiling: Kokoro is clear and characterful after processing but not "actor" quality, and the kid preset is a taste
+  call ("cute" vs "chipmunk") that only the owner can judge on the headset. A GPU TTS on a rented box can replace the
+  synthesiser for the ~30 most-heard lines with no other change.
+- Runtime spatialisation: three.js `PositionalAudio` uses HRTF panning, the most expensive Web Audio node, so only the 6–8
+  gremlins nearest the player get HRTF emitters; the rest use equal-power panning.
 
 ### 4.2 Sound effects (≈80)
-- Kenney audio packs (impact, UI, casino/arcade for the bar, "voiceover" grunts) + OpenGameArt CC0 for cartoon boings, glass,
-  splashes, car hazards, portal hum.
-- Synthesised where cheaper: the weapon tiers (layered noise bursts + pitch envelopes via `sox synth` / ffmpeg filters), portal
-  drone, tablet glitch, UI blips. Deterministic, scripted in `tools/synth_sfx.py`.
+- Kenney audio packs (Impact Sounds 130, UI Audio 50, Casino Audio 50 for the bar, Voiceover Pack for adult grunts; CC0,
+  verified headless download) + OpenGameArt CC0 for cartoon boings, glass, doors, splashes, car hazards, portal hum, and
+  BigSoundBank for children's laughter.
+- Synthesised where cheaper: the weapon tiers (layered noise bursts + pitch envelopes via `jsfxr`/`zzfx` or `sox synth`),
+  portal drone, tablet glitch, UI blips. Deterministic, scripted in `tools/synth_sfx.mjs`.
 - Mastered the same way (−18 LUFS, peak −1 dBTP), exported as ogg/opus 96 kbps, variants (×3) for hits and pops.
 
 ### 4.3 Music (≈6 tracks)
-- Procedural, generated offline by a small Python composer (`tools/compose.py`) into MIDI then rendered with FluidSynth + a
-  CC0 soundfont (GeneralUser GS or FluidR3, both reachable via apt/OpenGameArt), mastered with ffmpeg. Tracks: bar jukebox
-  loop (honky-tonk), brawl stinger, night-drive synthwave loop, backseat lullaby (music box), invasion loop (toy-box drums +
-  bass clarinet), boss theme, plus 10 s stingers for wave start/clear.
-- Fallback if the generated music is not good enough: CC0 tracks from OpenGameArt/FreePD, credited in `CREDITS.md`.
+- Procedural, composed in code with **Tone.js** and rendered offline to WAV (`Tone.Offline` via `node-web-audio-api` in Node,
+  or the pre-installed Playwright Chromium), mastered with ffmpeg. Tracks: bar jukebox loop (honky-tonk), brawl stinger,
+  night-drive synthwave loop, backseat lullaby (music box), invasion loop (toy-box drums + bass clarinet), boss theme, plus
+  10 s stingers for wave start/clear.
+- Fallback if the generated music is not good enough: Kevin MacLeod tracks (CC BY 4.0, direct download verified) with the
+  attribution line generated into `CREDITS.md`. Not used: MusicGen (non-commercial weights), FreePD (closed).
 
 ### 4.4 Build script
 ```
-tools/build-voices.sh   # lines.yaml → piper → ffmpeg chain → game/public/assets/voice/*.ogg + voice-manifest.json
-tools/build-sfx.sh      # vendored CC0 + synth_sfx.py → sfx/*.ogg + sfx-manifest.json
-tools/build-music.sh    # compose.py → MIDI → fluidsynth → music/*.ogg
+tools/build-voices.sh   # lines.yaml → kokoro (py3.12 venv) | piper → ffmpeg/rubberband/praat chain → voice/*.ogg + voice-manifest.json
+tools/build-sfx.sh      # vendored CC0 + synth_sfx.mjs → sfx/*.ogg + sfx-manifest.json
+tools/build-music.sh    # compose.mjs (Tone.js offline render) → ffmpeg master → music/*.ogg
 ```
 All three are idempotent and cached by content hash, so re-rendering one changed line takes seconds.
 
@@ -139,6 +161,9 @@ All three are idempotent and cached by content hash, so re-rendering one changed
 
 ## 6. Licensing and credits
 
-- Only CC0 and self-made assets ship. `CREDITS.md` lists every pack with its URL and licence, generated from the manifest.
-- Piper voices are MIT/CC-BY-style per voice; the manifest records each voice's licence and the build fails on a non-permissive one.
+- Only CC0, CC BY (music, credited) and self-made assets ship. `CREDITS.md` lists every pack with its URL and licence,
+  generated from the manifest.
+- Kokoro (Apache-2.0) and Piper (GPL-3.0-or-later) are build-time tools; neither ships in the game, so no licence obligation
+  attaches to the generated audio. The manifest records each voice's licence and the build fails on a non-permissive one.
+  Non-commercial models (XTTS-v2, F5-TTS, MusicGen) are excluded from the toolchain entirely.
 - No trademarked names, logos or real brands in the bar or on the road (fictional beer brands and signage are scripted).

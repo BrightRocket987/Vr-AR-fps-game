@@ -55,3 +55,10 @@ cd tools/probes/xr-smoke && npm install && npm run build && npm test
 
 The IWER runtime must be installed with `installRuntime({ forceInstall: true })` in Chromium, because headless Chromium exposes a
 native `navigator.xr` with no backing runtime and IWER otherwise refuses to replace it.
+
+An independent fact-check agent re-ran this probe on 2026-11-06 and confirmed it, adding four qualifiers the test harness must
+respect: emulated hands appear only if `xrDevice.primaryInputMode = 'hand'` is set before the session (the probe's run saw two
+controllers, which is why `handsSeen` was false); with three.js 0.170 any request for `depth-sensing` stops frame delivery, so
+the project uses three.js ≥ 0.184 (where the emulated depth buffer also works); roughly half of `setAnimationLoop` ticks arrive
+with `frame === undefined`, so tests must gate on the frame; `requestHitTestSource`, `createAnchor`, `requestPersistentHandle`
+and `restorePersistentAnchor` all work in the emulator.

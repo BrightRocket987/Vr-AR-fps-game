@@ -185,8 +185,9 @@ things behind doors before they breach.
 ## 9. Audio
 
 Web Audio graph: `master → {music, sfx, voice}` buses with ducking (voice ducks music by 6 dB). Positional voices use
-three.js `PositionalAudio` (HRTF panner, inverse distance, max 8 m). Everything is `.ogg` (opus 48 kbps voice, 96 kbps SFX,
-128 kbps music). Audio context is unlocked by the same click that starts the XR session. Voice lines are pre-rendered (see `06`)
+three.js `PositionalAudio` (HRTF panner, inverse distance, max 8 m) for the 6–8 nearest gremlins only, because HRTF is the
+most expensive Web Audio node; the rest use equal-power panners. Everything is `.ogg` (opus 48 kbps voice, 96 kbps SFX,
+128 kbps music; Vorbis re-encodes for the Godot backup, which cannot decode Opus). Audio context is unlocked by the same click that starts the XR session. Voice lines are pre-rendered (see `06`)
 and chosen at runtime by trigger + a per-line cooldown so the kids do not repeat themselves within 30 s.
 
 ## 10. Code conventions (so the owner can read it)
@@ -203,7 +204,7 @@ and chosen at runtime by trigger + a per-line cooldown so the kids do not repeat
 | Budget | Chapter 1 (bar) | Chapter 2 (drive) | Chapter 3 (house MR) |
 |---|---|---|---|
 | Frame rate | 72 Hz | 72 Hz | 72 Hz (90 on Quest 3) |
-| Draw calls | ≤ 150 | ≤ 120 | ≤ 140 incl. portals and occluders |
+| Draw calls (Quest 2 / Quest 3) | ≤ 100 / 150 | ≤ 90 / 120 | ≤ 100 / 140 incl. portals and occluders (Meta's guidance: < 100 on Quest 2, < 200 on Quest 3) |
 | Triangles on screen | ≤ 300k | ≤ 250k | ≤ 220k |
 | Skinned characters visible | ≤ 14 | ≤ 6 (+ window clingers) | ≤ 20 |
 | Textures | 2 × 2048² KTX2 atlases | 2 × 2048² | 2 × 2048² + depth texture |

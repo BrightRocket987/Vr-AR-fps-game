@@ -18,7 +18,7 @@ The brief, restated as commitments:
 | The brief said | The plan delivers |
 |---|---|
 | passthrough + object creation | Chapter 3 runs in passthrough; Quest 2 players draw doors, couch, table and walls by hand ("Blueprint mode"); Quest 3 players import the room scan and edit it |
-| small humanoids spawn everywhere, break through doors, sit in couches | 13 gremlin-kid types; door breaches with a knock-knock rhythm you can slam; seat slots on the real couch with eviction and singing gags; table climbing, window peeking, under-furniture crawling |
+| small humanoids spawn everywhere, break through doors, sit in couches | 14 gremlin-kid types; door breaches with a knock-knock rhythm you can slam; seat slots on the real couch with eviction and singing gags; table and wall climbing, window peeking, under-furniture crawling |
 | the more you kill, the more your weapon levels up, with 3D tracking | the BINKY: one 6DoF-tracked weapon with 7 tiers unlocked by lifetime pops, each with its own physical reload gesture and haptics; the WIPE on the off hand |
 | level 1: bar with your kids, a fight, kicked out | Chapter 1 at The Tipsy Goose: claw machine, nacho avalanche, a brawl with patrons, an unwinnable bouncer finale |
 | level 2: drive home, dodge things, kids say "my tablet broke", "I have to pee" | Chapter 2: fixed-cockpit minivan on a rail, hazards, an ice-cream-truck boss, a back-seat need system where every demand costs steering, a gas-station hold-out |
@@ -70,9 +70,10 @@ wedged in your doorway, and put Queen Pickle to bed on a throne of your own couc
 + Bedtime Rush (endless).
 
 **Enemies.** Scamp, Clinger, Couch Potato, Breacher, Stinky, Siren, Tablet Zombie, Crawler, Juicebox Chucker, Sugar Rusher,
-The Stack, Teddy Tank, Kayden-somehow; bar patrons and the bouncer in Chapter 1; bosses Gus, Mr. Jingles, Big Bean, Queen Pickle.
-All gremlins share one rig with swappable heads, outfits, accessories and palettes, so 13 types cost ~12 meshes and 35 shared
-animation clips.
+Kayden-somehow, Curtain Climber, The Stack, Teddy Tank (14 types, with a cut order down to a floor of 7); bar patrons and the
+bouncer in Chapter 1; bosses Gus, Mr. Jingles, Big Bean, Queen Pickle. All gremlins share one rig (derived from Kenney's CC0
+Mini Characters rig, which already ships sit, shoot, melee and death clips) with swappable heads, outfits, accessories and
+palettes, so 14 types cost ~12 meshes and 36 shared animation clips.
 
 **Weapon.** The BINKY: Foam Dart Popper → Double Binky → Juicebox Pumper → Sippy SMG → Diaper Cannon → Lullaby Laser →
 Bedtime Bazooka, unlocked at 0 / 15 / 40 / 90 / 160 / 250 / 400 lifetime pops, each with a physical reload (pump, shake,
@@ -117,9 +118,11 @@ Full detail: `05`.
 - **3D:** one gremlin rig + one adult rig built by Blender Python; variants by mesh/palette swap; 35 scripted animation clips;
   props from parametric generators plus vendored CC0 packs (Kenney, Quaternius, Poly Haven); one gradient atlas per style;
   cell-fractured breakables; gltf-transform packaging; contact sheets and turntables rendered headlessly for review.
-- **Voice:** ~280 lines in a YAML manifest → Piper TTS → ffmpeg pitch/formant/tempo per character → ogg/opus, 2–3 takes each,
-  plus a 320-name bank for the Family Sheet. Lines are ≤ 12 words because TTS prosody is flat on long sentences.
-- **SFX/music:** CC0 packs + synthesised effects; procedural MIDI → FluidSynth music with CC0 fallback tracks.
+- **Voice:** ~280 lines in a YAML manifest → Kokoro TTS (Piper as fallback) → ffmpeg/rubberband/Praat pitch-and-formant
+  "kid voice" chain per character → ogg/opus, 2–3 takes each, plus a 320-name bank for the Family Sheet. Lines are ≤ 12 words
+  because TTS prosody is flat on long sentences. Screams and giggles come from CC0 recordings, not TTS.
+- **SFX/music:** Kenney/OpenGameArt/BigSoundBank CC0 packs + synthesised effects; procedural music composed in Tone.js and
+  rendered offline, with credited CC BY tracks as the fallback.
 - Everything is idempotent, content-hashed, and reviewable from a phone (contact sheets, an audio review page).
 Full detail: `06`.
 
