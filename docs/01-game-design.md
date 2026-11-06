@@ -672,7 +672,7 @@ valid power trip.
 date-seeded wave set with one modifier: Everyone Is a Stack, The Floor Is Lava All Wave, Juice Physics ×2, Breachers Only,
 Silent Night: tells but no barks, Lights Out: emissive eyes only). The **Style Report** end card turns the run's five funniest
 event tags into sentences ("You slammed a door on a toddler twice.", "A trenchcoat lied to you.", "You changed 7 diapers under
-fire.", "A duck lived.") beside the **kill census** ("You popped 212 copies of {KID1} and 198 of {KID2}") as a crayon chart.
+fire.", "A duck lived.") beside the **pop census** ("You popped 212 copies of {KID1} and 198 of {KID2}") as a crayon chart.
 BINKY cosmetics: Golden Diaper, Fedora, Crown of Pacifiers, colander. Photo mode in chapter 3 saves a PNG of the **virtual layer
 over a crayon backdrop** (a web page cannot read passthrough pixels, so a true mixed-reality photo needs the headset's own capture
 button, which the photo-mode sign says); the 2D page renders a shareable score card via canvas; leaderboards are local, 10
@@ -855,7 +855,7 @@ OpenGameArt CC0, vendored once with licences; squirts, hums and whooshes synthes
 
 **Music.** Six loops (jukebox ×3 including a polka, a music-box lullaby for chapter 3 builds, two boss loops), the four-note ice
 cream jingle (at half speed, Queen Pickle's theme), a karaoke instrumental, and an original four-note "shark song" parody sharing
-no melody with any copyrighted song. All rendered from agent-written MIDI through a soundfont (FluidSynth), or sourced from
+no melody with any copyrighted song. All rendered from agent-written Tone.js compositions rendered offline to WAV, or sourced from
 Kenney and OpenGameArt CC0 music if that renderer is unavailable in the build container. Music ducks 6 dB under any voice line
 and drops out entirely for the Breacher knock and the Siren inhale, which is how the room learns to hear tells.
 

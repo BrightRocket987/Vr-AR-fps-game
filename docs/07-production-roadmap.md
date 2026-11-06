@@ -9,7 +9,7 @@ the chain of things that must be true for it, down to what already exists today.
 
 - Chapter 1 (bar, VR), Chapter 2 (drive, VR) and Chapter 3 (house, passthrough MR) in one sitting, ~45–50 minutes, plus the
   endless "Bedtime Rush" mode.
-- 13 gremlin-kid types, 4 bosses, the 7-tier BINKY weapon and the WIPE, all with 6DoF tracking, reload gestures and haptics;
+- 14 gremlin-kid types, 4 bosses, the 7-tier BINKY weapon and the WIPE, all with 6DoF tracking, reload gestures and haptics;
   kills persist and level the weapon across chapters.
 - Chapter 3 understands the owner's real room (scan import on Quest 3, object creation on Quest 2, edit mode on both) and
   runs the door-breach, couch-sitting, portal and diaper mechanics in a room with as little as a floor and one door.
@@ -90,8 +90,8 @@ Retires: the two biggest unknowns — on-device MR behaviour and Quest 2 perform
 ### M3 · Content factory (≈ 10–14 sessions, 2–3 weeks)
 
 Deliverables
-- Full gremlin roster (13 types: 7 heads, 5 outfits, 6 palettes, 9 accessories), 4 bosses' meshes, the adult cast (Marlene,
-  Gus, Brad, Kayden, 4 patron variants), the player's hands/arms, 35 shared animation clips, 6 face decals.
+- Full gremlin roster (14 types: 8 heads, 5 outfits, 8 palettes, 10 accessories), 4 bosses' meshes, the adult cast (Marlene,
+  Gus, Brad, Kayden, 4 patron variants), the player's hands/arms, 48 shared gremlin clips and 18 adult clips, 6 face decals.
 - All 7 BINKY tiers with attachments, projectiles, VFX, haptic patterns, promotion jingle; the WIPE glove.
 - Props: bar (48), cockpit/road (37), house proxies and portal sub-scene (35), fractured variants, LODs; chapter atlases.
 - Voices: the complete line bank (~280 lines × 2–3 takes), the 320-name bank for the Family Sheet, address clips, ghost lines;

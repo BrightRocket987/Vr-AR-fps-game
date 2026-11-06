@@ -196,6 +196,11 @@ reserved stations.
    proxy (§8); reaching that zone during a knock vibrates the controller at 0.5 for 100 ms and shows "stop" on the frame. Nothing
    else in the chapter rewards a hand moving toward a real surface: Climbers are shot, not slapped, when on a wall, and the Wipe
    sweep for a Stinky happens at 1.5 m in open floor.
+8. **Portal proximity.** Meta's mixed-reality guidance warns that portal-like depth cues tempt players to walk into walls, and
+   that nothing virtual should be placed beyond a real wall. So the Land of No Bedtime exists only inside the stencil mask (never
+   as geometry in the real room's space), its gremlins are clipped until they cross the door plane, and when the headset comes
+   within 0.5 m of any portal plane that portal fades to passthrough over 0.3 s, its spawns hold, and a soft "too close" chime
+   plays; it fades back when the player steps away. The system boundary stays on for the whole chapter.
 
 ## 7. The director in chapter 3 and the wave table
 
@@ -455,7 +460,7 @@ Modifiers: **one door** (Breachers alternate with Stacks; crack doors in wave 6)
 Exact spellings appear on the **family photo** on the first wall found ("{KID1} · {KID2}", a third name if entered); the **Kids' Room
 Door sign** ("{KID1} & {KID2}'S ROOM. SHH."); three **floor crayon drawings** that appear during relaxes ("{PARENT} IN A FITE", a
 moon with teeth, the bar as a goose); the TV overlay's {SHOW} card; the chalk "BIG {KID2}" and "QUEEN {KID1}" on the boss frame; the
-{TOWN} sign in the sub-scene; a {BAR} coaster under the Plate; the Style Report and kill census. Spoken tokens obey `01`'s edge rule;
+{TOWN} sign in the sub-scene; a {BAR} coaster under the Plate; the Style Report and pop census. Spoken tokens obey `01`'s edge rule;
 "Big {KID2}" and "Queen {KID1}" are bank splices. Ages set every gremlin's pitch band; roster lines are not age-dependent. If the
 Snack Bag survived chapter 2 it sits on the coffee table and a Potato steals it in wave 4.
 
@@ -481,7 +486,7 @@ peek (one Climber), the Plate eaten (nothing; it was always going to be eaten).
 Shushed +25, Stack collapse +20, no-damage wave +200, Triple Slam +300, wiped pile +1; chapter bonus 200 per no-damage wave; 500 ×
 Patience left / 100. **Design par 10,000** (about 230 campaign pops at a mean 16 XP × 1.6 = 5,900; bosses 2,300; flats 1,000; chapter
 bonus 400; Patience 400): S ≥ 9,500, A ≥ 8,000, B ≥ 6,000, C ≥ 4,000, Tired below. A first run scores about 6,500 (B). The score card
-is the Dreamgate's box, flattened: the pops, the rank, five style sentences and the kill census.
+is the Dreamgate's box, flattened: the pops, the rank, five style sentences and the pop census.
 
 ## 19. Props (40)
 
@@ -605,7 +610,7 @@ Unlocked by the epilogue; the same room, re-aligned, every door a portal from wa
 from the start: wave n's budget is `45 × 1.15^(n−1)` credits (the `01` +15% per wave), capped by the alive caps, with the relax
 shrinking from 15 s to 10 s after wave 10 and every comedy trigger on. Every third wave is themed (Breachers Only, Potato Party, Code
 Brown, Ceiling, Everyone Is a Stack, in rotation); every fifth wave is a boss, alternating Big Bean and Queen Pickle with HP ×
-(1 + 0.1 × boss index). No checkpoints: a run ends at 0 Patience with the Style Report, the wave reached and the kill census, on a
+(1 + 0.1 × boss index). No checkpoints: a run ends at 0 Patience with the Style Report, the wave reached and the pop census, on a
 local leaderboard of ten per room code. The BINKY keeps levelling (Tier 6 arrives here for most players); Grandma's record never
 appears. At wave 10 Pickle sleep-talks "{PARENT}, too loud." through the Kids' Room Door, which stays shut. Daily Tantrum is this
 loop with one `01` modifier and a date seed.

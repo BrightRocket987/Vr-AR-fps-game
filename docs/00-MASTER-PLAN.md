@@ -115,7 +115,7 @@ Full detail: `05`.
 
 ## 5. Content pipeline at a glance
 
-- **3D:** one gremlin rig + one adult rig built by Blender Python; variants by mesh/palette swap; 35 scripted animation clips;
+- **3D:** one gremlin rig + one adult rig built by Blender Python on Kenney's CC0 Mini Characters base; variants by mesh/palette swap; 48 shared gremlin clips (Kenney's shipped set plus ~30 scripted) and 18 adult clips;
   props from parametric generators plus vendored CC0 packs (Kenney, Quaternius, Poly Haven); one gradient atlas per style;
   cell-fractured breakables; gltf-transform packaging; contact sheets and turntables rendered headlessly for review.
 - **Voice:** ~280 lines in a YAML manifest → Kokoro TTS (Piper as fallback) → ffmpeg/rubberband/Praat pitch-and-formant
