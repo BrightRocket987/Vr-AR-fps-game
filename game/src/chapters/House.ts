@@ -1,9 +1,15 @@
-import { BoxGeometry, Color, DoubleSide, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry, RingGeometry, SphereGeometry, Vector3 } from 'three';
+import { Color, DoubleSide, Group, Mesh, MeshBasicMaterial, PlaneGeometry, RingGeometry, SphereGeometry, Vector3 } from 'three';
 import type { AppContext, Chapter } from '../app/XRApp';
 import { AvatarFactory } from '../ai/Avatar';
 import { Director, type SpawnSource } from '../ai/Director';
 import { Gremlin, SeatManager, type GremlinWorld, type PlayerLike } from '../ai/Gremlin';
 import { Scamp } from '../ai/Scamp';
+import { Breacher } from '../ai/Breacher';
+import { Stinky } from '../ai/Stinky';
+import { Wipe } from '../ai/Wipe';
+import { CouchPotato } from '../ai/CouchPotato';
+import { Clinger } from '../ai/Clinger';
+import { Siren } from '../ai/Siren';
 import { PopFx } from '../combat/PopFx';
 import { Progression } from '../combat/Progression';
 import { Weapon } from '../combat/Weapon';
@@ -11,60 +17,14 @@ import { Voice } from '../dialogue/Voice';
 import { RoomModel, type Door } from '../room/RoomModel';
 import { SceneImport } from '../room/SceneImport';
 import { GridNav } from '../room/GridNav';
+import { Blueprint, applyPlayMaterials, disposePlayMaterials } from '../room/Blueprint';
 import { Hud } from '../ui/Hud';
 import { buildBarRange } from './BarRange';
+import { NapDimension } from '../portals/NapDimension';
+import { PortalDoor } from '../portals/PortalDoor';
 import { sessionExtras } from '../xr/webxr-extras';
 
 type Phase = 'waiting' | 'setup' | 'play' | 'down';
-
-/** Visual stand-in for a portal door until the stencil portal lands: a frame plus a dark glowing void. */
-class DoorVisual {
-  readonly group = new Group();
-  private readonly voidMat: MeshBasicMaterial;
-  private readonly ring: Mesh;
-  private _open = false;
-  private t = 0;
-
-  constructor(readonly door: Door) {
-    const { center, normal, right, width, height } = door;
-    this.group.position.copy(center);
-    this.group.lookAt(center.clone().add(normal));
-    const frameMat = new MeshStandardMaterial({ color: 0x3fd6c8, emissive: 0x1a6f68, emissiveIntensity: 0.6, roughness: 0.6 });
-    const t = 0.04;
-    const mk = (w: number, h: number, x: number, y: number) => {
-      const m = new Mesh(new BoxGeometry(w, h, t), frameMat);
-      m.position.set(x, y, 0.01);
-      this.group.add(m);
-    };
-    mk(t, height, -width / 2, 0);
-    mk(t, height, width / 2, 0);
-    mk(width + t, t, 0, height / 2);
-    this.voidMat = new MeshBasicMaterial({ color: 0x062a33, transparent: true, opacity: 0, side: DoubleSide });
-    const v = new Mesh(new PlaneGeometry(width - t, height - t), this.voidMat);
-    v.position.z = -0.005;
-    this.group.add(v);
-    this.ring = new Mesh(new RingGeometry(0.1, 0.14, 24), new MeshBasicMaterial({ color: 0xffcc33, transparent: true, opacity: 0, side: DoubleSide }));
-    this.ring.position.set(0, -height / 2 + 0.2, 0.02);
-    this.group.add(this.ring);
-    void right;
-  }
-
-  get open(): boolean {
-    return this._open;
-  }
-
-  setOpen(v: boolean): void {
-    this._open = v;
-  }
-
-  update(dt: number): void {
-    this.t += dt;
-    const target = this._open ? 0.85 : 0;
-    this.voidMat.opacity += (target - this.voidMat.opacity) * Math.min(1, 3 * dt);
-    (this.ring.material as MeshBasicMaterial).opacity = this._open ? 0.5 + 0.4 * Math.sin(this.t * 4) : 0;
-    this.ring.scale.setScalar(this._open ? 1 + 0.15 * Math.sin(this.t * 4) : 1);
-  }
-}
 
 /**
  * Chapter 3 · Bedtime. Finds the room (scan import or virtual fallback, hand-placed door), opens the doors,
@@ -91,8 +51,11 @@ export class House implements Chapter {
   private progression!: Progression;
   private avatars!: AvatarFactory;
   private director!: Director;
+  private wipe!: Wipe;
   private seats!: SeatManager;
-  private doorVisuals: DoorVisual[] = [];
+  private doorVisuals: PortalDoor[] = [];
+  private nap!: NapDimension;
+  private readonly nearPortal = new Set<string>();
   private cracks: SpawnSource[] = [];
   private occluder: Mesh | null = null;
   private patience = 100;
@@ -103,6 +66,8 @@ export class House implements Chapter {
   private readonly unsub: Array<() => void> = [];
   private doorsOpenedForWave = -1;
   private placingDoor = false;
+  private blueprint!: Blueprint;
+  private blueprintOccluder: Group | null = null;
   private readonly cursor: Mesh;
   private roomStableSince = -1;
   private readonly nav = new GridNav(0.1);
@@ -118,12 +83,28 @@ export class House implements Chapter {
 
   async start(ctx: AppContext): Promise<void> {
     this.ctx = ctx;
+    this.nap = new NapDimension({ reducedFlash: ctx.save.data.options.reducedFlash });
     const base = `${import.meta.env.BASE_URL}assets`;
     ctx.world.add(this.roomGroup, this.fx.group, this.cursor);
     this.voice = new Voice(ctx.listener, ctx.bus, base);
     this.hud = new Hud(ctx.input, (o) => ctx.headPosition(o), (o) => ctx.headForward(o));
     ctx.world.add(this.hud.group);
     this.voice.onSubtitle = (t, s) => this.hud.subtitle(t, s);
+    this.blueprint = new Blueprint({
+      input: ctx.input,
+      room: this.room,
+      parent: this.roomGroup,
+      headPosition: (o) => ctx.headPosition(o),
+      say: (title, sub, seconds) => this.hud.say(title, sub, seconds),
+      onChange: () => this.onRoomEdited(),
+      save: ctx.save,
+    });
+    this.blueprint.onExit = () => {
+      if (this.phase === 'play') {
+        this.director.paused = false;
+        this.openDoorsForWave(this.director.waveNumber - 1);
+      }
+    };
     this.progression = new Progression(ctx.save, ctx.bus);
     this.avatars = new AvatarFactory(`${base}/kenney`);
     const player: PlayerLike = {
@@ -145,7 +126,7 @@ export class House implements Chapter {
       weaponHand: () => ctx.input.weaponHand,
       offHand: () => ctx.input.offHand,
       nav: this.nav,
-      openDoors: () => this.doorVisuals.filter((d) => d.open).map((d) => d.door),
+      openDoors: () => this.doorVisuals.filter((d) => d.open && !d.nearPlayer).map((d) => d.door),
       setDoorOpen: (doorId, open) => {
         const dv = this.doorVisuals.find((d) => d.door.id === doorId);
         if (dv && dv.open !== open) {
@@ -157,6 +138,20 @@ export class House implements Chapter {
     this.gremlinWorld = world;
     this.director = new Director(this.room, ctx.bus, () => this.spawnSources(), () => ctx.headPosition(this.head), ctx.isQuest2 ? 14 / 20 : 1);
     this.director.register('scamp', { cost: 1, create: () => new Scamp(world, this.avatars.create(this.variant++, 0.6)) });
+    this.wipe = new Wipe(world);
+    this.director.register('potato', { cost: 3, sources: ['couch', 'door', 'crack'], create: () => new CouchPotato(world, this.avatars.create(this.variant++, 0.65)) });
+    this.director.register('clinger', { cost: 2, sources: ['window', 'couch', 'door', 'crack'], create: () => new Clinger(world, this.avatars.create(this.variant++, 0.5)) });
+    this.director.register('siren', { cost: 3, sources: ['door', 'crack'], create: () => new Siren(world, this.avatars.create(this.variant++, 0.7)) });
+    this.director.register('stinky', { cost: 2, sources: ['crack', 'door'], create: () => new Stinky(world, this.avatars.create(this.variant++, 0.5)) });
+    this.director.register('breacher', {
+      cost: 5,
+      sources: ['door'],
+      create: () => {
+        const open = world.openDoors();
+        const door = open.length ? open[Math.floor(Math.random() * open.length)] : this.room.largestDoor() ?? undefined;
+        return new Breacher(world, this.avatars.create(this.variant++, 0.75), door);
+      },
+    });
     this.weapon = new Weapon(ctx.input, ctx.bus, this.fx, this.voice, () => this.director.alive);
     this.weapon.setTier(this.progression.tier);
     this.weapon.ammo = this.progression.tier.mag;
@@ -168,10 +163,14 @@ export class House implements Chapter {
       if (t.tier === 4) this.voice.sayId('narrator_tier_up_diaper_cannon', null);
     };
     this.unsub.push(
-      ctx.bus.on('enemy:popped', () => {
+      ctx.bus.on('enemy:popped', ({ style, position }) => {
         this.progression.addPop();
         this.stats.popped++;
+        if (style.includes('CHANGED')) this.fx.text(position, '+50', '#3fd6c8');
+        if (style.includes('SHUSHED')) this.fx.text(position, 'SHUSHED +25', '#ff9ad5');
+        if (style.includes('DOOR SLAM')) this.fx.text(position, 'DOOR SLAM ×2', '#ff9ad5');
       }),
+      ctx.bus.on('door:breached', () => this.hud.damageFlash()),
       ctx.bus.on('enemy:spawned', () => {
         this.stats.spawned++;
       }),
@@ -199,8 +198,12 @@ export class House implements Chapter {
       ctx.bus.on('potato:cushion', ({ seconds }) => this.hud.block(seconds)),
       ctx.bus.on('clinger:attached', () => { this.weapon.swayDeg = 6; }),
       ctx.bus.on('clinger:detached', () => { this.weapon.swayDeg = 0; }),
+      ctx.bus.on('siren:inhale', () => this.hud.say('Shush it!', 'Empty off hand at its mouth for 1 s, or pop it.', 2)),
+      ctx.bus.on('siren:shushed', () => this.hud.say('Shushed!', 'It looks betrayed.', 1.5)),
+      ctx.bus.on('potato:evicted', () => this.hud.say('Scoot!', '', 1)),
       ctx.bus.on('siren:scream', ({ position, radius }) => {
         this.hud.say('AAAAAAAAAA', 'Everyone heard that.', 1.5);
+        if (this.phase === 'play') this.director.forceSpawn('scamp');
         for (const g of this.director.alive) {
           if (g.type === 'scamp' && g.position.distanceTo(position) < radius && (g.state === 'roam' || g.state === 'sit')) {
             this.seats.release(g.seat);
@@ -225,7 +228,7 @@ export class House implements Chapter {
   /** All open doors plus floor cracks. */
   private spawnSources(): SpawnSource[] {
     const out: SpawnSource[] = [];
-    for (const dv of this.doorVisuals) if (dv.open) out.push({ kind: 'door', position: this.room.doorFloorPoint(dv.door), facing: dv.door.normal.clone(), doorId: dv.door.id });
+    for (const dv of this.doorVisuals) if (dv.open && !dv.nearPlayer) out.push({ kind: 'door', position: this.room.doorFloorPoint(dv.door), facing: dv.door.normal.clone(), doorId: dv.door.id });
     for (const c of this.cracks) out.push(c);
     return out;
   }
@@ -236,6 +239,19 @@ export class House implements Chapter {
     if (frame && ref && this.preset !== 'bar') this.sceneImport.update(frame, ref, nowMs);
     this.fx.update(dt);
     this.hud.update(dt);
+    {
+      const off = this.ctx.input.offHand;
+      const editable = this.phase === 'setup' || this.phase === 'play';
+      if (editable && off.buttonBJustPressed && !this.blueprint.active) {
+        this.placingDoor = false;
+        this.cursor.visible = false;
+        if (this.phase === 'play') this.director.paused = true;
+        this.blueprint.enter();
+      } else {
+        this.blueprint.update(dt);
+      }
+      if (this.blueprintOccluder) this.blueprintOccluder.visible = !this.blueprint.active;
+    }
 
     switch (this.phase) {
       case 'waiting':
@@ -264,7 +280,15 @@ export class House implements Chapter {
         this.roomGroup.add(occ);
       }
     }
-    for (const dv of this.doorVisuals) dv.update(dt);
+    const headNow = this.ctx.headPosition(this.head);
+    for (const dv of this.doorVisuals) {
+      dv.update(dt, headNow);
+      const was = this.nearPortal.has(dv.door.id);
+      if (dv.nearPlayer && !was) {
+        this.nearPortal.add(dv.door.id);
+        this.voice.sfx('ui_click', dv.group, 0.4);
+      } else if (!dv.nearPlayer && was) this.nearPortal.delete(dv.door.id);
+    }
     this.hud.state = {
       pops: this.progression.pops,
       tierName: this.progression.tier.name,
@@ -307,7 +331,11 @@ export class House implements Chapter {
         extras.initiateRoomCapture().catch(() => undefined);
       }
     }
-    if (this.phaseTime > 4) this.adoptRoom(null);
+    if (this.phaseTime > 4) {
+      const saved = Blueprint.loadSaved(this.ctx.save);
+      if (saved) this.stats.roomSource = 'saved';
+      this.adoptRoom(saved);
+    }
   }
 
   private adoptRoom(model: RoomModel | null): void {
@@ -328,6 +356,8 @@ export class House implements Chapter {
       this.stats.roomSource = m.source;
     }
     this.room = m;
+    this.blueprint.setRoom(m);
+    this.refreshBlueprintOccluder();
     // Re-point every system at the adopted model.
     this.gremlinWorld.room = m;
     this.seats = new SeatManager(m);
@@ -342,7 +372,7 @@ export class House implements Chapter {
     this.nav.rebuild(m);
     const virtual = m.source === 'virtual' || m.doors.some((d) => d.source === 'virtual');
     if (virtual) {
-      this.hud.say(m.source === 'virtual' ? 'No room scan found' : 'Scan found, but no door', 'A virtual door is ahead of you. To move it: point your other hand at the bottom of a real door and pull its trigger. Then pull the blaster trigger to begin.', 0);
+      this.hud.say(m.source === 'virtual' ? 'No room scan found' : 'Scan found, but no door', 'A virtual door is ahead. Point your other hand at the bottom of a real door and pull its trigger to move it, or press B to draw your room. Blaster trigger to begin.', 0);
       this.voice.sayId(m.source === 'virtual' ? 'narrator_no_scan_found' : 'narrator_mark_door', null);
       this.placingDoor = true;
       this.setPhase('setup');
@@ -354,9 +384,12 @@ export class House implements Chapter {
   }
 
   private buildRoomVisuals(): void {
-    for (const dv of this.doorVisuals) this.roomGroup.remove(dv.group);
+    for (const dv of this.doorVisuals) {
+      this.roomGroup.remove(dv.group);
+      dv.dispose();
+    }
     this.doorVisuals = this.room.portalDoors.map((d) => {
-      const dv = new DoorVisual(d);
+      const dv = new PortalDoor(d, this.nap, { reducedFlash: this.ctx.save.data.options.reducedFlash });
       this.roomGroup.add(dv.group);
       return dv;
     });
@@ -400,9 +433,9 @@ export class House implements Chapter {
 
   /** Setup: optional door placement, then the trigger starts the invasion. */
   private updateSetup(dt: number): void {
-    this.weapon.update(dt, performance.now());
+    if (!this.blueprint.active) this.weapon.update(dt, performance.now());
     const off = this.ctx.input.offHand;
-    if (this.placingDoor && off.connected) {
+    if (this.placingDoor && off.connected && !this.blueprint.active) {
       const hit = this.floorHit(off);
       this.cursor.visible = !!hit;
       if (hit) {
@@ -410,7 +443,7 @@ export class House implements Chapter {
         if (off.triggerJustPressed) this.placeDoorAt(hit);
       }
     } else this.cursor.visible = false;
-    if (this.ctx.input.weaponHand.triggerJustPressed && this.phaseTime > 1) this.beginPlay();
+    if (this.ctx.input.weaponHand.triggerJustPressed && this.phaseTime > 1 && !this.blueprint.active) this.beginPlay();
   }
 
   private floorHit(hand: { position: Vector3; forward: (o?: Vector3) => Vector3 }): Vector3 | null {
@@ -470,7 +503,7 @@ export class House implements Chapter {
       if (i < n && !dv.open) {
         dv.setOpen(true);
         this.voice.sfx('portal_hum', dv.group, 0.6);
-        this.ctx.bus.emit('log', { text: `portal open ${dv.door.id}` });
+        this.ctx.bus.emit('portal:open', { doorId: dv.door.id });
       }
     });
   }
@@ -479,15 +512,15 @@ export class House implements Chapter {
     this.playTime += dt;
     this.sinceDamage += dt;
     if (this.sinceDamage > 5 && this.patience < 100) this.patience = Math.min(100, this.patience + 4 * dt);
+    if (this.blueprint.active) {
+      this.updateClouds(dt);
+      return;
+    }
     this.updateClouds(dt);
     this.weapon.update(dt, nowMs);
     this.director.update(dt);
     for (const g of this.director.alive) g.update(dt);
-    // Late setup: door placement stays available with the off-hand B button toggle.
-    if (this.ctx.input.offHand.buttonBJustPressed) {
-      this.placingDoor = !this.placingDoor;
-      this.hud.say(this.placingDoor ? 'Edit: point at a door and pull' : 'Edit off', '', 3);
-    }
+    this.wipe.update(dt);
     if (this.placingDoor) {
       const off = this.ctx.input.offHand;
       const hit = this.floorHit(off);
@@ -501,6 +534,32 @@ export class House implements Chapter {
         }
       }
     } else this.cursor.visible = false;
+  }
+
+  /** Blueprint committed a change: re-point everything at the edited model. */
+  private onRoomEdited(): void {
+    const m = this.room;
+    this.stats.roomSource = m.source;
+    this.stats.doors = m.doors.length;
+    this.stats.couches = m.couches.length;
+    this.seats = new SeatManager(m);
+    this.gremlinWorld.seats = this.seats;
+    this.buildRoomVisuals();
+    this.makeCracks();
+    this.nav.rebuild(m);
+    this.refreshBlueprintOccluder();
+    this.ctx.log(`room edited: doors=${m.doors.length} volumes=${m.volumes.length} kids=${m.doors.filter((d) => d.kidsRoom).length}`);
+  }
+
+  /** One merged depth-only mesh for the manual proxies (1 draw call); hidden while Blueprint is open. */
+  private refreshBlueprintOccluder(): void {
+    if (this.blueprintOccluder) {
+      this.roomGroup.remove(this.blueprintOccluder);
+      disposePlayMaterials(this.blueprintOccluder);
+    }
+    this.blueprintOccluder = applyPlayMaterials(this.room);
+    this.blueprintOccluder.visible = !this.blueprint.active;
+    this.roomGroup.add(this.blueprintOccluder);
   }
 
   /** Stink clouds: a green fog sphere that slows the weapon while you stand in it. */
@@ -572,6 +631,9 @@ export class House implements Chapter {
       avatars: this.avatars.loaded ? 'gltf' : 'procedural',
       lines: this.voice.lineCount,
       doorsOpen: this.doorVisuals.filter((d) => d.open).length,
+      portalDraws: this.doorVisuals.reduce((n, d) => n + d.drawCalls, 0),
+      portalsNear: this.doorVisuals.filter((d) => d.nearPlayer).length,
+      blueprint: this.blueprint?.snapshot(),
       anyNaN: this.director.alive.some((g) => !Number.isFinite(g.position.x) || !Number.isFinite(g.position.z)),
     };
   }
@@ -592,7 +654,13 @@ export class House implements Chapter {
 
   dispose(): void {
     for (const u of this.unsub) u();
+    this.wipe?.dispose();
     this.director?.clear();
+    for (const dv of this.doorVisuals) dv.dispose();
+    this.doorVisuals = [];
+    this.nap?.dispose();
+    this.blueprint?.dispose();
+    if (this.blueprintOccluder) disposePlayMaterials(this.blueprintOccluder);
     this.ctx?.world.remove(this.roomGroup, this.fx.group, this.hud.group, this.weapon.root, this.cursor);
   }
 }

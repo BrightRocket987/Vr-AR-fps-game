@@ -76,6 +76,8 @@ export const PICK_RADIUS = 0.6;
 /** Depth used when a door is drawn / picked as a box. */
 export const DOOR_DEPTH = 0.06;
 const DOOR_PICK_DEPTH = 0.3;
+/** Minimum footprint extent used for picking, so a 0.1 m wall line has a 0.3 m-wide pick band. */
+const PICK_PAD = 0.3;
 
 export const SCALE_MIN = 0.5;
 export const SCALE_MAX = 2.0;
@@ -192,7 +194,7 @@ export function facingFrame(point: Vector3, head: Vector3): Frame {
 }
 
 export function yawOfRight(right: Vector3): number {
-  return Math.atan2(-right.z, right.x);
+  return Math.atan2(-right.z, right.x) || 0; // `|| 0` folds -0 (and NaN from a zero vector) to 0
 }
 
 export function rightOfYaw(yaw: number, out = new Vector3()): Vector3 {
@@ -240,16 +242,25 @@ export function allPicks(room: RoomModel): Pick[] {
   return out;
 }
 
-/** Nearest pick whose footprint is within `maxDist` of (x, z), optionally filtered. */
+/**
+ * Nearest pick whose footprint is within `maxDist` of (x, z), optionally filtered. Thin footprints are padded to
+ * PICK_PAD for the test, and equal distances (the point is inside two footprints) go to the smaller footprint,
+ * so a thin wall inside a couch is still pickable.
+ */
 export function nearestPick(room: RoomModel, x: number, z: number, maxDist: number, filter?: (p: Pick) => boolean): Pick | null {
   let best: Pick | null = null;
   let bestD = maxDist;
+  let bestArea = Number.POSITIVE_INFINITY;
   for (const p of allPicks(room)) {
     if (filter && !filter(p)) continue;
     const f = pickFrame(p, DOOR_PICK_DEPTH);
+    f.size.x = Math.max(f.size.x, PICK_PAD);
+    f.size.z = Math.max(f.size.z, PICK_PAD);
     const d = footprintDistance(x, z, f.center, f.size, f.yaw);
-    if (d <= bestD) {
+    const area = f.size.x * f.size.z;
+    if (d < bestD - 1e-6 || (Math.abs(d - bestD) <= 1e-6 && area < bestArea)) {
       bestD = d;
+      bestArea = area;
       best = p;
     }
   }
@@ -1140,7 +1151,16 @@ export class Blueprint {
     g.clearRect(0, 0, W, H);
     g.fillStyle = 'rgba(20,18,28,0.82)';
     g.beginPath();
-    g.roundRect(0, 0, W, H, 18);
+    const r = 18;
+    if (typeof g.roundRect === 'function') g.roundRect(0, 0, W, H, r);
+    else {
+      g.moveTo(r, 0);
+      g.arcTo(W, 0, W, H, r);
+      g.arcTo(W, H, 0, H, r);
+      g.arcTo(0, H, 0, 0, r);
+      g.arcTo(0, 0, W, 0, r);
+      g.closePath();
+    }
     g.fill();
     g.fillStyle = '#' + color.toString(16).padStart(6, '0');
     g.font = 'bold 36px "Trebuchet MS", sans-serif';

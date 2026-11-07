@@ -103,8 +103,11 @@ export class Scamp extends Gremlin {
       }
       case 'gotoseat': {
         if (!this.seat) { this.setState('roam'); break; }
-        const left = this.moveToward(this.seat.position, this.speed * 0.9, dt, 0.12);
-        if (left < 0.2) {
+        // Walk to the floor in front of the cushion (the seat itself sits inside the couch blocker), then hop on.
+        const approach = tmp.copy(this.seat.position).addScaledVector(this.seat.facing, 0.55);
+        approach.y = this.w.room.floorY;
+        const left = this.moveToward(approach, this.speed * 0.9, dt, 0.12);
+        if (left < 0.3) {
           this.root.position.copy(this.seat.position);
           this.face(this.seat.facing, 1, 100);
           this.setState('sit');
@@ -121,10 +124,21 @@ export class Scamp extends Gremlin {
           this.say('giggle', 6);
         }
         if (this.seat) this.root.position.y = this.seat.position.y + Math.max(0, Math.sin(this.sitBounce * Math.PI) * 0.04);
-        if (d < 1.0) { this.w.seats.release(this.seat); this.seat = null; this.setState('chase'); }
+        if (d < 1.0) this.standUp('chase');
         break;
       }
     }
+  }
+
+  /** Leave the seat onto the floor in front of the couch (outside its blocker footprint). */
+  private standUp(next: string): void {
+    if (this.seat) {
+      this.root.position.copy(this.seat.position).addScaledVector(this.seat.facing, 0.6);
+      this.root.position.y = this.w.room.floorY;
+      this.w.seats.release(this.seat);
+      this.seat = null;
+    }
+    this.setState(next);
   }
 
   /** If a couch is nearby and the player has not looked at it for a while, go sit on it. */

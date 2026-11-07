@@ -109,7 +109,8 @@ export abstract class Gremlin {
   readonly color: Color;
   readonly xp: number;
   alive = true;
-  state = 'spawn';
+  /** Starts as 'init' so the first setState('spawn') fires onState for every subclass. */
+  state = 'init';
   stateTime = 0;
   seat: Seat | null = null;
   protected yaw = 0;

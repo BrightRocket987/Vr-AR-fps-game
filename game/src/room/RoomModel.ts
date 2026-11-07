@@ -122,7 +122,8 @@ export class RoomModel {
   blockedAt(x: number, z: number, margin = 0.1): Volume | null {
     for (const v of this.blockers) {
       const dx = x - v.center.x, dz = z - v.center.z;
-      const c = Math.cos(-v.yaw), s = Math.sin(-v.yaw);
+      // Local frame: right = (cos yaw, 0, -sin yaw) (see seats()), depth = (sin yaw, 0, cos yaw).
+      const c = Math.cos(v.yaw), s = Math.sin(v.yaw);
       const lx = dx * c - dz * s, lz = dx * s + dz * c;
       if (Math.abs(lx) <= v.size.x / 2 + margin && Math.abs(lz) <= v.size.z / 2 + margin) return v;
     }
