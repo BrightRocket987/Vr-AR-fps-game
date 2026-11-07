@@ -266,6 +266,11 @@ function wrapText(g: CanvasRenderingContext2D, text: string, x: number, y: numbe
 }
 
 function speakerLabel(s: string): string {
-  const map: Record<string, string> = { scamp: 'Scamp', clinger: 'Clinger', potato: 'Couch Potato', breacher: 'Breacher', stinky: 'Stinky', siren: 'Siren', zombie: 'Tablet Zombie', crawler: 'Crawler', ghost: 'ghost', bigbean: 'Big Bean', narrator: 'The Dreamgate' };
+  const map: Record<string, string> = {
+    scamp: 'Scamp', clinger: 'Clinger', potato: 'Couch Potato', breacher: 'Breacher', stinky: 'Stinky', siren: 'Siren',
+    zombie: 'Tablet Zombie', crawler: 'Crawler', ghost: 'ghost', bigbean: 'Big Bean', narrator: 'The Dreamgate',
+    pickle: 'Pickle', bean: 'Bean', kayden: 'Kayden', kid: 'Kid', parent: 'You', marlene: 'Marlene', gus: 'Gus',
+    brad: 'Brad', patron: 'Patron', grandma: 'Grandma', jingles: 'Mr. Jingles',
+  };
   return map[s] ?? s;
 }

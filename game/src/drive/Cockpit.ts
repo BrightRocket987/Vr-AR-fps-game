@@ -87,12 +87,12 @@ export class Cockpit {
     // Floor, roof and dash.
     b.box(2.0, 0.04, 3.5, 0x2a2622, [cx, FLOOR_Y, 0.55]);
     b.box(2.0, 0.05, 2.75, 0x8a8274, [cx, ROOF_Y + 0.03, 0.92]);
-    b.box(1.95, 0.3, 0.5, 0x2b2b31, [cx, -0.36, -0.82]);
-    b.box(1.95, 0.04, 0.34, 0x36363d, [cx, -0.21, -0.74]);
-    b.box(0.44, 0.1, 0.18, 0x1e1e22, [0, -0.17, -0.62]);
-    b.box(1.95, 0.5, 0.4, 0x26262b, [cx, -0.82, -0.96]);
+    b.box(1.95, 0.3, 0.5, 0x4a4a55, [cx, -0.46, -0.82]);
+    b.box(1.95, 0.04, 0.34, 0x5c5c68, [cx, -0.31, -0.74]);
+    b.box(0.44, 0.1, 0.18, 0x34343c, [0, -0.27, -0.62]);
+    b.box(1.95, 0.5, 0.4, 0x3e3e48, [cx, -0.86, -0.96]);
     // Centre console with two cup holders.
-    b.box(0.26, 0.5, 0.86, 0x3a3a40, [cx, -0.86, -0.28]);
+    b.box(0.26, 0.5, 0.86, 0x55555f, [cx, -0.86, -0.28]);
     b.cyl(0.045, 0.045, 0.02, 0x101012, [cx - 0.05, -0.6, -0.1]);
     b.cyl(0.045, 0.045, 0.02, 0x101012, [cx + 0.07, -0.6, -0.1]);
     // Glove box hanging open.
@@ -101,14 +101,14 @@ export class Cockpit {
     // Steering column.
     b.beam([0, -0.37, -0.5], [0, -0.44, -0.68], 0.06, 0x222226);
     // Front seats: the driver's back is low so turning around never puts the head inside it.
-    b.box(0.5, 0.12, 0.5, 0x4a3f55, [0, -0.8, -0.05]);
-    b.box(0.52, 0.5, 0.12, 0x4a3f55, [0, -0.62, 0.27]);
-    b.box(0.5, 0.12, 0.5, 0x4a3f55, [0.82, -0.8, -0.05]);
-    b.box(0.52, 0.78, 0.12, 0x4a3f55, [0.82, -0.36, 0.27]);
-    b.box(0.26, 0.18, 0.1, 0x4a3f55, [0.82, 0.12, 0.28]);
+    b.box(0.5, 0.12, 0.5, 0x6a5a7a, [0, -0.8, -0.05]);
+    b.box(0.52, 0.5, 0.12, 0x6a5a7a, [0, -0.62, 0.27]);
+    b.box(0.5, 0.12, 0.5, 0x6a5a7a, [0.82, -0.8, -0.05]);
+    b.box(0.52, 0.78, 0.12, 0x6a5a7a, [0.82, -0.36, 0.27]);
+    b.box(0.26, 0.18, 0.1, 0x6a5a7a, [0.82, 0.12, 0.28]);
     // Rear bench and the two car seats (Bean blue on the left, Pickle pink on the right).
-    b.box(1.85, 0.14, 0.55, 0x403648, [cx, -0.74, 0.98]);
-    b.box(1.85, 0.72, 0.14, 0x403648, [cx, -0.36, 1.28]);
+    b.box(1.85, 0.14, 0.55, 0x5c4e68, [cx, -0.74, 0.98]);
+    b.box(1.85, 0.72, 0.14, 0x5c4e68, [cx, -0.36, 1.28]);
     for (const [seat, col] of [[BEAN_SEAT, 0x5aa7d8], [PICKLE_SEAT, 0xf28cb8]] as Array<[Vector3, number]>) {
       b.box(0.44, 0.06, 0.42, col, [seat.x, seat.y + 0.02, seat.z]);
       b.box(0.44, 0.62, 0.06, col, [seat.x, seat.y + 0.3, seat.z + 0.22]);
@@ -116,28 +116,27 @@ export class Cockpit {
       b.box(0.05, 0.34, 0.42, col, [seat.x + 0.22, seat.y + 0.17, seat.z]);
     }
     // Doors (below the window line), pillars, headers, tailgate.
-    b.box(0.06, 0.95, 2.75, 0x5b5148, [-0.56, -0.62, 0.6]);
-    b.box(0.06, 0.95, 2.75, 0x5b5148, [1.36, -0.62, 0.6]);
+    b.box(0.06, 0.95, 2.75, 0x7a6c60, [-0.56, -0.62, 0.6]);
+    b.box(0.06, 0.95, 2.75, 0x7a6c60, [1.36, -0.62, 0.6]);
     b.box(0.1, 0.04, 2.6, 0x6b6158, [-0.53, -0.15, 0.62]);
     b.box(0.1, 0.04, 2.6, 0x6b6158, [1.33, -0.15, 0.62]);
-    b.beam([-0.53, -0.18, -0.86], [-0.48, ROOF_Y, -0.43], 0.07, 0x3b3833);
-    b.beam([1.33, -0.18, -0.86], [1.28, ROOF_Y, -0.43], 0.07, 0x3b3833);
+    b.beam([-0.53, -0.28, -0.88], [-0.48, ROOF_Y, -0.43], 0.06, 0x57524b);
+    b.beam([1.33, -0.28, -0.88], [1.28, ROOF_Y, -0.43], 0.06, 0x57524b);
     for (const z of [0.36, 1.6, 2.22]) {
-      b.beam([-0.55, -0.16, z], [-0.53, ROOF_Y, z], z > 2 ? 0.12 : 0.08, 0x3b3833);
-      b.beam([1.35, -0.16, z], [1.33, ROOF_Y, z], z > 2 ? 0.12 : 0.08, 0x3b3833);
+      b.beam([-0.55, -0.16, z], [-0.53, ROOF_Y, z], z > 2 ? 0.12 : 0.08, 0x57524b);
+      b.beam([1.35, -0.16, z], [1.33, ROOF_Y, z], z > 2 ? 0.12 : 0.08, 0x57524b);
     }
-    b.box(1.9, 0.08, 0.08, 0x3b3833, [cx, 0.4, -0.45]);
-    b.box(1.9, 0.04, 0.06, 0x2a2a2e, [cx, -0.19, -0.87]);
-    b.box(1.95, 0.75, 0.06, 0x5b5148, [cx, -0.78, 2.26]);
-    b.box(1.95, 0.08, 0.08, 0x3b3833, [cx, ROOF_Y, 2.24]);
+    b.box(1.9, 0.08, 0.08, 0x57524b, [cx, 0.4, -0.45]);
+    b.box(1.9, 0.04, 0.06, 0x2a2a2e, [cx, -0.29, -0.89]);
+    b.box(1.95, 0.75, 0.06, 0x7a6c60, [cx, -0.78, 2.26]);
+    b.box(1.95, 0.08, 0.08, 0x57524b, [cx, ROOF_Y, 2.24]);
     // Rear-view mirror frame and stalk.
     b.beam([0.3, ROOF_Y, -0.43], [0.3, 0.34, -0.44], 0.02, 0x111114);
-    b.box(0.28, 0.1, 0.025, 0x111114, [0.3, 0.29, -0.445]);
     // Hood, fenders and side mirrors (exterior paint).
-    b.box(1.9, 0.08, 1.5, PAINT, [cx, -0.44, -1.66], [0.07, 0, 0]);
-    b.box(0.08, 0.3, 1.5, PAINT, [-0.54, -0.6, -1.66]);
-    b.box(0.08, 0.3, 1.5, PAINT, [1.34, -0.6, -1.66]);
-    b.box(1.9, 0.3, 0.08, 0x8f8062, [cx, -0.62, -2.42]);
+    b.box(1.9, 0.08, 1.5, PAINT, [cx, -0.56, -1.66], [0.07, 0, 0]);
+    b.box(0.08, 0.3, 1.5, PAINT, [-0.54, -0.72, -1.66]);
+    b.box(0.08, 0.3, 1.5, PAINT, [1.34, -0.72, -1.66]);
+    b.box(1.9, 0.3, 0.08, 0x8f8062, [cx, -0.74, -2.42]);
     b.box(0.06, 0.13, 0.2, PAINT, [-0.66, -0.08, -0.62]);
     b.box(0.06, 0.13, 0.2, PAINT, [1.46, -0.08, -0.62]);
     // Pickle's drawing taped to the passenger seat back ("PARENT IN A FITE") stays a pink rectangle here.
@@ -147,14 +146,14 @@ export class Cockpit {
     this.disposables.push(interior.geometry);
 
     const u = new GeoBuilder();
-    u.cyl(0.05, 0.05, 0.01, 0xffb347, [-0.09, -0.16, -0.525], [Math.PI / 2 - 0.2, 0, 0], 16);
-    u.cyl(0.05, 0.05, 0.01, 0xffb347, [0.09, -0.16, -0.525], [Math.PI / 2 - 0.2, 0, 0], 16);
-    u.box(0.004, 0.045, 0.004, 0xff3b3b, [-0.09, -0.145, -0.518], [0, 0, -0.7]);
-    u.box(0.004, 0.045, 0.004, 0xff3b3b, [0.09, -0.145, -0.518], [0, 0, 0.9]);
-    u.box(0.18, 0.06, 0.01, 0x3fd6c8, [cx, -0.3, -0.566]);
-    u.box(0.03, 0.02, 0.01, 0xff5a5a, [-0.2, -0.17, -0.53]); // check engine, always on
-    u.box(0.3, 0.07, 0.02, 0xfff4c0, [-0.25, -0.58, -2.45]);
-    u.box(0.3, 0.07, 0.02, 0xfff4c0, [1.05, -0.58, -2.45]);
+    u.cyl(0.05, 0.05, 0.01, 0xffb347, [-0.09, -0.26, -0.525], [Math.PI / 2 - 0.2, 0, 0], 16);
+    u.cyl(0.05, 0.05, 0.01, 0xffb347, [0.09, -0.26, -0.525], [Math.PI / 2 - 0.2, 0, 0], 16);
+    u.box(0.004, 0.045, 0.004, 0xff3b3b, [-0.09, -0.245, -0.518], [0, 0, -0.7]);
+    u.box(0.004, 0.045, 0.004, 0xff3b3b, [0.09, -0.245, -0.518], [0, 0, 0.9]);
+    u.box(0.18, 0.06, 0.01, 0x3fd6c8, [cx, -0.4, -0.566]);
+    u.box(0.03, 0.02, 0.01, 0xff5a5a, [-0.2, -0.27, -0.53]); // check engine, always on
+    u.box(0.3, 0.07, 0.02, 0xfff4c0, [-0.25, -0.7, -2.45]);
+    u.box(0.3, 0.07, 0.02, 0xfff4c0, [1.05, -0.7, -2.45]);
     u.box(0.01, 0.1, 0.16, 0x556677, [-0.7, -0.08, -0.62]);
     u.box(0.01, 0.1, 0.16, 0x556677, [1.5, -0.08, -0.62]);
     const glow = new Mesh(u.build(), unlit);
@@ -201,9 +200,9 @@ export class Cockpit {
     this.crackCanvas.height = 420;
     this.crackTex = new CanvasTexture(this.crackCanvas);
     const crackMat = new MeshBasicMaterial({ map: this.crackTex, transparent: true, depthWrite: false });
-    this.crackMesh = new Mesh(new PlaneGeometry(1.8, 0.72), crackMat);
-    this.crackMesh.position.set(cx, 0.105, -0.655);
-    this.crackMesh.rotation.x = 0.62;
+    this.crackMesh = new Mesh(new PlaneGeometry(1.8, 0.8), crackMat);
+    this.crackMesh.position.set(cx, 0.06, -0.665);
+    this.crackMesh.rotation.x = 0.6;
     this.crackMesh.visible = false;
     this.crackMesh.renderOrder = 20;
     this.disposables.push(crackMat, this.crackMesh.geometry, this.crackTex);
@@ -319,8 +318,10 @@ export class Cockpit {
     const g = this.mirrorCanvas.getContext('2d');
     if (!g) return;
     const W = this.mirrorCanvas.width, H = this.mirrorCanvas.height;
-    g.fillStyle = '#1d2433';
+    g.fillStyle = '#0d0d10';
     g.fillRect(0, 0, W, H);
+    g.fillStyle = '#1d2433';
+    g.fillRect(6, 6, W - 12, H - 12);
     g.fillStyle = '#2c3548';
     g.fillRect(0, H * 0.62, W, H * 0.38);
     // The mirror is a reflection: Pickle (right rear) appears on the left.

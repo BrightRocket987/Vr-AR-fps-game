@@ -1,0 +1,111 @@
+# GO TO BED!!! - Chapter 3 finale "Big Bean" voice lines (pack: boss)
+# Source of truth for: LINES=assets-src/dialogue/lines-boss.yaml MANIFEST=manifest-boss.json ID_PREFIX=boss_ tools/build-voices.sh
+# Lines come from docs/04-chapter3-house-mr.md §13 (Boss C) and docs/01-game-design.md (Big Bean, the parent, tone rules).
+# Big Bean's core lines (bigbean_gimme, bigbean_change_my_diaper, bigbean_no_fit, bigbean_night_night) live in lines.yaml.
+# No spoken line carries a Family Sheet name: House.ts shows "Big {KID2}", {KID1} and "You" in the subtitles instead.
+lines:
+  # ------------------------------------------------------- The Dreamgate
+  - id: boss_narrator_big_one
+    speaker: narrator
+    text: "Big one incoming. Mind the frame."
+    emotion: monotone
+    trigger: boss wave start, the largest door rumbles (4 s before he squeezes in)
+    cooldown_s: 60
+  - id: boss_narrator_weak_spot
+    speaker: narrator
+    text: "Aim for the pacifier. Dodge sideways."
+    emotion: monotone
+    trigger: Big Bean wedged in the door, fight starts
+    cooldown_s: 60
+  - id: boss_narrator_tantrum
+    speaker: narrator
+    text: "Tantrum. Stand back from the door."
+    emotion: monotone
+    trigger: Tantrum phase starts (floor slaps)
+    cooldown_s: 60
+  - id: boss_narrator_portals_closing
+    speaker: narrator
+    text: "All portals closing. Shh."
+    emotion: monotone
+    trigger: victory beat, the doors click shut one by one
+    cooldown_s: 60
+  - id: boss_narrator_everyone_asleep
+    speaker: narrator
+    text: "Everyone is asleep. Even you, almost."
+    emotion: monotone
+    trigger: victory hint card, every gremlin asleep
+    cooldown_s: 60
+
+  # ------------------------------------------------------------- Big Bean
+  - id: boss_bigbean_hi
+    speaker: bigbean
+    text: "Hi."
+    emotion: neutral
+    trigger: squeezes into the doorway (entrance)
+    cooldown_s: 30
+  - id: boss_bigbean_mine
+    speaker: bigbean
+    text: "MINE."
+    emotion: scream
+    trigger: Grabby tell, every third sweep (alternates with bigbean_gimme)
+    cooldown_s: 6
+  - id: boss_bigbean_uh_oh
+    speaker: bigbean
+    text: "Uh oh."
+    emotion: neutral
+    trigger: all four Stinkys changed, stunned 6 s
+    cooldown_s: 20
+  - id: boss_bigbean_stinky
+    speaker: bigbean
+    text: "Stinky!"
+    emotion: giggle
+    trigger: the shared diaper ring expired, green fog
+    cooldown_s: 20
+  - id: boss_bigbean_no_bed
+    speaker: bigbean
+    text: "No bed. NO BED."
+    emotion: scream
+    trigger: Tantrum floor-slap tell
+    cooldown_s: 8
+  - id: boss_bigbean_up_up
+    speaker: bigbean
+    text: "Up. Up. UP!"
+    emotion: scream
+    trigger: Tantrum floor-slap tell, arms raised
+    cooldown_s: 8
+
+  # ------------------------------------------------------------ The Parent
+  - id: boss_parent_not_it
+    speaker: parent
+    text: "Not it."
+    emotion: monotone
+    trigger: reply to "CHANGE. MY. DIAPER." (Demand phase)
+    cooldown_s: 60
+  - id: boss_parent_finally
+    speaker: parent
+    text: "Finally."
+    emotion: monotone
+    trigger: victory, after the hint card
+    cooldown_s: 60
+  - id: boss_parent_go_to_bed
+    speaker: parent
+    text: "Go to bed."
+    emotion: monotone
+    trigger: victory, reply to the sleep-talk; the chapter's last line
+    cooldown_s: 60
+
+  # ------------------------------------------------- The real kids (asleep)
+  - id: boss_pickle_sleep_talk
+    speaker: pickle
+    text: "Five more minutes."
+    emotion: sleepy
+    trigger: victory, sleep-talk from behind the Kids' Room Door (never a target)
+    cooldown_s: 60
+
+  # --------------------------------------------------------------- Gremlins
+  - id: boss_scamp_not_tired
+    speaker: scamp
+    text: "I'm not... tired..."
+    emotion: sleepy
+    trigger: victory, the first straggler yawns into Zzz confetti
+    cooldown_s: 60

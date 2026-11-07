@@ -143,10 +143,14 @@ export class Road {
     moon.lookAt(0, 0, 0);
     moon.renderOrder = -8;
     // Ground disc.
-    const groundMat = new MeshStandardMaterial({ color: 0x101a12, roughness: 1 });
+    // The ground is the floor of the world: drawn right after the sky and never writing depth, so this one huge
+    // triangle fan can never win a depth test against the cockpit (it did in the emulator).
+    const groundMat = new MeshStandardMaterial({ color: 0x101a12, roughness: 1, depthWrite: false });
     const ground = new Mesh(new CircleGeometry(SKY_R - 1, 40), groundMat);
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = ROAD_Y - 0.03;
+    ground.renderOrder = -7;
+    ground.frustumCulled = false;
     this.root.add(sky, stars, moon, ground);
     this.disposables.push(geo, mat, sg, sm, moonMat, moon.geometry, groundMat, ground.geometry);
   }

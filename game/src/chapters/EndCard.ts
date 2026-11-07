@@ -36,7 +36,7 @@ export class EndCard implements Chapter, DebugChapter {
     }
     for (const r of results) {
       const title = r.title ?? r.chapter ?? 'Chapter';
-      g.fillText(`${title}${r.rank ? `  ·  rank ${r.rank}` : ''}${r.pops !== undefined ? `  ·  ${r.pops} pops` : ''}`, 512, y);
+      g.fillText(`${title}${r.rank ? `  ·  rank ${r.rank}` : ''}${r.pops !== undefined ? `  ·  ${r.pops} pop${r.pops === 1 ? '' : 's'}` : ''}`, 512, y);
       y += 54;
       for (const line of r.lines ?? []) {
         g.fillStyle = '#9a93a8';

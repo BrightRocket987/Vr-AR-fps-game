@@ -55,8 +55,12 @@ export interface HumanAvatar extends Avatar {
   playClip(clip: string, fadeS?: number, once?: boolean): void;
   /** Parent `obj` to a bone so it animates with it; `posInRoot` is where it sits (metres, avatar space, rest pose). */
   attachAt(bone: string, obj: Object3D, posInRoot: Vector3, rotY?: number): void;
+  /** Parent `obj` to a bone at the bone's CURRENT position (avatar space) plus `offset` metres. */
+  attachNear(bone: string, obj: Object3D, offset: Vector3): void;
   /** Fade the whole character (0..1) for the knocked-out exit. */
   setOpacity(a: number): void;
+  /** Animation playback rate (a slow, heavy walk for Gus). */
+  setTimeScale(k: number): void;
 }
 
 export class HumanFactory {
@@ -169,6 +173,10 @@ class GltfHuman implements HumanAvatar {
     this.mixer.update(dt);
   }
 
+  setTimeScale(k: number): void {
+    this.mixer.timeScale = k;
+  }
+
   setTint(color: Color | null): void {
     this.materials.forEach((m, i) => {
       m.color.copy(this.baseColors[i]);
@@ -200,6 +208,14 @@ class GltfHuman implements HumanAvatar {
     const local = new Matrix4().copy(boneRel).invert().multiply(desired);
     local.decompose(obj.position, obj.quaternion, obj.scale);
     b.add(obj);
+  }
+
+  attachNear(bone: string, obj: Object3D, offset: Vector3): void {
+    const b = this.model.getObjectByName(bone) ?? this.model;
+    this.root.updateMatrixWorld(true);
+    const p = b.getWorldPosition(new Vector3());
+    this.root.worldToLocal(p);
+    this.attachAt(bone, obj, p.add(offset));
   }
 
   dispose(): void {
@@ -254,9 +270,14 @@ class CapsuleHuman implements HumanAvatar {
     this.mat.transparent = a < 0.999;
     this.mat.opacity = a;
   }
+  setTimeScale(): void {}
   attachAt(_bone: string, obj: Object3D, posInRoot: Vector3, rotY = 0): void {
     obj.position.copy(posInRoot);
     obj.rotation.y = rotY;
+    this.root.add(obj);
+  }
+  attachNear(_bone: string, obj: Object3D, offset: Vector3): void {
+    obj.position.set(0, this.height * 0.4, 0).add(offset);
     this.root.add(obj);
   }
   dispose(): void {

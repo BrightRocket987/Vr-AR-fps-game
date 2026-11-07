@@ -21,6 +21,11 @@ export interface WaveDef {
   weights: Record<string, number>;
   /** Scripted spawns at wave start: type names. */
   opening?: string[];
+  /**
+   * A boss wave: the chapter stages the boss (type name) itself; the director only keeps the wave's light trickle
+   * going. A boss wave's duration is Infinity: it ends when the chapter says so (the boss pops), never by time.
+   */
+  boss?: string;
 }
 
 export interface TypeDef {
@@ -30,13 +35,21 @@ export interface TypeDef {
   sources?: Array<SpawnSource['kind']>;
 }
 
+/**
+ * Chapter 3's waves: five timed waves (about 9 minutes with the relaxes) then Big Bean's boss wave (about 2). The
+ * practice range plays ENDLESS_WAVES (no boss) and loops the last one with rising intensity.
+ */
 export const WAVES: WaveDef[] = [
   { name: 'A Scamp Appears', duration: 60, rate: 0.35, maxAlive: 4, weights: { scamp: 1 }, opening: ['scamp'] },
   { name: 'Couch Party', duration: 90, rate: 0.6, maxAlive: 7, weights: { scamp: 3, potato: 1, clinger: 1 }, opening: ['potato'] },
-  { name: 'Knock Knock', duration: 100, rate: 0.8, maxAlive: 9, weights: { scamp: 3, potato: 1, breacher: 1, clinger: 1 }, opening: ['breacher'] },
-  { name: 'Code Brown', duration: 110, rate: 1.0, maxAlive: 11, weights: { scamp: 3, stinky: 2, potato: 1, breacher: 1, siren: 1 }, opening: ['stinky', 'stinky'] },
-  { name: 'Everyone Is Awake', duration: 150, rate: 1.4, maxAlive: 14, weights: { scamp: 4, stinky: 2, potato: 1, breacher: 2, clinger: 2, siren: 1, zombie: 2 }, opening: ['breacher', 'siren'] },
+  { name: 'Knock Knock', duration: 100, rate: 0.8, maxAlive: 9, weights: { scamp: 3, potato: 1, breacher: 1, clinger: 1, crawler: 1 }, opening: ['breacher', 'crawler'] },
+  { name: 'Code Brown', duration: 110, rate: 1.0, maxAlive: 11, weights: { scamp: 3, stinky: 2, potato: 1, breacher: 1, siren: 1, zombie: 1, crawler: 1 }, opening: ['stinky', 'stinky', 'zombie'] },
+  { name: 'Everyone Is Awake', duration: 140, rate: 1.4, maxAlive: 14, weights: { scamp: 4, stinky: 2, potato: 1, breacher: 2, clinger: 2, siren: 1, zombie: 2, crawler: 1 }, opening: ['breacher', 'siren', 'zombie'] },
+  { name: 'Big Bean', duration: Infinity, rate: 0.3, maxAlive: 4, weights: { scamp: 1 }, boss: 'bigbean' },
 ];
+
+/** The waves without bosses (the practice range: endless, no boss). */
+export const ENDLESS_WAVES: WaveDef[] = WAVES.filter((w) => !w.boss);
 
 /**
  * Threat-budget spawn director. Spends credits at the wave's rate on random registered types, spawns at
@@ -62,6 +75,8 @@ export class Director {
     private readonly sources: () => SpawnSource[],
     private readonly player: () => Vector3,
     private readonly capScale: number, // 1 on Quest 3, 14/20 on Quest 2
+    /** The wave table this director plays (ENDLESS_WAVES for the practice range). */
+    readonly waves: WaveDef[] = WAVES,
   ) {}
 
   register(type: string, def: TypeDef): void {
@@ -69,7 +84,11 @@ export class Director {
   }
 
   get wave(): WaveDef | null {
-    return this.waveIndex >= 0 ? WAVES[Math.min(this.waveIndex, WAVES.length - 1)] : null;
+    return this.waveIndex >= 0 && this.waves.length ? this.waves[Math.min(this.waveIndex, this.waves.length - 1)] : null;
+  }
+  /** Index of the first boss wave in this director's table, or -1. */
+  get bossWaveIndex(): number {
+    return this.waves.findIndex((w) => !!w.boss);
   }
   get waveNumber(): number {
     return this.waveIndex + 1;
@@ -78,7 +97,15 @@ export class Director {
     return this.spawnedTotal;
   }
 
-  start(): void {
+  /** Start the first wave, or wave `fromWave` (0-based: tests and the ?boss=1 shortcut). */
+  start(fromWave = 0): void {
+    this.jumpTo(fromWave);
+  }
+
+  /** Abandon the current wave and start wave `index` now (living gremlins stay). */
+  jumpTo(index: number): void {
+    this.waveIndex = Math.max(0, Math.min(Math.floor(index), this.waves.length - 1)) - 1;
+    this.endless = 0;
     this.nextWave();
   }
 
@@ -88,7 +115,7 @@ export class Director {
     this.relaxing = false;
     const w = this.wave;
     if (!w) return;
-    if (this.waveIndex >= WAVES.length) this.endless = this.waveIndex - WAVES.length + 1;
+    if (this.waveIndex >= this.waves.length) this.endless = this.waveIndex - this.waves.length + 1;
     this.credits = 2;
     this.bus.emit('wave:start', { index: this.waveIndex, name: w.name + (this.endless ? ` +${this.endless}` : '') });
     for (const t of w.opening ?? []) this.spawn(t);

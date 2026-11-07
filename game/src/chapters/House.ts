@@ -1,7 +1,7 @@
-import { Color, DoubleSide, Group, Mesh, MeshBasicMaterial, PlaneGeometry, RingGeometry, SphereGeometry, Vector3 } from 'three';
-import type { AppContext, Chapter } from '../app/XRApp';
+import { Color, DoubleSide, FrontSide, Group, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, RingGeometry, SphereGeometry, Vector3 } from 'three';
+import type { AppContext, Chapter, DebugChapter } from '../app/XRApp';
 import { AvatarFactory } from '../ai/Avatar';
-import { Director, type SpawnSource } from '../ai/Director';
+import { Director, ENDLESS_WAVES, WAVES, type SpawnSource } from '../ai/Director';
 import { Gremlin, SeatManager, type GremlinWorld, type PlayerLike } from '../ai/Gremlin';
 import { Scamp } from '../ai/Scamp';
 import { Breacher } from '../ai/Breacher';
@@ -10,6 +10,9 @@ import { Wipe } from '../ai/Wipe';
 import { CouchPotato } from '../ai/CouchPotato';
 import { Clinger } from '../ai/Clinger';
 import { Siren } from '../ai/Siren';
+import { TabletZombie } from '../ai/TabletZombie';
+import { Crawler } from '../ai/Crawler';
+import { BigBean } from '../ai/BigBean';
 import { PopFx } from '../combat/PopFx';
 import { Progression } from '../combat/Progression';
 import { Weapon } from '../combat/Weapon';
@@ -24,7 +27,31 @@ import { NapDimension } from '../portals/NapDimension';
 import { PortalDoor } from '../portals/PortalDoor';
 import { sessionExtras } from '../xr/webxr-extras';
 
-type Phase = 'waiting' | 'setup' | 'play' | 'down';
+type Phase = 'waiting' | 'setup' | 'play' | 'down' | 'victory';
+type BossStage = 'none' | 'intro' | 'fight' | 'victory';
+
+/** Seconds from the boss announcement to Big Bean squeezing into the door. */
+export const BOSS_INTRO_SECONDS = 4;
+/** During the Tantrum a Breacher knocks on another door this often. */
+export const BOSS_BREACHER_EVERY = 12;
+/** Victory beat: one portal clicks shut every PORTAL_CLOSE_EVERY s, one gremlin falls asleep every SLEEP_EVERY s. */
+export const PORTAL_CLOSE_EVERY = 0.55;
+export const SLEEP_EVERY = 0.3;
+/** The chapter completes this long after Big Bean pops. */
+export const VICTORY_SECONDS = 10.5;
+
+/** Rank letter for the finale from Patience lost during the whole chapter. */
+export function finaleRank(damageTaken: number): string {
+  if (damageTaken < 60) return 'S';
+  if (damageTaken < 160) return 'A';
+  if (damageTaken < 320) return 'B';
+  return 'C';
+}
+
+const SLEEPY_BLUE = new Color(0x9ad5ff);
+
+/** Tint that turns a Kenney goblin into a blue-faced Tablet Zombie. */
+const ZOMBIE_TINT = new Color(0.62, 0.82, 1.35);
 
 /**
  * Chapter 3 · Bedtime. Finds the room (scan import or virtual fallback, hand-placed door), opens the doors,
@@ -35,7 +62,7 @@ export interface HouseOptions {
   preset?: 'bar';
 }
 
-export class House implements Chapter {
+export class House implements Chapter, DebugChapter {
   readonly name = 'house';
   private readonly preset: HouseOptions['preset'];
   private ctx!: AppContext;
@@ -72,7 +99,23 @@ export class House implements Chapter {
   private roomStableSince = -1;
   private readonly nav = new GridNav(0.1);
   private clouds: { mesh: Mesh; life: number; radius: number; penalty: number }[] = [];
-  readonly stats = { spawned: 0, popped: 0, damageTaken: 0, roomSource: 'none', doors: 0, couches: 0, labels: '' };
+  readonly stats = { spawned: 0, popped: 0, damageTaken: 0, roomSource: 'none', doors: 0, couches: 0, labels: '', diapersChanged: 0 };
+  // ---- Boss C (Big Bean) and the finale ----
+  private boss: BigBean | null = null;
+  private bossDoorId: string | null = null;
+  private bossStage: BossStage = 'none';
+  private bossTime = 0;
+  private bossBreacherTimer = BOSS_BREACHER_EVERY;
+  /** ?boss=1 (or debugBoss()): start straight at the boss wave. */
+  private bossShortcut = false;
+  private victoryTime = 0;
+  private victoryCloseQueue: PortalDoor[] = [];
+  private victorySleepers: Gremlin[] = [];
+  private victoryNextClose = 0.8;
+  private victoryNextSleep = 0.4;
+  private victoryCard = false;
+  private bossDefeated = false;
+  private clippingWas = false;
 
   constructor(opts: HouseOptions = {}) {
     this.preset = opts.preset;
@@ -83,13 +126,22 @@ export class House implements Chapter {
 
   async start(ctx: AppContext): Promise<void> {
     this.ctx = ctx;
+    this.clippingWas = ctx.renderer.localClippingEnabled;
+    // Big Bean is clipped at his door plane (only what pokes through is drawn).
+    ctx.renderer.localClippingEnabled = true;
+    try {
+      this.bossShortcut = this.preset !== 'bar' && typeof location !== 'undefined' && new URLSearchParams(location.search).get('boss') === '1';
+    } catch {
+      this.bossShortcut = false;
+    }
     this.nap = new NapDimension({ reducedFlash: ctx.save.data.options.reducedFlash });
     const base = `${import.meta.env.BASE_URL}assets`;
     ctx.world.add(this.roomGroup, this.fx.group, this.cursor);
     this.voice = new Voice(ctx.listener, ctx.bus, base);
     this.hud = new Hud(ctx.input, (o) => ctx.headPosition(o), (o) => ctx.headForward(o));
     ctx.world.add(this.hud.group);
-    this.voice.onSubtitle = (t, s) => this.hud.subtitle(t, s);
+    // TTS cannot say the Family Sheet names: the subtitles carry them instead.
+    this.voice.onSubtitle = (t, s) => this.hud.subtitle(t, this.subtitleName(s));
     this.blueprint = new Blueprint({
       input: ctx.input,
       room: this.room,
@@ -136,7 +188,8 @@ export class House implements Chapter {
       },
     };
     this.gremlinWorld = world;
-    this.director = new Director(this.room, ctx.bus, () => this.spawnSources(), () => ctx.headPosition(this.head), ctx.isQuest2 ? 14 / 20 : 1);
+    // The practice range is endless with no boss; the chapter ends with Big Bean.
+    this.director = new Director(this.room, ctx.bus, () => this.spawnSources(), () => ctx.headPosition(this.head), ctx.isQuest2 ? 14 / 20 : 1, this.preset === 'bar' ? ENDLESS_WAVES : WAVES);
     this.director.register('scamp', { cost: 1, create: () => new Scamp(world, this.avatars.create(this.variant++, 0.6)) });
     this.wipe = new Wipe(world);
     this.director.register('potato', { cost: 3, sources: ['couch', 'door', 'crack'], create: () => new CouchPotato(world, this.avatars.create(this.variant++, 0.65)) });
@@ -147,11 +200,16 @@ export class House implements Chapter {
       cost: 5,
       sources: ['door'],
       create: () => {
-        const open = world.openDoors();
-        const door = open.length ? open[Math.floor(Math.random() * open.length)] : this.room.largestDoor() ?? undefined;
+        // Never knock on the door Big Bean is wedged in.
+        const open = world.openDoors().filter((d) => d.id !== this.bossDoorId);
+        const fallback = this.room.portalDoors.find((d) => d.id !== this.bossDoorId) ?? this.room.largestDoor() ?? undefined;
+        const door = open.length ? open[Math.floor(Math.random() * open.length)] : fallback;
         return new Breacher(world, this.avatars.create(this.variant++, 0.75), door);
       },
     });
+    this.director.register('zombie', { cost: 3, sources: ['door'], create: () => new TabletZombie(world, this.avatars.create(this.variant++, 0.6, ZOMBIE_TINT)) });
+    this.director.register('crawler', { cost: 1, sources: ['crack', 'door'], create: () => new Crawler(world, this.avatars.create(this.variant++, 0.35)) });
+    this.director.register('bigbean', { cost: 0, sources: ['door'], create: () => this.createBigBean() });
     this.weapon = new Weapon(ctx.input, ctx.bus, this.fx, this.voice, () => this.director.alive);
     this.weapon.setTier(this.progression.tier);
     this.weapon.ammo = this.progression.tier.mag;
@@ -163,9 +221,10 @@ export class House implements Chapter {
       if (t.tier === 4) this.voice.sayId('narrator_tier_up_diaper_cannon', null);
     };
     this.unsub.push(
-      ctx.bus.on('enemy:popped', ({ style, position }) => {
+      ctx.bus.on('enemy:popped', ({ style, position, type }) => {
         this.progression.addPop();
         this.stats.popped++;
+        if (type === 'bigbean') this.startVictory();
         if (style.includes('CHANGED')) this.fx.text(position, '+50', '#3fd6c8');
         if (style.includes('SHUSHED')) this.fx.text(position, 'SHUSHED +25', '#ff9ad5');
         if (style.includes('DOOR SLAM')) this.fx.text(position, 'DOOR SLAM ×2', '#ff9ad5');
@@ -175,6 +234,10 @@ export class House implements Chapter {
         this.stats.spawned++;
       }),
       ctx.bus.on('wave:start', ({ name, index }) => {
+        if (this.director.wave?.boss) {
+          this.beginBossIntro(index);
+          return;
+        }
         const fam = ctx.save.data.family;
         const subs = ['', `Copies of ${fam.kid1} and ${fam.kid2} incoming.`, `${fam.kid1} found the couch.`, `${fam.kid2} is at the door.`, `Somebody needs a diaper change.`, `Everyone is awake, ${fam.parent === 'Hey' ? 'friend' : fam.parent}.`];
         this.hud.say(`Wave ${index + 1}: ${name}`, subs[Math.min(index, subs.length - 1)], 3.5);
@@ -212,7 +275,10 @@ export class House implements Chapter {
           }
         }
       }),
-      ctx.bus.on('diaper:changed', () => this.hud.say('Changed!', '+50. A friendly ghost, a clean start.', 2)),
+      ctx.bus.on('diaper:changed', () => {
+        this.stats.diapersChanged++;
+        this.hud.say('Changed!', '+50. A friendly ghost, a clean start.', 2);
+      }),
     );
     // Kick off asset loads without blocking the session.
     void Promise.all([this.voice.load(), this.avatars.load()]).then(() => {
@@ -269,7 +335,16 @@ export class House implements Chapter {
           this.director.paused = false;
           this.setPhase('play');
           this.hud.say('Again!', 'The gremlins respawn. Your pops are kept.', 3);
+          // Checkpoint B: a boss fight restarts from his entrance at full HP.
+          if (this.bossStage === 'fight' || this.bossStage === 'intro') {
+            this.boss = null;
+            this.bossStage = 'intro';
+            this.bossTime = BOSS_INTRO_SECONDS - 1.5;
+          }
         }
+        break;
+      case 'victory':
+        this.updateVictory(dt, nowMs);
         break;
     }
     if ((this.phase === 'play' || this.phase === 'setup') && this.preset !== 'bar') {
@@ -294,7 +369,7 @@ export class House implements Chapter {
       tierName: this.progression.tier.name,
       toNext: this.progression.toNext(),
       patience: this.patience,
-      wave: this.director?.wave ? `${this.director.waveNumber} ${this.director.wave.name}` : '—',
+      wave: this.waveLabel(),
       ammo: this.weapon.ammo,
       mag: this.weapon.tier.mag,
       fps: 0,
@@ -491,7 +566,8 @@ export class House implements Chapter {
     this.setPhase('play');
     this.hud.say('Bedtime', 'Nobody is going to bed.', 3);
     this.voice.sayId('narrator_go_to_bed', null);
-    this.director.start();
+    // ?boss=1 / debugBoss(): straight to Big Bean.
+    this.director.start(this.bossShortcut ? Math.max(0, this.director.bossWaveIndex) : 0);
   }
 
   private openDoorsForWave(index: number): void {
@@ -521,6 +597,7 @@ export class House implements Chapter {
     this.director.update(dt);
     for (const g of this.director.alive) g.update(dt);
     this.wipe.update(dt);
+    if (this.phase === 'play') this.updateBoss(dt);
     if (this.placingDoor) {
       const off = this.ctx.input.offHand;
       const hit = this.floorHit(off);
@@ -564,7 +641,8 @@ export class House implements Chapter {
 
   /** Stink clouds: a green fog sphere that slows the weapon while you stand in it. */
   private addCloud(position: Vector3, radius: number, seconds: number, penalty: number): void {
-    const mesh = new Mesh(new SphereGeometry(radius, 16, 12), new MeshBasicMaterial({ color: 0x7fcf3a, transparent: true, opacity: 0.25, depthWrite: false }));
+    const big = radius >= 2.2;
+    const mesh = new Mesh(new SphereGeometry(radius, 16, 12), new MeshBasicMaterial({ color: 0x7fcf3a, transparent: true, opacity: 0.25, depthWrite: false, side: big ? DoubleSide : FrontSide }));
     mesh.position.copy(position).add(new Vector3(0, radius * 0.6, 0));
     this.roomGroup.add(mesh);
     this.clouds.push({ mesh, life: seconds, radius, penalty });
@@ -621,7 +699,7 @@ export class House implements Chapter {
       room: { source: this.room.source, doors: this.room.doors.length, couches: this.room.couches.length, volumes: this.room.volumes.length, area: Number(this.room.area().toFixed(2)), bounds: this.room.bounds.length },
       labels: this.sceneImport.summary(),
       wave: this.director.waveNumber,
-      alive: this.director.alive.length,
+      alive: this.director.alive.filter((g) => g.alive).length,
       seated: this.director.alive.filter((g) => g.state === 'sit').length,
       spawned: this.stats.spawned,
       popped: this.stats.popped,
@@ -635,7 +713,272 @@ export class House implements Chapter {
       portalsNear: this.doorVisuals.filter((d) => d.nearPlayer).length,
       blueprint: this.blueprint?.snapshot(),
       anyNaN: this.director.alive.some((g) => !Number.isFinite(g.position.x) || !Number.isFinite(g.position.z)),
+      enemiesSpawned: this.stats.spawned,
+      enemiesPopped: this.stats.popped,
+      boss: this.boss
+        ? { stage: this.bossStage, phase: this.boss.phase, beat: this.boss.beat, hp: Math.ceil(this.boss.hp), alive: this.boss.alive, ring: this.boss.ringActive ? Number(this.boss.ringLeft.toFixed(1)) : null, door: this.bossDoorId }
+        : { stage: this.bossStage },
+      bossDefeated: this.bossDefeated,
+      diapersChanged: this.stats.diapersChanged,
+      completed: this.completed,
     };
+  }
+
+  // ---- Boss C: Big Bean, and the finale -----------------------------------------------------------------
+
+  /** Subtitle label for a voice line's speaker (Family Sheet names for the family). */
+  private subtitleName(speaker: string): string {
+    const fam = this.ctx.save.data.family;
+    switch (speaker) {
+      case 'bigbean':
+        return `Big ${fam.kid2}`;
+      case 'pickle':
+        return fam.kid1;
+      case 'bean':
+        return fam.kid2;
+      case 'parent':
+        return 'You';
+      default:
+        return speaker;
+    }
+  }
+
+  /** HUD wave line: the boss's HP while he is in the door. */
+  private waveLabel(): string {
+    const b = this.boss;
+    if (this.phase === 'victory') return 'Everyone is asleep';
+    if (b && b.alive && this.bossStage === 'fight') return `BIG BEAN ${Math.ceil(b.hp)}/${b.maxHp}${b.ringActive ? ` · ring ${Math.ceil(b.ringLeft)} s` : ''}`;
+    if (this.bossStage === 'intro') return 'Something big is coming';
+    return this.director?.wave ? `${this.director.waveNumber} ${this.director.wave.name}` : '—';
+  }
+
+  /** The door Big Bean is wedged in: the largest portal door (a virtual one if the room has none). */
+  private bossDoor(): Door {
+    const known = this.bossDoorId ? this.room.portalDoors.find((d) => d.id === this.bossDoorId) : undefined;
+    if (known) return known;
+    const largest = this.room.largestDoor();
+    if (largest) return largest;
+    const v = RoomModel.virtual(this.ctx.headPosition(new Vector3()), this.ctx.headForward(new Vector3())).doors[0];
+    v.id = 'boss-door';
+    this.room.doors.push(v);
+    this.buildRoomVisuals();
+    return v;
+  }
+
+  private openBossDoor(): PortalDoor | undefined {
+    const dv = this.doorVisuals.find((d) => d.door.id === this.bossDoorId);
+    if (dv && !dv.open) {
+      dv.setOpen(true);
+      this.ctx.bus.emit('portal:open', { doorId: dv.door.id });
+    }
+    return dv;
+  }
+
+  private createBigBean(): BigBean {
+    const door = this.bossDoor();
+    this.bossDoorId = door.id;
+    this.openBossDoor();
+    const bean = new BigBean(this.gremlinWorld, door);
+    this.boss = bean;
+    return bean;
+  }
+
+  /** The boss wave started: announce him, open his door, and give the door a few seconds to rumble. */
+  private beginBossIntro(index: number): void {
+    if (this.bossStage !== 'none') return;
+    this.bossStage = 'intro';
+    this.bossTime = 0;
+    this.bossDoorId = this.bossDoor().id;
+    this.openDoorsForWave(index);
+    const dv = this.openBossDoor();
+    if (index + 1 > this.ctx.save.data.bestWave) {
+      this.ctx.save.data.bestWave = index + 1;
+      this.ctx.save.persist();
+    }
+    const kid2 = this.ctx.save.data.family.kid2;
+    this.hud.say(`Big ${kid2}`, 'Something big is stuck in the doorway. Mind the frame.', 4);
+    this.voice.sayId('boss_narrator_big_one', null);
+    this.voice.sfx('portal_hum', dv?.group ?? null, 1);
+    this.ctx.log(`boss intro: Big Bean at ${this.bossDoorId}`);
+  }
+
+  private bossLastPhase = '';
+  private bossLineAt = 0;
+  private bossLine = '';
+
+  private updateBoss(dt: number): void {
+    if (this.bossStage === 'none' || this.bossStage === 'victory') return;
+    this.bossTime += dt;
+    const dv = this.openBossDoor();
+    if (this.bossStage === 'intro') {
+      // The frame rumbles: knocks and teal sparks, faster and faster.
+      const beat = this.bossTime < 2 ? 0.8 : 0.4;
+      if (dv && Math.floor(this.bossTime / beat) !== Math.floor((this.bossTime - dt) / beat)) {
+        this.voice.sfx('knock', dv.group, 0.8);
+        const p = dv.door.center.clone().addScaledVector(dv.door.normal, 0.1).add(new Vector3((Math.random() - 0.5) * dv.door.width, (Math.random() - 0.2) * dv.door.height * 0.5, 0));
+        this.fx.pop(p, new Color(0x3fd6c8), 8);
+      }
+      if (this.bossTime >= BOSS_INTRO_SECONDS) {
+        const g = this.director.forceSpawn('bigbean');
+        if (g instanceof BigBean) {
+          this.boss = g;
+          this.bossStage = 'fight';
+          this.bossBreacherTimer = BOSS_BREACHER_EVERY / 2;
+          this.bossLastPhase = '';
+          this.hud.say('Big Bean', 'His head is the weak spot (x3). When an arm winds up, step to the other side.', 4);
+          this.queueBossLine('boss_narrator_weak_spot', 2.2);
+          this.ctx.log('boss: Big Bean is in the door');
+        }
+      }
+      return;
+    }
+    const boss = this.boss;
+    if (!boss) return;
+    if (boss.phase !== this.bossLastPhase) {
+      this.bossLastPhase = boss.phase;
+      // The parent's one-word reactions, after his line.
+      if (boss.phase === 'demand') this.queueBossLine('boss_parent_not_it', 2.4);
+      if (boss.phase === 'tantrum') this.queueBossLine('boss_narrator_tantrum', 2.2);
+    }
+    if (this.bossLine && this.bossTime >= this.bossLineAt) {
+      this.voice.sayId(this.bossLine, null);
+      this.bossLine = '';
+    }
+    // Tantrum: Breachers knock on the other doors (never his).
+    if (boss.phase === 'tantrum' && boss.alive) {
+      this.bossBreacherTimer -= dt;
+      if (this.bossBreacherTimer <= 0) {
+        this.bossBreacherTimer = BOSS_BREACHER_EVERY;
+        const others = this.room.portalDoors.filter((d) => d.id !== this.bossDoorId);
+        const breachers = this.director.alive.filter((g) => g.type === 'breacher' && g.alive).length;
+        if (others.length > 0 && breachers < 2) this.director.forceSpawn('breacher');
+      }
+    }
+  }
+
+  private queueBossLine(id: string, delay: number): void {
+    this.bossLine = id;
+    this.bossLineAt = this.bossTime + delay;
+  }
+
+  /** Big Bean popped: portals click shut one by one, the stragglers fall asleep, then the chapter ends. */
+  private startVictory(): void {
+    if (this.bossDefeated || this.preset === 'bar') return;
+    this.bossDefeated = true;
+    this.bossStage = 'victory';
+    this.director.paused = true;
+    this.weapon.swayDeg = 0;
+    this.setPhase('victory');
+    this.victoryTime = 0;
+    this.victoryNextClose = 1.2;
+    this.victoryNextSleep = 0.6;
+    this.victoryCard = false;
+    this.victoryBeat = 0;
+    this.victoryClosingSaid = false;
+    const isBossDoor = (dv: PortalDoor) => (dv.door.id === this.bossDoorId ? 1 : 0);
+    this.victoryCloseQueue = this.doorVisuals.filter((d) => d.open).sort((a, b) => isBossDoor(a) - isBossDoor(b));
+    this.victorySleepers = this.director.alive.filter((g) => g.alive && g !== this.boss);
+    for (const g of this.victorySleepers) g.avatar.play('idle', 0.3);
+    this.hud.say('Night night.', 'Big Bean is asleep. So is everyone else, nearly.', 3);
+    this.voice.sfx('confetti', null, 1);
+    this.ctx.log('boss: Big Bean popped, victory');
+  }
+
+  private updateVictory(dt: number, nowMs: number): void {
+    this.victoryTime += dt;
+    this.updateClouds(dt);
+    this.weapon.update(dt, nowMs);
+    // A chorus of door clicks: every portal shuts, his door last.
+    if (this.victoryTime >= this.victoryNextClose && this.victoryCloseQueue.length > 0) {
+      const dv = this.victoryCloseQueue.shift() as PortalDoor;
+      this.victoryNextClose = this.victoryTime + PORTAL_CLOSE_EVERY;
+      if (dv.open) {
+        dv.setOpen(false);
+        this.ctx.bus.emit('portal:close', { doorId: dv.door.id });
+      }
+      this.voice.sfx('ui_click', dv.group, 1);
+      this.voice.sfx('knock', dv.group, 0.4);
+      this.fx.text(dv.door.center.clone().addScaledVector(dv.door.normal, 0.2), 'click', '#3fd6c8');
+    }
+    // The director is paused: drop the dead from its list here (the weapon still aims at the living).
+    const alive = this.director.alive;
+    for (let i = alive.length - 1; i >= 0; i--) if (!alive[i].alive) alive.splice(i, 1);
+    // Every gremlin left in the room yawns and pops into Zzz confetti.
+    for (const g of this.victorySleepers) {
+      if (!g.alive) continue;
+      g.avatar.update(dt);
+      g.avatar.root.rotation.z = Math.sin(this.victoryTime * 2 + g.id) * 0.12;
+    }
+    if (this.victoryTime >= this.victoryNextSleep && this.victorySleepers.length > 0) {
+      const g = this.victorySleepers.shift() as Gremlin;
+      this.victoryNextSleep = this.victoryTime + SLEEP_EVERY;
+      if (g.alive) {
+        const c = g.position.clone().add(new Vector3(0, g.height * 0.6, 0));
+        this.fx.pop(c, SLEEPY_BLUE, 18);
+        this.fx.text(c, 'Zzz', '#9ad5ff');
+        this.voice.sfx('pop', g.root, 0.5);
+        g.dispose();
+      }
+      if (!this.victoryYawned) {
+        this.victoryYawned = true;
+        this.voice.sayId('boss_scamp_not_tired', g.root);
+      }
+    }
+    if (!this.victoryCard && this.victoryTime > 3.5 && this.victoryCloseQueue.length === 0 && this.victorySleepers.length === 0) {
+      this.victoryCard = true;
+      this.hud.say('Everyone is asleep.', 'Even you, almost.', 0);
+      this.voice.sayId('boss_narrator_everyone_asleep', null);
+      const kids = this.room.doors.find((d) => d.kidsRoom);
+      if (kids) {
+        const at = new Object3D();
+        at.position.copy(kids.center);
+        this.roomGroup.add(at);
+        this.kidsVoice = at;
+      }
+    }
+    if (!this.victoryClosingSaid && this.victoryTime > 1.0) {
+      this.victoryClosingSaid = true;
+      this.voice.sayId('boss_narrator_portals_closing', null);
+    }
+    // The button: the parent sighs, a real kid sleep-talks behind the Kids' Room Door, the parent answers.
+    if (this.victoryCard && this.victoryBeat === 0 && this.victoryTime > 6.0) {
+      this.victoryBeat = 1;
+      this.voice.sayId('boss_parent_finally', null);
+    } else if (this.victoryBeat === 1 && this.victoryTime > 7.4) {
+      this.victoryBeat = 2;
+      this.voice.sayId('boss_pickle_sleep_talk', this.kidsVoice);
+    } else if (this.victoryBeat === 2 && this.victoryTime > 8.8) {
+      this.victoryBeat = 3;
+      this.voice.sayId('boss_parent_go_to_bed', null);
+    }
+    if (this.victoryTime >= VICTORY_SECONDS) {
+      const fam = this.ctx.save.data.family;
+      this.finishChapter([`Big ${fam.kid2}: put to bed`, `Diapers changed: ${this.stats.diapersChanged}`, `Patience lost: ${Math.round(this.stats.damageTaken)}`]);
+    }
+  }
+
+  private victoryYawned = false;
+  private victoryClosingSaid = false;
+  private victoryBeat = 0;
+  private kidsVoice: Object3D | null = null;
+
+  /** Debug/test hook: skip straight to the boss wave (from setup, or mid-game). */
+  debugBoss(): void {
+    if (this.preset === 'bar') return;
+    if (this.phase === 'setup') {
+      this.bossShortcut = true;
+      this.beginPlay();
+      return;
+    }
+    if (this.phase === 'play' && this.bossStage === 'none' && this.director.bossWaveIndex >= 0) this.director.jumpTo(this.director.bossWaveIndex);
+  }
+
+  /** Debug/test hook: hit Big Bean as if shot (headshot = the weak point). False if he is not in the door. */
+  debugHitBoss(amount = 99, headshot = false): boolean {
+    const b = this.boss;
+    if (!b || !b.alive || this.bossStage !== 'fight') return false;
+    b.hit(amount, headshot);
+    return true;
   }
 
   /** Debug/test hook: pop the nearest gremlin as if hit twice. */
@@ -662,7 +1005,8 @@ export class House implements Chapter {
     this.ctx.complete({
       title: 'Chapter 3 · Bedtime',
       pops: this.progression.sessionPops,
-      lines: [`Reached wave ${this.director?.waveNumber ?? 0}`, `Room: ${this.stats.roomSource}`, ...extraLines],
+      rank: this.bossDefeated ? finaleRank(this.stats.damageTaken) : undefined,
+      lines: [...extraLines, `Reached wave ${this.director?.waveNumber ?? 0}`, `Room: ${this.stats.roomSource}`],
     });
   }
 
@@ -672,6 +1016,7 @@ export class House implements Chapter {
   }
 
   dispose(): void {
+    if (this.ctx) this.ctx.renderer.localClippingEnabled = this.clippingWas;
     for (const u of this.unsub) u();
     this.wipe?.dispose();
     this.director?.clear();

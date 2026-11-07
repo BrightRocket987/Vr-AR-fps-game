@@ -116,21 +116,33 @@ export class Kit {
     };
   }
 
-  damage(amount: number, source: string): void {
+  /** `flash = false` for small continuous damage (rumble strips, bites) that should not flash the whole view. */
+  damage(amount: number, source: string, flash = true): void {
     if (!this.damageEnabled || this.patience <= 0) return;
     this.patience = Math.max(0, this.patience - amount);
     this.sinceDamage = 0;
-    this.hud.damageFlash();
-    this.ctx.input.weaponHand.pulse(0.6, 80);
+    if (flash) this.hud.damageFlash();
+    this.ctx.input.weaponHand.pulse(flash ? 0.6 : 0.25, flash ? 80 : 30);
     this.ctx.bus.emit('player:damaged', { amount, patience: this.patience });
     if (this.patience <= 0) {
       this.ctx.bus.emit('player:down', {});
-      this.onDown?.(source);
+      if (this.onDown) this.onDown(source);
+      else {
+        // Default "you lost it": a short breather, then Patience refills (chapters can override via onDown).
+        this.hud.say('You lost it.', 'Deep breath. Count to three.', 3);
+        this.downTimer = 3;
+      }
     }
   }
 
+  private downTimer = -1;
+
   /** Per-frame: weapon, VFX, HUD, patience regeneration. */
   update(dt: number, nowMs: number): void {
+    if (this.downTimer > 0) {
+      this.downTimer -= dt;
+      if (this.downTimer <= 0) this.resetPatience();
+    }
     this.sinceDamage += dt;
     if (this.sinceDamage > 5 && this.patience > 0 && this.patience < 100) this.patience = Math.min(100, this.patience + 4 * dt);
     if (this.weaponEnabled) this.weapon.update(dt, nowMs);

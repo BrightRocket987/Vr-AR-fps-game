@@ -3,6 +3,9 @@ on:
   push:
     paths: ['game/**', '.github/workflows/ci.yml']
   pull_request:
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     runs-on: ubuntu-24.04

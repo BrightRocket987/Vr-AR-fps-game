@@ -24,6 +24,7 @@ const rooms = (args.room ?? 'living_room,kitchen,bedroom,none').split(',');
 const device = args.device ?? 'quest3';
 const seconds = Number(args.seconds ?? 18);
 const chapter = args.chapter ?? 'house';
+const boss = args.boss === '1' || process.argv.includes('--boss');
 const base = '/Vr-AR-fps-game/';
 
 if (!fs.existsSync(path.join(dist, 'index.html'))) {
@@ -56,7 +57,7 @@ for (const room of rooms) {
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 300)); });
-  const url = `http://localhost:${port}${base}?emulate=${device}&room=${room}&autostart=1&chapter=${chapter}`;
+  const url = `http://localhost:${port}${base}?emulate=${device}&room=${room}&autostart=1&chapter=${chapter}${boss ? '&boss=1' : ''}`;
   console.log(`\n▶ ${device} / ${room} / ${chapter}`);
   await page.goto(url);
   try {
@@ -71,9 +72,33 @@ for (const room of rooms) {
   await page.evaluate(() => window.__gtb?.begin());
   const t0 = Date.now();
   let shots = 0;
-  while (chapter !== 'campaign' && Date.now() - t0 < seconds * 1000) {
+  while (chapter !== 'campaign' && !boss && Date.now() - t0 < seconds * 1000) {
     await page.waitForTimeout(1500);
     if (await page.evaluate(() => window.__gtb?.shoot())) shots++;
+  }
+  let bossResult = null;
+  if (boss) {
+    // Big Bean path: wait for the fight, knock him out, and expect the chapter to hand over to the end card.
+    const tb = Date.now();
+    let stage = null;
+    while (Date.now() - tb < 90000) {
+      stage = await page.evaluate(() => window.__gtb?.snapshot()?.boss?.stage ?? null);
+      if (stage === 'fight') break;
+      await page.evaluate(() => window.__gtb?.begin());
+      await page.waitForTimeout(1000);
+    }
+    for (let i = 0; i < 3 && stage === 'fight'; i++) {
+      await page.evaluate(() => window.__gtb?.chapter?.debugHitBoss?.(99, false));
+      await page.waitForTimeout(800);
+    }
+    const te = Date.now();
+    let history = [];
+    while (Date.now() - te < 60000) {
+      history = await page.evaluate(() => window.__gtb?.history ?? []);
+      if (history.includes('end')) break;
+      await page.waitForTimeout(1000);
+    }
+    bossResult = { stageReached: stage, history };
   }
   if (chapter === 'campaign') {
     // Walk the campaign: finish each chapter via the debug hook and check the next one starts.
@@ -103,10 +128,11 @@ for (const room of rooms) {
   }
   if (chapter === 'campaign') {
     check('campaign visits bar → drive → house → end', ['bar', 'drive', 'house', 'end'].every((c) => campaignSeen.includes(c)), campaignSeen.join(' > '));
-  } else if (!snap?.placeholder) {
+  } else if (!snap?.placeholder && !boss) {
     check('enemies spawned', spawned > 0, `spawned=${spawned} alive=${snap?.alive ?? '?'}`);
     check('enemies popped', popped > 0, `popped=${popped} shots=${shots} pops=${snap?.pops ?? '?'}`);
   }
+  if (boss) check('Big Bean fight reached and won → end card', bossResult?.stageReached === 'fight' && (bossResult?.history ?? []).includes('end'), JSON.stringify(bossResult));
   check('no NaN positions', snap?.anyNaN !== true);
   // The loop is alive if it rendered a few dozen frames; software GL on CI can run at 2-3 fps.
   check('frames rendering', (diag?.frames ?? 0) > 20, `frames=${diag?.frames} fps=${diag?.fps} drawCalls=${diag?.drawCalls}`);
@@ -116,7 +142,7 @@ for (const room of rooms) {
   await page.close();
 }
 
-fs.writeFileSync(path.join(outDir, 'report.json'), JSON.stringify(report, null, 2));
+fs.writeFileSync(path.join(outDir, `report-${device}-${chapter}${boss ? '-boss' : ''}.json`), JSON.stringify(report, null, 2));
 await browser.close();
 server.close();
 console.log(failures ? `\n${failures} check(s) failed` : '\nall checks passed');

@@ -66,7 +66,7 @@ export const HOME_STRETCH_S = 22;
 
 export const SCHEDULE: DriveEvent[] = [
   { at: 3, type: 'line', ids: ['drive_pickle_moon', 'drive_bean_moon'] },
-  { at: 8, type: 'clinger', spots: ['hood'] },
+  { at: 5, type: 'clinger', spots: ['hood'] },
   { at: 18, type: 'need', need: 'hungry' },
   { at: 24, type: 'clinger', spots: ['left'] },
   { at: 32, type: 'hazard', hazard: 'cart' },
@@ -76,6 +76,7 @@ export const SCHEDULE: DriveEvent[] = [
   { at: 62, type: 'line', ids: ['drive_pickle_there_yet', 'drive_parent_almost'] },
   { at: 68, type: 'clinger', spots: ['hood', 'right'] },
   { at: 76, type: 'hazard', hazard: 'pickup' },
+  { at: 84, type: 'hazard', hazard: 'cart' },
   { at: 90, type: 'pee' },
   { at: 97, type: 'hazard', hazard: 'mattress' },
   { at: 104, type: 'clinger', spots: ['left', 'shieldL'] },

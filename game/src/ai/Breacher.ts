@@ -205,7 +205,7 @@ export class Breacher extends Gremlin {
       case 'knock': {
         while (this.knocks < KNOCK_COUNT && this.stateTime >= this.knocks * KNOCK_INTERVAL) this.knock();
         this.peek();
-        if (this.checkSlam(this.offHand, dt)) {
+        if (!this.doorHeldOpen() && this.checkSlam(this.offHand, dt)) {
           this.slammed();
           break;
         }
@@ -434,6 +434,13 @@ export class Breacher extends Gremlin {
       return;
     }
     this.setState('slammed');
+  }
+
+  /** A Tablet Zombie standing in this frame keeps the portal open: the door cannot be slammed (docs/01 door rules). */
+  private doorHeldOpen(): boolean {
+    const id = this.door?.id;
+    if (!id) return false;
+    return this.w.gremlins().some((g) => g.alive && g.type === 'zombie' && (g as unknown as { holdingDoorId?: string | null }).holdingDoorId === id);
   }
 
   /** After a slam: the leaf swings open anyway and the Breacher stumbles in dizzy. */

@@ -41,6 +41,8 @@ export interface BarSpots {
   brad: Vector3;
   kayden: Vector3;
   bradFacing: Vector3;
+  /** Where Brad steps out of Booth 8 when he stands up (clear of the table and bench). */
+  bradAisle: Vector3;
   marlene: Vector3;
   marleneFacing: Vector3;
   lady: Vector3;
@@ -64,7 +66,7 @@ export interface BarSceneParts {
   /** Claw machine moving parts: the claw (moves in the cabinet's local frame), the big button, the prize. */
   claw: Group;
   clawFrame: Group;
-  button: Mesh;
+  button: Mesh<BufferGeometry, MeshBasicMaterial>;
   dreamgate: Group;
   dreamGlow: Sprite;
   /** Atlas canvas texture (redraw the placemat when the Family Sheet changes). */
@@ -83,7 +85,7 @@ export interface FamilyText {
 // Local-frame layout (metres): x right, z toward the player's back; the bar counter is ahead at z = -5.2.
 const ROOM = { minX: -5, maxX: 5, minZ: -8, maxZ: 2.6, h: 3.2 };
 const COUNTER = { x0: -3.4, x1: 2.4, z: -5.2, d: 0.7, h: 1.1 };
-const CLAW = { x: 3.4, z: -2.0 };
+const CLAW = { x: 3.7, z: -3.0 };
 
 interface Light {
   p: Vector3;
@@ -200,7 +202,7 @@ function drawAtlas(g: CanvasRenderingContext2D, fam: FamilyText): void {
     g.fillRect(r.x, r.y, r.w, r.h);
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.font = font(120);
+    g.font = font(104);
     g.shadowColor = '#ff4fb4';
     g.shadowBlur = 30;
     g.fillStyle = '#ffd1ef';
@@ -425,8 +427,8 @@ export function buildBarScene(parent: Group, origin: Vector3, yaw: number, fam: 
     b.box(0.05, 0.3, 0.05, -1.5 + i * 0.35, COUNTER.h + 0.2, COUNTER.z - 0.15, 0xc0c0c8);
     b.box(0.07, 0.16, 0.07, -1.5 + i * 0.35, COUNTER.h + 0.42, COUNTER.z - 0.15, [0xff6a3a, 0x3ad6ff, 0xffd13a, 0x9a3aff][i], 0, true);
   }
-  // goose pole (the goose itself is a separate, spinning mesh)
-  b.cyl(0.025, 0.025, 0.9, -0.5, 2.15, minZ + 0.35, 0x9a9aa6, 6);
+  // the goose's chain from the ceiling (the goose itself is a separate, spinning mesh over the counter)
+  b.cyl(0.012, 0.012, 0.75, -0.5, h - 0.375, COUNTER.z, 0x9a9aa6, 4);
   // neon frame tubes around the sign
   b.box(3.3, 0.04, 0.04, -0.5, 2.88, minZ + 0.06, 0xff4fb4, 0, true);
   b.box(3.3, 0.04, 0.04, -0.5, 2.82 - 0.9, minZ + 0.06, 0xff4fb4, 0, true);
@@ -578,7 +580,7 @@ export function buildBarScene(parent: Group, origin: Vector3, yaw: number, fam: 
   }
   claw.position.set(0, 1.7, 0);
   clawFrame.add(claw);
-  const button = new Mesh(new SphereGeometry(0.11, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), new MeshBasicMaterial({ color: 0xff2a3a }));
+  const button = new Mesh<BufferGeometry, MeshBasicMaterial>(new SphereGeometry(0.11, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), new MeshBasicMaterial({ color: 0xff2a3a }));
   button.position.set(0.18, 1.0, 0.54);
   button.rotation.x = Math.PI / 2;
   clawFrame.add(button);
@@ -610,7 +612,8 @@ export function buildBarScene(parent: Group, origin: Vector3, yaw: number, fam: 
     gm.matrixAutoUpdate = true;
     goose.add(gm);
   }
-  goose.position.set(-0.5, 2.6, minZ + 0.35);
+  goose.position.set(-0.5, 2.0, COUNTER.z);
+  goose.scale.setScalar(1.6);
   group.add(goose);
 
   // Two real lights for the characters (the room itself is baked).
@@ -655,7 +658,8 @@ export function buildBarScene(parent: Group, origin: Vector3, yaw: number, fam: 
     brad: W(2.6, 0, -0.95),
     kayden: W(2.6, 0, -0.25),
     bradFacing: D(-1, 0),
-    marlene: W(0.6, 0, -6.1),
+    bradAisle: W(2.0, 0, -1.85),
+    marlene: W(0.6, 0.32, -6.1), // on the duckboards behind the bar, so her face clears the counter
     marleneFacing: D(0, 1),
     lady: W(-3.9, 0, -1.25),
     entrances: [
@@ -664,9 +668,9 @@ export function buildBarScene(parent: Group, origin: Vector3, yaw: number, fam: 
       { position: W(-4.3, 0, -6.4), facing: D(1, 0.2) }, // corridor
       { position: W(4.3, 0, -6.6), facing: D(-0.3, 1) }, // kitchen, east side
     ],
-    throwSpots: [W(-1.2, 0, -3.9), W(0.4, 0, -4.1), W(2.6, 0, -3.8), W(-3.0, 0, -3.8), W(3.6, 0, -4.3)],
+    throwSpots: [W(-1.2, 0, -3.9), W(0.4, 0, -4.1), W(2.4, 0, -4.1), W(-3.0, 0, -3.8), W(-3.4, 0, -1.8)],
     gusPath: [
-      W(-4.3, 0, -2.5), W(-3.2, 0, -3.8), W(-1.0, 0, -4.2), W(0.6, 0, -4.1), W(2.0, 0, -3.9), W(2.1, 0, -2.4), W(0.7, 0, -1.9), W(0.0, 0, -1.0),
+      W(-4.3, 0, -2.5), W(-3.4, 0, -3.6), W(-1.4, 0, -3.8), W(0.3, 0, -3.9), W(2.0, 0, -3.9), W(2.2, 0, -2.4), W(1.0, 0, -1.9), W(0.0, 0, -1.45),
     ],
     boothTable: W(-1.05, 0.8, -0.55),
     clawChute: clawFrame.localToWorld(new Vector3(0.3, 0.75, 0.5)),
