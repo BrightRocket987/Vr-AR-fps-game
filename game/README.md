@@ -1,7 +1,8 @@
-# GO TO BED!!! — the game (v0.1, playable slice)
+# GO TO BED!!! — the game (v0.2, playable campaign slice)
 
-A WebXR passthrough shooter for Meta Quest 2 / 3 / 3S. Open the page in the **Meta Quest Browser**, press *Enter your living
-room*, and goblin-toddler copies of your kids come through your real doors. Lifetime pops level up the blaster.
+A WebXR mixed-reality shooter for Meta Quest 2 / 3 / 3S. Open the page in the **Meta Quest Browser** and play three chapters
+in one session: get thrown out of a bar (VR), drive the kids home (VR), then hold your real living room (passthrough) while
+goblin-toddler copies of your kids come through your real doors and sit on your real couch. Lifetime pops level up the blaster.
 
 ## Play it
 
@@ -23,14 +24,23 @@ room*, and goblin-toddler copies of your kids come through your real doors. Life
 | Place / move a door | Off-hand trigger while pointing at the floor at the bottom of a real door (setup, or after pressing B/Y) |
 | Toggle door editing in play | Off-hand B/Y |
 | Begin the invasion | Weapon-hand trigger after the room is ready |
+| Steer the minivan (Chapter 2) | Grip the steering wheel rim with either hand and turn it; or push the off-hand thumbstick |
+| Change a diaper (Chapter 3) | Hold the off-hand grip and wipe downward over a Stinky |
+| Slam a door (Chapter 3) | Push the swinging virtual door leaf shut with the off hand (a fast push, or grip it briefly); never the real door |
 
 The wrist panel on the off hand shows pops, tier, patience, wave and ammo. The landing page has a **Diagnostics** box; copy
 it into chat when something goes wrong.
 
 ### Start options
 
-- **Chapter 3 · Bedtime (passthrough)**: the real room (scan import, or a virtual door you can move).
-- **Practice range (VR)**: an enclosed bar drawn over the passthrough, two doors and two couches; the same systems, no scan needed.
+- **Full campaign**: Chapter 1 → Chapter 2 → Chapter 3 → end card, about 22 minutes.
+- **Chapter 1 · The Tipsy Goose (VR)**: family night at the bar, ending with Gus the bouncer.
+- **Chapter 2 · Are We Home Yet? (VR)**: the drive home, back-seat needs and Mr. Jingles the ice cream truck.
+- **Chapter 3 · Bedtime (passthrough)**: the real room (scan import, or a virtual door you can move), five waves and the Big
+  Bean boss. Add `?boss=1` to the URL to start at the boss.
+- **Practice range (VR, endless)**: an enclosed bar drawn over the passthrough, two doors and two couches; endless waves, no boss.
+
+Options on the landing page: music, flashing effects (full or reduced confetti) and a driving comfort vignette.
 
 ## Develop
 
@@ -42,22 +52,33 @@ npm run typecheck
 npm test             # Vitest unit tests
 npm run build
 npm run test:xr      # headless emulated Quest (IWER) smoke test over synthetic rooms; screenshots in tests/xr/out/
+npm run test:xr -- --chapter campaign --room none   # walk the whole campaign (bar → drive → house → end)
+npm run test:xr -- --boss --room none               # Chapter 3 straight to Big Bean, win, reach the end card
 ```
 
-Desktop emulation query parameters: `emulate=quest3|quest2`, `room=living_room|kitchen|bedroom|none` (IWER synthetic rooms),
-`hands=1`, `autostart=1`, `chapter=house|range`.
+`test:xr` options: `--room living_room,kitchen,bedroom,none` (comma list), `--device quest3|quest2|quest2real`,
+`--chapter campaign|bar|drive|house|range`, `--seconds N`, `--boss`. Each run writes `tests/xr/out/report-<device>-<chapter>.json`.
+
+Desktop emulation query parameters: `emulate=quest3|quest2|quest2real` (`quest2real` has no mesh, depth or hit-test, like a
+real Quest 2), `room=living_room|kitchen|bedroom|none` (IWER synthetic rooms), `hands=1`, `autostart=1`,
+`chapter=campaign|bar|drive|house|range`, `boss=1`.
 
 ## Layout
 
 ```
-src/app       XRApp: renderer, the single immersive-ar session, frame loop, diagnostics
+src/app       XRApp: renderer, the single immersive-ar session, frame loop, chapter sequencing + fades, diagnostics
+src/core      EventBus, Save (family sheet, options, lifetime pops, blueprint)
 src/xr        Input (controllers + hands → one HandState), WebXR extra typings
-src/room      RoomModel, SceneImport (planes/meshes → room), GridNav (A*), Nav contract
+src/room      RoomModel, SceneImport (planes/meshes → room), Blueprint, GridNav (A*), Nav contract
+src/portals   PortalStencil, PortalDoor, NapDimension (the Land of No Bedtime behind real doors)
 src/combat    Weapon (tiers, reload gestures), Progression (pops → tier), PopFx (pooled VFX)
-src/ai        Avatar (Kenney CC0 characters + goblin palettes), Gremlin base, Scamp, Director (threat budget)
+src/ai        Avatar (Kenney CC0 characters + goblin palettes), Gremlin base, the gremlin roster, BigBean, Director (waves)
+src/bar       Chapter 1 parts: BarScene, Humans, Patrons, BarFx, BarLogic
+src/drive     Chapter 2 parts: Cockpit, Road, Steering, Timeline, Needs, Kids, CarGremlins, Jingles
 src/dialogue  Voice (generated lines + SFX, positional)
-src/ui        Hud (wrist panel, hint card, damage flash)
-src/chapters  House (chapter 3), BarRange (VR practice range)
+src/audio     Music (procedural per-chapter tracks)
+src/ui        Hud (wrist panel, hint card, subtitle strip, damage flash)
+src/chapters  Kit (shared shooter parts), Bar (1), Drive (2), House (3), BarRange (practice range), EndCard
 public/assets kenney/ (CC0 models), voice/ (Piper-generated lines), sfx/ (synthesised)
 tests/unit    Vitest;  tests/xr  Playwright + IWER
 ```

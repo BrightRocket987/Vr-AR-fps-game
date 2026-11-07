@@ -1,6 +1,7 @@
 // Headless WebXR smoke test: serves the built game, emulates a Quest with IWER + a synthetic room,
 // starts the session, lets the chapter run, pops a few gremlins, and asserts invariants.
-// Usage: node tests/xr/run.mjs [--room living_room] [--device quest3|quest2] [--seconds 20]
+// Usage: node tests/xr/run.mjs [--room living_room,none] [--device quest3|quest2|quest2real] [--seconds 20]
+//        [--chapter campaign|bar|drive|house|range] [--boss]
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';

@@ -1,30 +1,35 @@
-# 10 · Status (v0.1, built overnight 2026-11-07) and first playtest guide
+# 10 · Status (v0.2, built 2026-11-07) and first playtest guide
 
 ## What exists now
 
-A deployable WebXR build of **Chapter 3 · Bedtime** as a vertical slice, plus a VR **practice range** that proves the
-VR-inside-passthrough session model. Everything below was built, typechecked, unit-tested (100 tests) and run through the
-headless emulated-headset smoke test (synthetic living room, kitchen, and a scan-less room) in CI.
+A deployable WebXR build of the **whole campaign as a vertical slice**: Chapter 1 (VR bar), Chapter 2 (VR drive home),
+Chapter 3 (your real living room in passthrough, ending in the Big Bean boss) and an end card, all inside one
+`immersive-ar` session. A VR **practice range** plays the endless waves. Everything below was built, typechecked,
+unit-tested (167 tests) and run locally through the headless emulated-headset test (IWER synthetic living room, a scan-less
+room and a Quest 2 profile with no mesh or depth). GitHub CI gates on typecheck, unit tests and build; it also runs the
+headless test, informationally only, because a 2-core runner renders software WebXR too slowly to give a reliable result.
 
 | Area | Status |
 |---|---|
-| Single `immersive-ar` session, landing page with Family Sheet, diagnostics export, PWA-less "Add to library" flow | done |
-| Room import from Space Setup planes/meshes (doors, couches, tables, walls, floor, occluder) | done, verified in the emulator; real-headset labels unconfirmed |
+| Single `immersive-ar` session, landing page with Family Sheet, options (music, flash, comfort vignette), diagnostics export, Library tile icon | done |
+| Campaign flow (bar → drive → bedtime → end card) in one session with fades; each chapter also selectable alone | done |
+| **Chapter 1 · The Tipsy Goose** (VR, ~6 min): goose tutorial, reload lesson, claw machine (wins the Dreamgate), Nacho Avalanche, Brad (forehead only), 14 patrons in four groups (Trucker Hats throw peanuts, Jersey Guy chest-bumps, Book Club Lady helps), Gus the unbeatable bouncer, kicked out | done |
+| **Chapter 2 · Are We Home Yet?** (VR, ~4:30): minivan cockpit, steer by gripping the wheel (off-hand stick fallback), window gremlins, kids' needs (hungry, tablet broke, touching, "I have to pee"), 8 road hazards, Mr. Jingles the driverless ice cream truck | done |
+| **Chapter 3 · Bedtime** (passthrough): room import from Space Setup planes/meshes (doors, couches, tables, walls, floor, occluder) | done, verified in the emulator; real-headset labels unconfirmed |
 | Virtual door fallback + hand-placed doors + full **Blueprint** drawing tool (door, couch, table, wall, window, kids-room door; scale/rotate/delete; autosave) | done |
-| BINKY tiers 0–6 (stats, colours, pump / shake / twist reloads, hitscan + spread, haptics), lifetime-pop progression persisted | done (tiers 4–6 share tier-3 feel) |
-| Gremlins: Scamp, Couch Potato, Breacher (knock-knock, door leaf, slam counter), Stinky (diaper ring, clouds, detonation), Clinger (leap, cling, shake-off), Siren (inhale, scream, shush) | done |
+| BINKY tiers 0–6 (stats, colours, pump / shake / twist reloads, hitscan + spread, haptics), lifetime-pop progression persisted across chapters | done (tiers 4–6 share tier-3 feel) |
+| Gremlins: Scamp, Couch Potato, Breacher (knock-knock, door leaf, slam counter), Stinky (diaper ring, clouds, detonation), Clinger (leap, cling, shake-off), Siren (inhale, scream, shush), Tablet Zombie (holds doors open), Crawler | done |
+| **Big Bean** boss wave: three phases (Grabby → Demand with a diaper ring and four Stinkys → Tantrum), then the end card | done |
 | The WIPE off-hand tool (slap, diaper sweep, door slam) | done |
-| Threat-budget Director with five named waves + endless scaling, Quest 2 alive cap, couch-party comedy trigger | done |
-| Stencil portals into the Land of No Bedtime behind real doors, near-player fade | done (render-order reasoning verified in the emulator; real-device check pending) |
+| Threat-budget Director: five named waves, a boss wave, endless scaling for the range, Quest 2 alive cap, couch-party comedy trigger | done |
+| Stencil portals into the Land of No Bedtime behind real doors, near-player fade | done (render order checked in the emulator; real-device check pending) |
 | A\* navigation grid over the floor polygon minus blockers | done |
-| Pooled confetti / tracers / ghosts / floating text, wrist HUD, hint card, damage flash, cushion view-block | done |
-| 77 generated voice lines (Piper, public-domain voices, kid pitch chain) + 12 synthesised SFX, positional | done; quality is "intelligible cartoon", not actor-grade |
-| 12 CC0 Kenney characters × 6 goblin palettes, Kenney furniture/food props | done |
-| CI: typecheck, unit tests, build, headless XR smoke test; Pages deploy workflow with `gh-pages` fallback | done |
-| Campaign flow (bar → drive → bedtime → end card) in one session with fades | done (Chapters 1 and 2 in progress) |
-| Procedural music per chapter (bar, drive, bedtime, boss, lullaby), aim along the pointer ray, bark subtitles, Library icon | done |
-| Bosses (Big Bean, Queen Pickle), Tablet Zombie, Crawler, Chucker, Rusher, Stack, Teddy Tank, Kayden | not built |
-
+| Pooled confetti / tracers / ghosts / floating text, wrist HUD, hint card, subtitle strip, damage flash, cushion view-block | done |
+| 201 generated voice lines (Piper, public-domain voices, kid and adult pitch presets) + 12 synthesised SFX, positional | done; quality is "intelligible cartoon", not actor-grade |
+| Procedural music per chapter (bar, drive, bedtime, boss, lullaby); aim along the pointer ray | done |
+| 12 CC0 Kenney characters × 6 goblin palettes, Kenney furniture/food props, procedural bar, minivan and road | done |
+| CI (typecheck, unit tests, build, informational headless XR test); Pages deploy workflow with `gh-pages` fallback | done |
+| Queen Pickle (second boss), Big Bean's Peek-a-boo phase, Chucker, Rusher, Stack, Teddy Tank, Kayden | not built |
 
 ## What the owner must do once
 
@@ -40,27 +45,38 @@ headless emulated-headset smoke test (synthetic living room, kitchen, and a scan
 3. Open the URL in the **Meta Quest Browser**, use the browser menu → **Add this page to your library**, press
    **Enter your living room**, accept the Spatial and hand-tracking prompts.
 
-## First playtest script (10 minutes)
+## First playtest script (about 20 minutes)
 
-1. Start at the default chapter. Within 4 s you should see either **"Room scan found"** with door/couch counts, or
-   **"No room scan found"** with a virtual door 2.5 m ahead. Say which, and copy the **Diagnostics** box afterwards (it includes
-   the labels the headset reported, which is the one fact the plan could not verify without you).
+**Chapter 3 first** (the default choice; it carries the most risk):
+
+1. Within 4 s you should see either **"Room scan found"** with door/couch counts, or **"No room scan found"** with a
+   virtual door 2.5 m ahead. Say which, and copy the **Diagnostics** box afterwards (it includes the labels the headset
+   reported, which is the one fact the plan could not verify without you).
 2. If a door is wrong or missing: point the **off hand** at the bottom of the real door and pull its trigger to move the door
    there, or press **B/Y** to open the Blueprint tool (thumbstick cycles tools, trigger places, squeeze + stick resizes/rotates).
 3. Pull the blaster trigger to begin. Wave 1 is Scamps only. Note: does the **portal** sit in your door frame? Do gremlins walk
    out of it? Do they **sit on your couch** when you ignore them? Is the frame rate smooth?
 4. Reload: grab the blaster with the other hand and pump it. Press **A/X** if the gesture fails; say which.
-5. Wave 2 brings a **Couch Potato**; Wave 3 the **Breacher** (three knocks on a door: push the swinging leaf back to slam it);
-   Wave 4 **Stinkys** (hold grip and wipe downward over one to change the diaper, or shoot it and stand clear of the cloud).
-6. Try hand tracking (put the controllers down): pinch to shoot, pinch with the other hand on the blaster to reload.
-7. Try **Practice range** from the landing page: a VR bar should fully cover the passthrough.
+5. Wave 2 brings a **Couch Potato**; Wave 3 the **Breacher** (three knocks on a door: push the swinging leaf back to slam it)
+   and the **Crawler**; Wave 4 **Stinkys** (hold grip and wipe downward over one to change the diaper, or shoot it and stand
+   clear of the cloud) and the **Tablet Zombie** (it holds a door open: no slamming until it pops).
+6. The full chapter runs about 11 minutes. To jump straight to **Big Bean**, add `?boss=1` to the URL.
+7. Try hand tracking (put the controllers down): pinch to shoot, pinch with the other hand on the blaster to reload.
+
+**Then the VR chapters** (landing page → chapter select, or **Full campaign** for all of it):
+
+8. **Chapter 1 · The Tipsy Goose**: the bar should fully cover the passthrough. Shoot the goose, pump-reload, win the claw
+   machine, survive the Nacho Avalanche, hit Brad in the forehead, then lose to Gus (that is the story).
+9. **Chapter 2 · Are We Home Yet?**: grab the wheel rim with the grip button to steer (or push the off-hand stick), shoot the
+   window gremlins with the other hand. Set **Driving comfort vignette** to On in the landing page's Options if the road motion bothers you; say whether it helped.
 
 ## What to report back (anything in this list is gold)
 
 - The labels line from Diagnostics (`labels: plane:door×1, plane:couch×1 …`) and the room source (scene / mixed / virtual).
-- Frame-rate feel (smooth / judder / stutter when a portal opens), on Quest 2 or Quest 3.
+- Frame-rate feel (smooth / judder / stutter when a portal opens), on Quest 2 or Quest 3, per chapter.
 - Where gremlins appeared relative to your real door and couch (centimetres matter).
-- Any gesture that did not register (pump, slam, wipe, pinch).
+- Any gesture that did not register (pump, slam, wipe, pinch, wheel grip).
+- Any motion discomfort in the drive.
 - Anything that made you laugh, and anything that was boring.
 - The full Diagnostics text pasted into chat, or a headset screenshot/video (Meta button).
 
@@ -69,6 +85,8 @@ headless emulated-headset smoke test (synthetic living room, kitchen, and a scan
 - Real Quest Browser semantic labels have never been observed by this project; if your door is not labelled `door`, the
   game falls back to a virtual door and you place the real one by hand.
 - Depth occlusion (gremlins hidden behind real furniture) is not enabled; the room mesh is a depth-only occluder on Quest 3 only.
-- The soft-shadowed look is baked lighting only; no post-processing. Draw calls in the emulator: 34–72.
+- The soft-shadowed look is baked lighting only; no post-processing. Draw calls in the emulator: 46–86 (the bar is the heaviest).
 - Voice lines are TTS; some kid lines land near "chipmunk". Volume levels are untested on headset speakers.
-- Chapters 1–2 are not built yet; the practice range stands in for the bar.
+- The drive's comfort (world sliding past a fixed car) is untested on a real headset.
+- Recentering the view (holding the Meta button) mid-chapter is not handled yet; if the room drifts after a recenter, exit and enter again.
+- Queen Pickle and Big Bean's Peek-a-boo phase from the design are not built; the finale is Big Bean's three phases.
