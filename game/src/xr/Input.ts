@@ -14,6 +14,14 @@ export class HandState {
   readonly hand: Group;
   readonly position = new Vector3();
   readonly quaternion = new Quaternion();
+  /**
+   * The system pointer ray (targetRaySpace): what the Quest laser uses, and therefore what players expect to aim
+   * with. For tracked hands the runtime derives it from shoulder → pinch, which is far steadier than the wrist.
+   */
+  readonly aimPosition = new Vector3();
+  readonly aimQuaternion = new Quaternion();
+  /** True while the runtime reports a target-ray pose. */
+  aimValid = false;
   readonly velocity = new Vector3();
   readonly angularVelocity = new Vector3();
   speed = 0;
@@ -46,9 +54,9 @@ export class HandState {
     this.hand = hand;
   }
 
-  /** Forward direction of the grip (-Z of the grip space, the usual "barrel" direction). */
+  /** Pointing direction: the target ray's -Z when available, else the grip's -Z. */
   forward(out = new Vector3()): Vector3 {
-    return out.set(0, 0, -1).applyQuaternion(this.quaternion).normalize();
+    return out.set(0, 0, -1).applyQuaternion(this.aimValid ? this.aimQuaternion : this.quaternion).normalize();
   }
 
   pulse(intensity: number, ms: number): void {
@@ -82,6 +90,14 @@ export class HandState {
     }
     src.getWorldPosition(this.position);
     src.getWorldQuaternion(this.quaternion);
+    this.aimValid = this.connected && this.ray.visible;
+    if (this.aimValid) {
+      this.ray.getWorldPosition(this.aimPosition);
+      this.ray.getWorldQuaternion(this.aimQuaternion);
+    } else {
+      this.aimPosition.copy(this.position);
+      this.aimQuaternion.copy(this.quaternion);
+    }
     if (this.hasLast && dt > 0) {
       this.velocity.copy(this.position).sub(this.lastPos).divideScalar(dt);
       this.speed = this.velocity.length();

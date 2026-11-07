@@ -110,12 +110,13 @@ export class Weapon {
     const off = this.input.offHand;
     this.root.visible = hand.connected;
     if (!hand.connected) return;
-    // Follow the hand with a light smoothing on orientation.
-    this.root.position.copy(hand.position);
-    this.root.quaternion.slerp(hand.quaternion, Math.min(1, 25 * dt));
-    if (this.root.quaternion.angleTo(hand.quaternion) > 0.3) this.root.quaternion.copy(hand.quaternion);
-    // Hands: offset the gun forward from the wrist so it sits in the palm.
-    if (hand.isHand) this.root.position.add(tmpV.set(0, -0.02, -0.08).applyQuaternion(this.root.quaternion));
+    // The barrel follows the pointer ray (what the system laser and players expect); the body sits in the hand:
+    // at the grip for controllers, just ahead of the pinch point for tracked hands.
+    const aimQ = hand.aimQuaternion;
+    this.root.quaternion.slerp(aimQ, Math.min(1, 25 * dt));
+    if (this.root.quaternion.angleTo(aimQ) > 0.3) this.root.quaternion.copy(aimQ);
+    if (hand.isHand) this.root.position.copy(hand.aimPosition).add(tmpV.set(0, -0.03, 0.02).applyQuaternion(this.root.quaternion));
+    else this.root.position.copy(hand.position);
 
     this.cooldown = Math.max(0, this.cooldown - dt);
     for (let i = 0; i < this.ammoPips.length; i++) this.ammoPips[i].visible = i < Math.ceil((this.ammo / this.tier.mag) * this.ammoPips.length);

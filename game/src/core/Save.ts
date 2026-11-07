@@ -20,7 +20,7 @@ export interface SaveData {
   bestWave: number;
   family: FamilySheet;
   rooms: Record<string, RoomLayoutSave>;
-  options: { vignette: boolean; reducedFlash: boolean; subtitles: boolean };
+  options: { vignette: boolean; reducedFlash: boolean; subtitles: boolean; music: boolean };
 }
 
 const KEY = 'gotobed.save.v1';
@@ -31,7 +31,7 @@ export const DEFAULT_SAVE: SaveData = {
   bestWave: 0,
   family: { parent: 'Hey', kid1: 'Pickle', kid2: 'Bean', weaponHand: 'right', comfort: 'standing' },
   rooms: {},
-  options: { vignette: false, reducedFlash: false, subtitles: true },
+  options: { vignette: false, reducedFlash: false, subtitles: true, music: true },
 };
 
 export class Save {

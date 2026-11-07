@@ -96,6 +96,9 @@ async function main(): Promise<void> {
   $<HTMLSelectElement>('hand').value = f.weaponHand;
   $<HTMLSelectElement>('comfort').value = f.comfort;
   if (params.get('chapter')) $<HTMLSelectElement>('chapter').value = params.get('chapter') as string;
+  $<HTMLSelectElement>('music').value = save.data.options.music ? 'on' : 'off';
+  $<HTMLSelectElement>('flash').value = save.data.options.reducedFlash ? 'reduced' : 'full';
+  $<HTMLSelectElement>('vignette').value = save.data.options.vignette ? 'on' : 'off';
 
   const debug: DebugApi = {
     app,
@@ -152,6 +155,9 @@ async function main(): Promise<void> {
       weaponHand: $<HTMLSelectElement>('hand').value as 'left' | 'right',
       comfort: $<HTMLSelectElement>('comfort').value as 'standing' | 'seated',
     };
+    save.data.options.music = $<HTMLSelectElement>('music').value === 'on';
+    save.data.options.reducedFlash = $<HTMLSelectElement>('flash').value === 'reduced';
+    save.data.options.vignette = $<HTMLSelectElement>('vignette').value === 'on';
     save.persist();
     const choice = $<HTMLSelectElement>('chapter').value;
     document.body.classList.add('in-xr');

@@ -1,5 +1,6 @@
 import { AudioListener, BackSide, Clock, Group, HemisphereLight, Mesh, MeshBasicMaterial, PerspectiveCamera, Quaternion, Scene, SphereGeometry, Vector3, WebGLRenderer } from 'three';
 import { EventBus } from '../core/EventBus';
+import { Music, trackForChapter } from '../audio/Music';
 import { Save } from '../core/Save';
 import { Input } from '../xr/Input';
 import { sessionExtras } from '../xr/webxr-extras';
@@ -120,6 +121,8 @@ export class XRApp {
   private pending: { result?: ChapterResult; restart: boolean } | null = null;
   private readonly finished: ChapterResult[] = [];
   private readonly fadeMesh: Mesh;
+  /** Procedural background music (created on the first session, after the audio unlock). */
+  music: Music | null = null;
   private fadeFrom = 0;
   private fadeTo = 0;
   private fadeT = 1;
@@ -183,6 +186,11 @@ export class XRApp {
     }
   }
 
+  private playMusicFor(chapter: Chapter): void {
+    if (!this.music) return;
+    this.music.play(this.save.data.options.music ? trackForChapter(chapter.name) : null);
+  }
+
   /** Current chapter (for the debug API). */
   get currentChapter(): Chapter | null {
     return this.chapter;
@@ -220,6 +228,7 @@ export class XRApp {
       if (next) {
         this.chapter = next;
         this.onChapterChange?.(next);
+        this.playMusicFor(next);
         try {
           await next.start(this.context);
           this.chapterReady = true;
@@ -308,10 +317,18 @@ export class XRApp {
     try {
       const ctx = this.listener.context;
       if (ctx.state === 'suspended') void ctx.resume();
+      if (!this.music) {
+        this.music = new Music(ctx, this.listener.getInput());
+        // Boss waves switch to the boss track; the chapter track returns when the chapter changes.
+        this.bus.on('wave:start', ({ name }) => {
+          if (/bean|boss|queen/i.test(name) && this.save.data.options.music) this.music?.play('boss');
+        });
+      }
     } catch {
       /* ignore */
     }
     session.addEventListener('end', () => {
+      this.music?.stop();
       this.renderer.setAnimationLoop(null);
       this.session = null;
       this.refSpace = null;
@@ -354,6 +371,7 @@ export class XRApp {
     if (!first) throw new Error(`Unknown chapter: ${this.sequence[0]}`);
     this.chapter = first;
     this.onChapterChange?.(first);
+    this.playMusicFor(first);
     this.clock.start();
     this.fpsWindowStart = performance.now();
     this.chapterReady = false;
