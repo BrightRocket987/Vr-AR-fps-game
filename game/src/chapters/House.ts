@@ -164,6 +164,8 @@ export class House implements Chapter {
     this.progression.onTierChange = (t) => {
       this.weapon.setTier(t);
       this.hud.say(`TIER UP: ${t.name}`, 'The Dreamgate hums. Your blaster grows.', 4);
+      if (t.tier === 1) this.voice.sayId('narrator_tier_up_double_binky', null);
+      if (t.tier === 4) this.voice.sayId('narrator_tier_up_diaper_cannon', null);
     };
     this.unsub.push(
       ctx.bus.on('enemy:popped', () => {
@@ -176,9 +178,13 @@ export class House implements Chapter {
       ctx.bus.on('wave:start', ({ name, index }) => {
         this.hud.say(`Wave ${index + 1}: ${name}`, '', 3.5);
         this.voice.sfx('tier_up', null, 0.5);
+        if (index === 0) this.voice.sayId('narrator_wave_one', null);
         this.openDoorsForWave(index);
       }),
-      ctx.bus.on('wave:clear', () => this.hud.say('Wave clear', 'Breathe. They are regrouping.', 3)),
+      ctx.bus.on('wave:clear', () => {
+        this.hud.say('Wave clear', 'Breathe. They are regrouping.', 3);
+        this.voice.sayId('narrator_wave_clear', null);
+      }),
       ctx.bus.on('hint', ({ text, sub, seconds }) => this.hud.say(text, sub, seconds)),
       ctx.bus.on('spawn:request', ({ type, position, facing }) => {
         this.director.spawn(type, { kind: 'crack', position: position.clone(), facing: facing.clone() });
