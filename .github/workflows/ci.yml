@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    paths: ['game/**', '.github/workflows/ci.yml']
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: game/package-lock.json }
+      - run: npm ci
+        working-directory: game
+      - run: npm run typecheck
+        working-directory: game
+      - run: npm test
+        working-directory: game
+      - run: npm run build
+        working-directory: game
+      - name: Install Playwright Chromium
+        run: npx --yes playwright@1.56.1 install --with-deps chromium
+        working-directory: game
+      - name: Headless XR smoke test (IWER emulated Quest)
+        run: npm run test:xr
+        working-directory: game
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: xr-screenshots, path: game/tests/xr/out, if-no-files-found: ignore }

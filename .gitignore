@@ -1,5 +1,8 @@
 node_modules/
 dist/
+dist-ts/
 .tts/
 voices/
 *.log
+game/test-results/
+game/tests/xr/out/

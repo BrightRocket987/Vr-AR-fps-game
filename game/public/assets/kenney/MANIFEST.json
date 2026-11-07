@@ -1,0 +1,287 @@
+{
+  "name": "Kenney CC0 assets vendored for GO TO BED!!!",
+  "license": "CC0-1.0",
+  "author": "Kenney (www.kenney.nl)",
+  "mirror": "https://github.com/shorepine/kenney",
+  "mirror_commit": "3694c6879e487c108f55677be7dd2ca75b07cc3b",
+  "raw_base": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/",
+  "generated_by": "asset subagent; re-run tools/make_goblin_palettes.py for the derived palettes",
+  "file_count": 32,
+  "total_bytes": 3384486,
+  "files": [
+    {
+      "path": "food/Textures/colormap.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/food/Textures/colormap.png",
+      "sha256": "75baf74d9483a0fc56ac21ceba346fbe16fc24a2a1bf0524c53e6bbe802e1153",
+      "bytes": 10715,
+      "license": "CC0-1.0",
+      "kit": "Food Kit"
+    },
+    {
+      "path": "food/bottle-ketchup.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/food/bottle-ketchup.glb",
+      "sha256": "26b0cd52d36be6c432ba7862cc817f39e5ce74482013a3ac3ba6a6d4730489be",
+      "bytes": 9620,
+      "license": "CC0-1.0",
+      "kit": "Food Kit"
+    },
+    {
+      "path": "food/burger.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/food/burger.glb",
+      "sha256": "b982f15d980ef49f3aa295fda03b1926b0b9a29d3d000d139e111d734474c99b",
+      "bytes": 34536,
+      "license": "CC0-1.0",
+      "kit": "Food Kit"
+    },
+    {
+      "path": "food/pizza.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/food/pizza.glb",
+      "sha256": "e98eda0a63421bc4e86f063ebd096a21e50254b169ddbba945d2473b59390951",
+      "bytes": 106780,
+      "license": "CC0-1.0",
+      "kit": "Food Kit"
+    },
+    {
+      "path": "food/soda-bottle.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/food/soda-bottle.glb",
+      "sha256": "879a49cec70fed49244256c9250e72fdf27dcdc5d2dbb093c9ac9c9a08170f4d",
+      "bytes": 11324,
+      "license": "CC0-1.0",
+      "kit": "Food Kit"
+    },
+    {
+      "path": "furniture/doorway.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/doorway.glb",
+      "sha256": "08983e299822140d580eb55d4b4e4e4552c37bb6e88571e41d2b7b5d2eef987e",
+      "bytes": 14532,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "furniture/doorwayOpen.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/doorwayOpen.glb",
+      "sha256": "cf05e165ea26dbbeaab4dc6296c143ef5f5a001e2ab5af9cd4fd65739408317e",
+      "bytes": 3256,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "furniture/loungeChair.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/loungeChair.glb",
+      "sha256": "ddfe6bc4b3451bca61666d7b614552d6ed2a03d82fc76244b72ae3155874dc6c",
+      "bytes": 9648,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "furniture/loungeSofa.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/loungeSofa.glb",
+      "sha256": "1886b811c0d3ad0d8525a4fd43adf4112c497c8e0ed906f06877ca3517f4c7dd",
+      "bytes": 9644,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "furniture/loungeSofaLong.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/loungeSofaLong.glb",
+      "sha256": "452df1c862f97781615e2c1c832913b48cf6c6f011d3260dc023ff3f117cc9d1",
+      "bytes": 13112,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "furniture/table.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/table.glb",
+      "sha256": "ff1a94498d023957f4bc3ff6f55a7a82977d336dbf01a573b3364f03afe5ff61",
+      "bytes": 8196,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "furniture/tableCoffee.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/furniture/tableCoffee.glb",
+      "sha256": "e38bea760fbd514efbb75528d09b4752c91af44677bbb97e6d4386c263525179",
+      "bytes": 8256,
+      "license": "CC0-1.0",
+      "kit": "Furniture Kit"
+    },
+    {
+      "path": "mini-characters/Textures/colormap-goblin-0.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "133901fc3ae4840d3a4ba24a8a5f205d77025620d98a197855df64870de22061",
+      "bytes": 13059,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters",
+      "derived": true,
+      "generator": "tools/make_goblin_palettes.py",
+      "note": "Recolour of colormap.png (skin cells re-hued, clothing saturated); same layout."
+    },
+    {
+      "path": "mini-characters/Textures/colormap-goblin-1.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "fc918c7be1f8813c2ca4bd819935b71d7dc3fd130a673e6f8fad57228a8e1345",
+      "bytes": 13115,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters",
+      "derived": true,
+      "generator": "tools/make_goblin_palettes.py",
+      "note": "Recolour of colormap.png (skin cells re-hued, clothing saturated); same layout."
+    },
+    {
+      "path": "mini-characters/Textures/colormap-goblin-2.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "bab862174b216c16be25201e65c273723eccd94fd759951ad18298509934487c",
+      "bytes": 13090,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters",
+      "derived": true,
+      "generator": "tools/make_goblin_palettes.py",
+      "note": "Recolour of colormap.png (skin cells re-hued, clothing saturated); same layout."
+    },
+    {
+      "path": "mini-characters/Textures/colormap-goblin-3.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "3547d29cfc9105d73b7edf4157967c1b9fb707e571c84041f5b14be694eb0dd8",
+      "bytes": 13172,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters",
+      "derived": true,
+      "generator": "tools/make_goblin_palettes.py",
+      "note": "Recolour of colormap.png (skin cells re-hued, clothing saturated); same layout."
+    },
+    {
+      "path": "mini-characters/Textures/colormap-goblin-4.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "68a76431c600935613993e1df9256c922b61ac203c115c72cd1d6d3c2e13902c",
+      "bytes": 8014,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters",
+      "derived": true,
+      "generator": "tools/make_goblin_palettes.py",
+      "note": "Recolour of colormap.png (skin cells re-hued, clothing saturated); same layout."
+    },
+    {
+      "path": "mini-characters/Textures/colormap-goblin-5.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "a3eb1ba6e2c2d3586601f389d12d7ac5bfb335c65ca22710afad4f9107bd7c83",
+      "bytes": 13051,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters",
+      "derived": true,
+      "generator": "tools/make_goblin_palettes.py",
+      "note": "Recolour of colormap.png (skin cells re-hued, clothing saturated); same layout."
+    },
+    {
+      "path": "mini-characters/Textures/colormap.png",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/Textures/colormap.png",
+      "sha256": "0d4947d34ff32acf4a359c7f22ca784e057e7e72f622170a9a77b6fc88fdb70e",
+      "bytes": 8706,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-female-a.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-female-a.glb",
+      "sha256": "8cfcff43460da8b421f2a7fdfb43ec177321cad2746db9497cbf128d5806e2a8",
+      "bytes": 273448,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-female-b.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-female-b.glb",
+      "sha256": "2288438e7baf9acc91a870c82dc00d66710bb486592cfc3474ef8ed93a03863a",
+      "bytes": 252140,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-female-c.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-female-c.glb",
+      "sha256": "3cd9e1b5d6409fce0ba1af617d9e008c3069493185a4c100f49fb99a2626a055",
+      "bytes": 252040,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-female-d.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-female-d.glb",
+      "sha256": "67f61708743bd34f91a4c2ba8160b61bf2e7d4ec2ca6647dfe99873422561410",
+      "bytes": 258760,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-female-e.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-female-e.glb",
+      "sha256": "3ee3939f80d718945fcb9199f909a92c39669e38aeec7f544536b5dce6e79f98",
+      "bytes": 248012,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-female-f.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-female-f.glb",
+      "sha256": "2ff4311897bfaf99be80d2fa13918db30f506607da0291640b2609d82b70e0ca",
+      "bytes": 259488,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-male-a.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-male-a.glb",
+      "sha256": "77572792bfe2773b715b8cd8e18644b52b3e1f155fe10450254b50f9c364382a",
+      "bytes": 246916,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-male-b.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-male-b.glb",
+      "sha256": "791fc0c203924c175c0a3d5b60d030daf36797b039506689cf7cd01ef5253b3c",
+      "bytes": 247332,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-male-c.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-male-c.glb",
+      "sha256": "672a6506f7475bbd655da1d7ff712c1729a430f134c62385a4e5d3c1378acb40",
+      "bytes": 263104,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-male-d.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-male-d.glb",
+      "sha256": "dd12b2e75ffb1cdb45aaec3916c3d6e732929ccb4a8b89b946f69baaabfa64da",
+      "bytes": 245184,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-male-e.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-male-e.glb",
+      "sha256": "cd76681090ce29861b055b0f8b2bdcf84bfccc4ca816f428df42a9bb76d6e1b6",
+      "bytes": 242704,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "mini-characters/character-male-f.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/mini-characters/character-male-f.glb",
+      "sha256": "ed151fc47c5cd6be9693c524e92f045170c965819f4f81b28ed66dcc3c1085bf",
+      "bytes": 249388,
+      "license": "CC0-1.0",
+      "kit": "Mini Characters"
+    },
+    {
+      "path": "weapon/pistol.glb",
+      "source_url": "https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/weapon/pistol.glb",
+      "sha256": "7e48e23afc8d368aaca9fdbb3f35c6714f25f619ea8bd39ed69557d9d1dea5f4",
+      "bytes": 24144,
+      "license": "CC0-1.0",
+      "kit": "Weapon Pack"
+    }
+  ]
+}

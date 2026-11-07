@@ -1,0 +1,29 @@
+Kenney assets - CC0 1.0 Universal (Public Domain Dedication)
+=============================================================
+
+Every file in this folder (game/public/assets/kenney/) and its sub-folders was made by
+Kenney (Kenney Vleugels, www.kenney.nl) and released under the Creative Commons Zero
+(CC0 1.0 Universal) licence: https://creativecommons.org/publicdomain/zero/1.0/
+
+  "You can copy, modify, distribute and perform the work, even for commercial purposes,
+   all without asking permission."
+
+Kits used: Mini Characters, Furniture Kit, Weapon Pack, Food Kit (3D, glTF binary).
+Credit is not required by the licence, but appreciated: "Assets by Kenney (www.kenney.nl)".
+
+Source
+------
+The files were downloaded from the login-free GitHub mirror of Kenney's packs
+
+  https://github.com/shorepine/kenney
+  pinned commit 3694c6879e487c108f55677be7dd2ca75b07cc3b
+  raw base      https://raw.githubusercontent.com/shorepine/kenney/3694c6879e487c108f55677be7dd2ca75b07cc3b/3d/
+
+MANIFEST.json next to this file lists every file with its exact source URL, byte size and
+SHA-256 so the download is reproducible and auditable.
+
+Derived files
+-------------
+mini-characters/Textures/colormap-goblin-{0..5}.png are recolours of Kenney's
+mini-characters/Textures/colormap.png produced by tools/make_goblin_palettes.py in this
+repository. They are likewise dedicated to the public domain under CC0 1.0.
