@@ -23,6 +23,13 @@ export class Hud {
   private readonly wristCanvas = document.createElement('canvas');
   private readonly wristTex: CanvasTexture;
   private readonly card: Mesh;
+  /** Small subtitle strip low in the view for character barks (never covers the onboarding card). */
+  private readonly sub: Mesh;
+  private readonly subCanvas = document.createElement('canvas');
+  private readonly subTex: CanvasTexture;
+  private subUntil = 0;
+  /** Set false to hide bark subtitles (accessibility option). */
+  subtitlesEnabled = true;
   private readonly cardCanvas = document.createElement('canvas');
   private readonly cardTex: CanvasTexture;
   private readonly flash: Sprite;
@@ -54,6 +61,14 @@ export class Hud {
     this.card.visible = false;
     this.group.add(this.card);
 
+    this.subCanvas.width = 1024;
+    this.subCanvas.height = 112;
+    this.subTex = new CanvasTexture(this.subCanvas);
+    this.sub = new Mesh(new PlaneGeometry(0.62, 0.068), new MeshBasicMaterial({ map: this.subTex, transparent: true, depthTest: false }));
+    this.sub.renderOrder = 52;
+    this.sub.visible = false;
+    this.group.add(this.sub);
+
     this.flash = new Sprite(new SpriteMaterial({ color: 0xff2200, transparent: true, opacity: 0, depthTest: false }));
     this.flash.scale.set(4, 4, 1);
     this.flash.renderOrder = 60;
@@ -81,8 +96,32 @@ export class Hud {
   }
 
   subtitle(text: string, speaker: string): void {
-    if (this.cardLife > 0 && this.cardText && performance.now() < this.cardUntil && !this.cardSub.startsWith('“')) return; // don't stomp onboarding cards
-    this.say(speakerLabel(speaker), `“${text}”`, Math.min(4, 1.5 + text.length * 0.06));
+    if (!this.subtitlesEnabled || speaker === 'ghost') return;
+    const g = this.subCanvas.getContext('2d')!;
+    const W = this.subCanvas.width, H = this.subCanvas.height;
+    g.clearRect(0, 0, W, H);
+    roundRect(g, 0, 0, W, H, 30, 'rgba(20,18,28,0.78)');
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.font = 'bold 40px "Trebuchet MS", sans-serif';
+    const who = speakerLabel(speaker);
+    const line = `${who}: “${text}”`;
+    let size = 40;
+    while (size > 24 && g.measureText(line).width > W - 40) {
+      size -= 2;
+      g.font = `bold ${size}px "Trebuchet MS", sans-serif`;
+    }
+    g.fillStyle = '#ffcc33';
+    const whoW = g.measureText(`${who}: `).width;
+    const total = g.measureText(line).width;
+    const x0 = W / 2 - total / 2;
+    g.textAlign = 'left';
+    g.fillText(`${who}: `, x0, H / 2);
+    g.fillStyle = '#f4efe6';
+    g.fillText(`“${text}”`, x0 + whoW, H / 2);
+    this.subTex.needsUpdate = true;
+    this.sub.visible = true;
+    this.subUntil = performance.now() + Math.min(4000, 1400 + text.length * 60);
   }
 
   damageFlash(): void {
@@ -104,6 +143,12 @@ export class Hud {
     const target = h.clone().addScaledVector(f, 1.6).add(new Vector3(0, -0.25, 0));
     this.card.position.lerp(target, Math.min(1, 4 * dt));
     this.card.lookAt(h);
+    if (this.sub.visible) {
+      const subTarget = h.clone().addScaledVector(f, 1.3).add(new Vector3(0, -0.42, 0));
+      this.sub.position.lerp(subTarget, Math.min(1, 6 * dt));
+      this.sub.lookAt(h);
+      if (performance.now() > this.subUntil) this.sub.visible = false;
+    }
     if (this.card.visible && this.cardLife > 0 && performance.now() > this.cardUntil) this.card.visible = false;
     // Damage flash sits on the head.
     if (this.flashLife > 0) {

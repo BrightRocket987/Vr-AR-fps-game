@@ -59,6 +59,7 @@ export class Kit {
     this.voice = new Voice(ctx.listener, ctx.bus, this.baseUrl);
     this.hud = new Hud(ctx.input, (o) => ctx.headPosition(o), (o) => ctx.headForward(o));
     this.voice.onSubtitle = (t, s) => this.hud.subtitle(t, s);
+    this.hud.subtitlesEnabled = ctx.save.data.options.subtitles;
     this.progression = new Progression(ctx.save, ctx.bus);
     this.avatars = new AvatarFactory(`${this.baseUrl}/kenney`);
     this.weapon = new Weapon(ctx.input, ctx.bus, this.fx, this.voice, targets);
