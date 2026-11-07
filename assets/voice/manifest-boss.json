@@ -1,0 +1,211 @@
+{
+  "lines": {
+    "boss_narrator_big_one": {
+      "file": "boss_narrator_big_one.ogg",
+      "speaker": "narrator",
+      "text": "Big one incoming. Mind the frame.",
+      "emotion": "monotone",
+      "trigger": "boss wave start, the largest door rumbles (4 s before he squeezes in)",
+      "cooldown_s": 60,
+      "duration_s": 1.98,
+      "takes": [
+        "boss_narrator_big_one.ogg",
+        "boss_narrator_big_one_b.ogg"
+      ]
+    },
+    "boss_narrator_weak_spot": {
+      "file": "boss_narrator_weak_spot.ogg",
+      "speaker": "narrator",
+      "text": "Aim for the pacifier. Dodge sideways.",
+      "emotion": "monotone",
+      "trigger": "Big Bean wedged in the door, fight starts",
+      "cooldown_s": 60,
+      "duration_s": 2.572,
+      "takes": [
+        "boss_narrator_weak_spot.ogg",
+        "boss_narrator_weak_spot_b.ogg"
+      ]
+    },
+    "boss_narrator_tantrum": {
+      "file": "boss_narrator_tantrum.ogg",
+      "speaker": "narrator",
+      "text": "Tantrum. Stand back from the door.",
+      "emotion": "monotone",
+      "trigger": "Tantrum phase starts (floor slaps)",
+      "cooldown_s": 60,
+      "duration_s": 2.212,
+      "takes": [
+        "boss_narrator_tantrum.ogg",
+        "boss_narrator_tantrum_b.ogg"
+      ]
+    },
+    "boss_narrator_portals_closing": {
+      "file": "boss_narrator_portals_closing.ogg",
+      "speaker": "narrator",
+      "text": "All portals closing. Shh.",
+      "emotion": "monotone",
+      "trigger": "victory beat, the doors click shut one by one",
+      "cooldown_s": 60,
+      "duration_s": 2.212,
+      "takes": [
+        "boss_narrator_portals_closing.ogg",
+        "boss_narrator_portals_closing_b.ogg"
+      ]
+    },
+    "boss_narrator_everyone_asleep": {
+      "file": "boss_narrator_everyone_asleep.ogg",
+      "speaker": "narrator",
+      "text": "Everyone is asleep. Even you, almost.",
+      "emotion": "monotone",
+      "trigger": "victory hint card, every gremlin asleep",
+      "cooldown_s": 60,
+      "duration_s": 3.048,
+      "takes": [
+        "boss_narrator_everyone_asleep.ogg",
+        "boss_narrator_everyone_asleep_b.ogg"
+      ]
+    },
+    "boss_bigbean_hi": {
+      "file": "boss_bigbean_hi.ogg",
+      "speaker": "bigbean",
+      "text": "Hi.",
+      "emotion": "neutral",
+      "trigger": "squeezes into the doorway (entrance)",
+      "cooldown_s": 30,
+      "duration_s": 0.639,
+      "takes": [
+        "boss_bigbean_hi.ogg",
+        "boss_bigbean_hi_b.ogg"
+      ]
+    },
+    "boss_bigbean_mine": {
+      "file": "boss_bigbean_mine.ogg",
+      "speaker": "bigbean",
+      "text": "MINE.",
+      "emotion": "scream",
+      "trigger": "Grabby tell, every third sweep (alternates with bigbean_gimme)",
+      "cooldown_s": 6,
+      "duration_s": 0.624,
+      "takes": [
+        "boss_bigbean_mine.ogg",
+        "boss_bigbean_mine_b.ogg"
+      ]
+    },
+    "boss_bigbean_uh_oh": {
+      "file": "boss_bigbean_uh_oh.ogg",
+      "speaker": "bigbean",
+      "text": "Uh oh.",
+      "emotion": "neutral",
+      "trigger": "all four Stinkys changed, stunned 6 s",
+      "cooldown_s": 20,
+      "duration_s": 0.737,
+      "takes": [
+        "boss_bigbean_uh_oh.ogg",
+        "boss_bigbean_uh_oh_b.ogg"
+      ]
+    },
+    "boss_bigbean_stinky": {
+      "file": "boss_bigbean_stinky.ogg",
+      "speaker": "bigbean",
+      "text": "Stinky!",
+      "emotion": "giggle",
+      "trigger": "the shared diaper ring expired, green fog",
+      "cooldown_s": 20,
+      "duration_s": 0.73,
+      "takes": [
+        "boss_bigbean_stinky.ogg",
+        "boss_bigbean_stinky_b.ogg"
+      ]
+    },
+    "boss_bigbean_no_bed": {
+      "file": "boss_bigbean_no_bed.ogg",
+      "speaker": "bigbean",
+      "text": "No bed. NO BED.",
+      "emotion": "scream",
+      "trigger": "Tantrum floor-slap tell",
+      "cooldown_s": 8,
+      "duration_s": 1.784,
+      "takes": [
+        "boss_bigbean_no_bed.ogg",
+        "boss_bigbean_no_bed_b.ogg"
+      ]
+    },
+    "boss_bigbean_up_up": {
+      "file": "boss_bigbean_up_up.ogg",
+      "speaker": "bigbean",
+      "text": "Up. Up. UP!",
+      "emotion": "scream",
+      "trigger": "Tantrum floor-slap tell, arms raised",
+      "cooldown_s": 8,
+      "duration_s": 1.394,
+      "takes": [
+        "boss_bigbean_up_up.ogg",
+        "boss_bigbean_up_up_b.ogg"
+      ]
+    },
+    "boss_parent_not_it": {
+      "file": "boss_parent_not_it.ogg",
+      "speaker": "parent",
+      "text": "Not it.",
+      "emotion": "monotone",
+      "trigger": "reply to \"CHANGE. MY. DIAPER.\" (Demand phase)",
+      "cooldown_s": 60,
+      "duration_s": 0.746,
+      "takes": [
+        "boss_parent_not_it.ogg",
+        "boss_parent_not_it_b.ogg"
+      ]
+    },
+    "boss_parent_finally": {
+      "file": "boss_parent_finally.ogg",
+      "speaker": "parent",
+      "text": "Finally.",
+      "emotion": "monotone",
+      "trigger": "victory, after the hint card",
+      "cooldown_s": 60,
+      "duration_s": 1.429,
+      "takes": [
+        "boss_parent_finally.ogg",
+        "boss_parent_finally_b.ogg"
+      ]
+    },
+    "boss_parent_go_to_bed": {
+      "file": "boss_parent_go_to_bed.ogg",
+      "speaker": "parent",
+      "text": "Go to bed.",
+      "emotion": "monotone",
+      "trigger": "victory, reply to the sleep-talk; the chapter's last line",
+      "cooldown_s": 60,
+      "duration_s": 0.719,
+      "takes": [
+        "boss_parent_go_to_bed.ogg",
+        "boss_parent_go_to_bed_b.ogg"
+      ]
+    },
+    "boss_pickle_sleep_talk": {
+      "file": "boss_pickle_sleep_talk.ogg",
+      "speaker": "pickle",
+      "text": "Five more minutes.",
+      "emotion": "sleepy",
+      "trigger": "victory, sleep-talk from behind the Kids' Room Door (never a target)",
+      "cooldown_s": 60,
+      "duration_s": 1.586,
+      "takes": [
+        "boss_pickle_sleep_talk.ogg",
+        "boss_pickle_sleep_talk_b.ogg"
+      ]
+    },
+    "boss_scamp_not_tired": {
+      "file": "boss_scamp_not_tired.ogg",
+      "speaker": "scamp",
+      "text": "I'm not... tired...",
+      "emotion": "sleepy",
+      "trigger": "victory, the first straggler yawns into Zzz confetti",
+      "cooldown_s": 60,
+      "duration_s": 1.304,
+      "takes": [
+        "boss_scamp_not_tired.ogg"
+      ]
+    }
+  }
+}

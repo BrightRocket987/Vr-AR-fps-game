@@ -1,0 +1,943 @@
+{
+  "lines": {
+    "scamp_not_tired": {
+      "file": "scamp_not_tired.ogg",
+      "speaker": "scamp",
+      "text": "I'm not tired!",
+      "emotion": "whine",
+      "trigger": "SPAWN walk-out of a portal",
+      "cooldown_s": 4,
+      "duration_s": 1.213,
+      "takes": [
+        "scamp_not_tired.ogg",
+        "scamp_not_tired_b.ogg"
+      ]
+    },
+    "scamp_five_more_minutes": {
+      "file": "scamp_five_more_minutes.ogg",
+      "speaker": "scamp",
+      "text": "You said five more minutes!",
+      "emotion": "whine",
+      "trigger": "ROAM, random bark",
+      "cooldown_s": 12,
+      "duration_s": 2.112,
+      "takes": [
+        "scamp_five_more_minutes.ogg"
+      ]
+    },
+    "scamp_blue_cup": {
+      "file": "scamp_blue_cup.ogg",
+      "speaker": "scamp",
+      "text": "I want the blue cup. NOT that blue cup.",
+      "emotion": "whine",
+      "trigger": "ROAM, random bark",
+      "cooldown_s": 20,
+      "duration_s": 3.269,
+      "takes": [
+        "scamp_blue_cup.ogg"
+      ]
+    },
+    "scamp_carry_me": {
+      "file": "scamp_carry_me.ogg",
+      "speaker": "scamp",
+      "text": "Carry me. Carry me. CARRY ME.",
+      "emotion": "scream",
+      "trigger": "CHASE arms raised, before the shin-slap wind-up",
+      "cooldown_s": 5,
+      "duration_s": 2.202,
+      "takes": [
+        "scamp_carry_me.ogg"
+      ]
+    },
+    "scamp_telling_grandma": {
+      "file": "scamp_telling_grandma.ogg",
+      "speaker": "scamp",
+      "text": "I'm telling Grandma.",
+      "emotion": "neutral",
+      "trigger": "RECOVER after a missed attack",
+      "cooldown_s": 15,
+      "duration_s": 1.534,
+      "takes": [
+        "scamp_telling_grandma.ogg"
+      ]
+    },
+    "scamp_why": {
+      "file": "scamp_why.ogg",
+      "speaker": "scamp",
+      "text": "Why?",
+      "emotion": "whine",
+      "trigger": "TAUNT (repeat3 - the game plays it three times, rising)",
+      "cooldown_s": 3,
+      "duration_s": 0.553,
+      "takes": [
+        "scamp_why.ogg",
+        "scamp_why_b.ogg"
+      ]
+    },
+    "scamp_cheetah": {
+      "file": "scamp_cheetah.ogg",
+      "speaker": "scamp",
+      "text": "I'm a cheetah!",
+      "emotion": "giggle",
+      "trigger": "CHASE start at 3 m",
+      "cooldown_s": 10,
+      "duration_s": 0.885,
+      "takes": [
+        "scamp_cheetah.ogg"
+      ]
+    },
+    "scamp_watch_this": {
+      "file": "scamp_watch_this.ogg",
+      "speaker": "scamp",
+      "text": "Watch this!",
+      "emotion": "giggle",
+      "trigger": "climbing a table for line of sight",
+      "cooldown_s": 12,
+      "duration_s": 0.924,
+      "takes": [
+        "scamp_watch_this.ogg"
+      ]
+    },
+    "scamp_ew": {
+      "file": "scamp_ew.ogg",
+      "speaker": "scamp",
+      "text": "Ew.",
+      "emotion": "neutral",
+      "trigger": "spawned out of a Stinky DETONATE cloud",
+      "cooldown_s": 6,
+      "duration_s": 0.506,
+      "takes": [
+        "scamp_ew.ogg"
+      ]
+    },
+    "scamp_i_have_to_pee": {
+      "file": "scamp_i_have_to_pee.ogg",
+      "speaker": "scamp",
+      "text": "I have to pee.",
+      "emotion": "whine",
+      "trigger": "ROAM bark near a door; chapter 2 Pee Ask callback",
+      "cooldown_s": 25,
+      "duration_s": 1.187,
+      "takes": [
+        "scamp_i_have_to_pee.ogg"
+      ]
+    },
+    "clinger_up_up_up": {
+      "file": "clinger_up_up_up.ogg",
+      "speaker": "clinger",
+      "text": "Up! Up! UP!",
+      "emotion": "scream",
+      "trigger": "LEAP tell (crouch and wiggle 0.7 s)",
+      "cooldown_s": 3,
+      "duration_s": 1.016,
+      "takes": [
+        "clinger_up_up_up.ogg",
+        "clinger_up_up_up_b.ogg"
+      ]
+    },
+    "clinger_mine": {
+      "file": "clinger_mine.ogg",
+      "speaker": "clinger",
+      "text": "Mine.",
+      "emotion": "neutral",
+      "trigger": "CLING attached to the weapon hand, every 2nd bite",
+      "cooldown_s": 2,
+      "duration_s": 0.56,
+      "takes": [
+        "clinger_mine.ogg",
+        "clinger_mine_b.ogg"
+      ]
+    },
+    "clinger_i_hold_it": {
+      "file": "clinger_i_hold_it.ogg",
+      "speaker": "clinger",
+      "text": "I hold it.",
+      "emotion": "neutral",
+      "trigger": "CLING attached, reload blocked",
+      "cooldown_s": 8,
+      "duration_s": 0.903,
+      "takes": [
+        "clinger_i_hold_it.ogg"
+      ]
+    },
+    "clinger_dont_put_me_down": {
+      "file": "clinger_dont_put_me_down.ogg",
+      "speaker": "clinger",
+      "text": "Nooo don't put me down.",
+      "emotion": "whine",
+      "trigger": "SHAKEN, flung off the weapon hand",
+      "cooldown_s": 6,
+      "duration_s": 1.815,
+      "takes": [
+        "clinger_dont_put_me_down.ogg"
+      ]
+    },
+    "clinger_hug": {
+      "file": "clinger_hug.ogg",
+      "speaker": "clinger",
+      "text": "Hug?",
+      "emotion": "neutral",
+      "trigger": "STALK entering the player's view edge",
+      "cooldown_s": 10,
+      "duration_s": 0.447,
+      "takes": [
+        "clinger_hug.ogg"
+      ]
+    },
+    "clinger_boop": {
+      "file": "clinger_boop.ogg",
+      "speaker": "clinger",
+      "text": "Boop.",
+      "emotion": "giggle",
+      "trigger": "touching the player's face",
+      "cooldown_s": 6,
+      "duration_s": 0.414,
+      "takes": [
+        "clinger_boop.ogg"
+      ]
+    },
+    "potato_good_part": {
+      "file": "potato_good_part.ogg",
+      "speaker": "potato",
+      "text": "Shh, this is the good part.",
+      "emotion": "neutral",
+      "trigger": "THROW tell, remote raised before every cushion",
+      "cooldown_s": 3,
+      "duration_s": 2.349,
+      "takes": [
+        "potato_good_part.ogg",
+        "potato_good_part_b.ogg"
+      ]
+    },
+    "potato_in_the_way": {
+      "file": "potato_in_the_way.ogg",
+      "speaker": "potato",
+      "text": "You're in the way of the TV.",
+      "emotion": "whine",
+      "trigger": "SIT, player crosses between couch and screen",
+      "cooldown_s": 12,
+      "duration_s": 1.829,
+      "takes": [
+        "potato_in_the_way.ogg"
+      ]
+    },
+    "potato_one_more_episode": {
+      "file": "potato_one_more_episode.ogg",
+      "speaker": "potato",
+      "text": "One more episode.",
+      "emotion": "whine",
+      "trigger": "SIT idle bark",
+      "cooldown_s": 15,
+      "duration_s": 1.345,
+      "takes": [
+        "potato_one_more_episode.ogg"
+      ]
+    },
+    "potato_scoot": {
+      "file": "potato_scoot.ogg",
+      "speaker": "potato",
+      "text": "Scoot.",
+      "emotion": "neutral",
+      "trigger": "EVICT, shoving a sitter 1 m",
+      "cooldown_s": 4,
+      "duration_s": 0.717,
+      "takes": [
+        "potato_scoot.ogg"
+      ]
+    },
+    "potato_this_spot_first": {
+      "file": "potato_this_spot_first.ogg",
+      "speaker": "potato",
+      "text": "I had this spot FIRST.",
+      "emotion": "scream",
+      "trigger": "EVICT contested seat",
+      "cooldown_s": 12,
+      "duration_s": 1.448,
+      "takes": [
+        "potato_this_spot_first.ogg"
+      ]
+    },
+    "potato_snack_snack_snack": {
+      "file": "potato_snack_snack_snack.ogg",
+      "speaker": "potato",
+      "text": "Snack. Snack. Snack.",
+      "emotion": "neutral",
+      "trigger": "BOUNCE every 2 s, 20% chance",
+      "cooldown_s": 10,
+      "duration_s": 1.908,
+      "takes": [
+        "potato_snack_snack_snack.ogg"
+      ]
+    },
+    "potato_i_was_watching": {
+      "file": "potato_i_was_watching.ogg",
+      "speaker": "potato",
+      "text": "I was WATCHING that!",
+      "emotion": "scream",
+      "trigger": "EVICTED by three Wipe slaps or a shot cushion",
+      "cooldown_s": 8,
+      "duration_s": 1.244,
+      "takes": [
+        "potato_i_was_watching.ogg"
+      ]
+    },
+    "breacher_knock_knock": {
+      "file": "breacher_knock_knock.ogg",
+      "speaker": "breacher",
+      "text": "Knock knock. Knock knock. KNOCK KNOCK.",
+      "emotion": "scream",
+      "trigger": "KNOCK, three knocks over 2.4 s behind a door",
+      "cooldown_s": 2,
+      "duration_s": 2.397,
+      "takes": [
+        "breacher_knock_knock.ogg",
+        "breacher_knock_knock_b.ogg"
+      ]
+    },
+    "breacher_coming_in": {
+      "file": "breacher_coming_in.ogg",
+      "speaker": "breacher",
+      "text": "I'm coming in!",
+      "emotion": "scream",
+      "trigger": "KICK, panel swings open",
+      "cooldown_s": 6,
+      "duration_s": 1.245,
+      "takes": [
+        "breacher_coming_in.ogg"
+      ]
+    },
+    "breacher_door_already_open": {
+      "file": "breacher_door_already_open.ogg",
+      "speaker": "breacher",
+      "text": "The door was already open.",
+      "emotion": "neutral",
+      "trigger": "TA-DA pose (it was not)",
+      "cooldown_s": 15,
+      "duration_s": 1.672,
+      "takes": [
+        "breacher_door_already_open.ogg"
+      ]
+    },
+    "breacher_ta_da": {
+      "file": "breacher_ta_da.ogg",
+      "speaker": "breacher",
+      "text": "TA-DA!",
+      "emotion": "giggle",
+      "trigger": "TA-DA pose, 1.2 s",
+      "cooldown_s": 6,
+      "duration_s": 0.726,
+      "takes": [
+        "breacher_ta_da.ogg"
+      ]
+    },
+    "breacher_ow_my_face": {
+      "file": "breacher_ow_my_face.ogg",
+      "speaker": "breacher",
+      "text": "Ow my whole face.",
+      "emotion": "whine",
+      "trigger": "Door Slam counter, DIZZY entrance",
+      "cooldown_s": 5,
+      "duration_s": 1.742,
+      "takes": [
+        "breacher_ow_my_face.ogg"
+      ]
+    },
+    "breacher_knight": {
+      "file": "breacher_knight.ogg",
+      "speaker": "breacher",
+      "text": "I'm a knight!",
+      "emotion": "giggle",
+      "trigger": "RUSH start",
+      "cooldown_s": 12,
+      "duration_s": 0.888,
+      "takes": [
+        "breacher_knight.ogg"
+      ]
+    },
+    "stinky_change_my_diaper": {
+      "file": "stinky_change_my_diaper.ogg",
+      "speaker": "stinky",
+      "text": "Change my diaper.",
+      "emotion": "whine",
+      "trigger": "DEMAND, 10 s ring starts",
+      "cooldown_s": 3,
+      "duration_s": 1.353,
+      "takes": [
+        "stinky_change_my_diaper.ogg",
+        "stinky_change_my_diaper_b.ogg"
+      ]
+    },
+    "stinky_change_my_diaper_scream": {
+      "file": "stinky_change_my_diaper_scream.ogg",
+      "speaker": "stinky",
+      "text": "Change my diaper!",
+      "emotion": "scream",
+      "trigger": "DEMAND, ring under 3 s left",
+      "cooldown_s": 4,
+      "duration_s": 1.284,
+      "takes": [
+        "stinky_change_my_diaper_scream.ogg"
+      ]
+    },
+    "stinky_made_a_present": {
+      "file": "stinky_made_a_present.ogg",
+      "speaker": "stinky",
+      "text": "I made a present.",
+      "emotion": "giggle",
+      "trigger": "WADDLE arrival bark",
+      "cooldown_s": 12,
+      "duration_s": 1.272,
+      "takes": [
+        "stinky_made_a_present.ogg"
+      ]
+    },
+    "stinky_its_warm": {
+      "file": "stinky_its_warm.ogg",
+      "speaker": "stinky",
+      "text": "It's warm.",
+      "emotion": "neutral",
+      "trigger": "DEMAND idle, ring half gone",
+      "cooldown_s": 12,
+      "duration_s": 0.78,
+      "takes": [
+        "stinky_its_warm.ogg"
+      ]
+    },
+    "stinky_dont_look": {
+      "file": "stinky_dont_look.ogg",
+      "speaker": "stinky",
+      "text": "Don't look at me.",
+      "emotion": "whine",
+      "trigger": "player aims at it during DEMAND",
+      "cooldown_s": 10,
+      "duration_s": 1.14,
+      "takes": [
+        "stinky_dont_look.ogg"
+      ]
+    },
+    "stinky_not_done": {
+      "file": "stinky_not_done.ogg",
+      "speaker": "stinky",
+      "text": "I'm not done.",
+      "emotion": "neutral",
+      "trigger": "Wipe sweep interrupted before 1.5 s",
+      "cooldown_s": 6,
+      "duration_s": 1.205,
+      "takes": [
+        "stinky_not_done.ogg"
+      ]
+    },
+    "stinky_thank_you": {
+      "file": "stinky_thank_you.ogg",
+      "speaker": "stinky",
+      "text": "Thank you.",
+      "emotion": "sleepy",
+      "trigger": "CHANGED, friendly ghost, +50 XP",
+      "cooldown_s": 4,
+      "duration_s": 0.818,
+      "takes": [
+        "stinky_thank_you.ogg"
+      ]
+    },
+    "siren_inhale": {
+      "file": "siren_inhale.ogg",
+      "speaker": "siren",
+      "text": "I... I... I...",
+      "emotion": "whine",
+      "trigger": "INHALE start, 2.5 s tell",
+      "cooldown_s": 2,
+      "duration_s": 1.181,
+      "takes": [
+        "siren_inhale.ogg",
+        "siren_inhale_b.ogg"
+      ]
+    },
+    "siren_scream": {
+      "file": "siren_scream.ogg",
+      "speaker": "siren",
+      "text": "Aaaaaaaaah!",
+      "emotion": "scream",
+      "trigger": "SCREAM, 1.5 s, 5 m radius (layer over sfx/scream_siren)",
+      "cooldown_s": 2,
+      "duration_s": 0.725,
+      "takes": [
+        "siren_scream.ogg",
+        "siren_scream_b.ogg"
+      ]
+    },
+    "siren_wasnt_screaming": {
+      "file": "siren_wasnt_screaming.ogg",
+      "speaker": "siren",
+      "text": "I wasn't even screaming.",
+      "emotion": "neutral",
+      "trigger": "Shushed by the Wipe hand (looks betrayed)",
+      "cooldown_s": 8,
+      "duration_s": 1.804,
+      "takes": [
+        "siren_wasnt_screaming.ogg"
+      ]
+    },
+    "siren_you_scream": {
+      "file": "siren_you_scream.ogg",
+      "speaker": "siren",
+      "text": "You scream.",
+      "emotion": "neutral",
+      "trigger": "EXHAUSTED, 3 s",
+      "cooldown_s": 10,
+      "duration_s": 0.776,
+      "takes": [
+        "siren_you_scream.ogg"
+      ]
+    },
+    "siren_mister_hop_mad": {
+      "file": "siren_mister_hop_mad.ogg",
+      "speaker": "siren",
+      "text": "Mister Hop is MAD.",
+      "emotion": "scream",
+      "trigger": "APPROACH reaching a perch",
+      "cooldown_s": 15,
+      "duration_s": 1.496,
+      "takes": [
+        "siren_mister_hop_mad.ogg"
+      ]
+    },
+    "siren_again": {
+      "file": "siren_again.ogg",
+      "speaker": "siren",
+      "text": "Again!",
+      "emotion": "giggle",
+      "trigger": "rest over, next APPROACH",
+      "cooldown_s": 8,
+      "duration_s": 0.541,
+      "takes": [
+        "siren_again.ogg"
+      ]
+    },
+    "zombie_scuse_me": {
+      "file": "zombie_scuse_me.ogg",
+      "speaker": "zombie",
+      "text": "'scuse me.",
+      "emotion": "monotone",
+      "trigger": "BUMP, every second",
+      "cooldown_s": 2,
+      "duration_s": 0.857,
+      "takes": [
+        "zombie_scuse_me.ogg",
+        "zombie_scuse_me_b.ogg"
+      ]
+    },
+    "zombie_tablet_broke": {
+      "file": "zombie_tablet_broke.ogg",
+      "speaker": "zombie",
+      "text": "My tablet broke!",
+      "emotion": "scream",
+      "trigger": "PANIC, tablet shield destroyed",
+      "cooldown_s": 3,
+      "duration_s": 1.135,
+      "takes": [
+        "zombie_tablet_broke.ogg",
+        "zombie_tablet_broke_b.ogg"
+      ]
+    },
+    "zombie_still_charging": {
+      "file": "zombie_still_charging.ogg",
+      "speaker": "zombie",
+      "text": "It's still charging.",
+      "emotion": "monotone",
+      "trigger": "SHUFFLE idle bark",
+      "cooldown_s": 12,
+      "duration_s": 1.237,
+      "takes": [
+        "zombie_still_charging.ogg"
+      ]
+    },
+    "zombie_one_more_video": {
+      "file": "zombie_one_more_video.ogg",
+      "speaker": "zombie",
+      "text": "One more video.",
+      "emotion": "monotone",
+      "trigger": "SHUFFLE idle bark; zombie-kids inside the portal",
+      "cooldown_s": 10,
+      "duration_s": 1.069,
+      "takes": [
+        "zombie_one_more_video.ogg"
+      ]
+    },
+    "zombie_wheres_wifi": {
+      "file": "zombie_wheres_wifi.ogg",
+      "speaker": "zombie",
+      "text": "Where's the WiFi.",
+      "emotion": "monotone",
+      "trigger": "standing in a door frame, holding the portal open",
+      "cooldown_s": 12,
+      "duration_s": 1.351,
+      "takes": [
+        "zombie_wheres_wifi.ogg"
+      ]
+    },
+    "zombie_skip_ad": {
+      "file": "zombie_skip_ad.ogg",
+      "speaker": "zombie",
+      "text": "Skip ad. Skip ad. SKIP AD.",
+      "emotion": "scream",
+      "trigger": "sat on a couch with a tablet (double shield)",
+      "cooldown_s": 10,
+      "duration_s": 2.716,
+      "takes": [
+        "zombie_skip_ad.ogg"
+      ]
+    },
+    "zombie_still_watching": {
+      "file": "zombie_still_watching.ogg",
+      "speaker": "zombie",
+      "text": "Are you still watching?",
+      "emotion": "monotone",
+      "trigger": "player idle 8 s in its view",
+      "cooldown_s": 15,
+      "duration_s": 1.212,
+      "takes": [
+        "zombie_still_watching.ogg"
+      ]
+    },
+    "zombie_is_it_tomorrow": {
+      "file": "zombie_is_it_tomorrow.ogg",
+      "speaker": "zombie",
+      "text": "Is it tomorrow yet?",
+      "emotion": "monotone",
+      "trigger": "zombie-kids inside the portal sub-scene",
+      "cooldown_s": 12,
+      "duration_s": 1.334,
+      "takes": [
+        "zombie_is_it_tomorrow.ogg"
+      ]
+    },
+    "zombie_we_never_nap": {
+      "file": "zombie_we_never_nap.ogg",
+      "speaker": "zombie",
+      "text": "We never nap.",
+      "emotion": "monotone",
+      "trigger": "zombie-kids inside the portal sub-scene",
+      "cooldown_s": 12,
+      "duration_s": 0.955,
+      "takes": [
+        "zombie_we_never_nap.ogg"
+      ]
+    },
+    "crawler_peekaboo": {
+      "file": "crawler_peekaboo.ogg",
+      "speaker": "crawler",
+      "text": "Peekaboo.",
+      "emotion": "giggle",
+      "trigger": "PEEK, head out from under furniture",
+      "cooldown_s": 4,
+      "duration_s": 0.67,
+      "takes": [
+        "crawler_peekaboo.ogg"
+      ]
+    },
+    "crawler_doggy": {
+      "file": "crawler_doggy.ogg",
+      "speaker": "crawler",
+      "text": "I'm a doggy.",
+      "emotion": "giggle",
+      "trigger": "SCUTTLE start",
+      "cooldown_s": 10,
+      "duration_s": 1.0,
+      "takes": [
+        "crawler_doggy.ogg"
+      ]
+    },
+    "crawler_woof": {
+      "file": "crawler_woof.ogg",
+      "speaker": "crawler",
+      "text": "Woof.",
+      "emotion": "neutral",
+      "trigger": "ANKLE_BITE latch",
+      "cooldown_s": 4,
+      "duration_s": 0.419,
+      "takes": [
+        "crawler_woof.ogg"
+      ]
+    },
+    "crawler_found_raisin": {
+      "file": "crawler_found_raisin.ogg",
+      "speaker": "crawler",
+      "text": "Found a raisin.",
+      "emotion": "neutral",
+      "trigger": "Raisin pickup (ghost line on drop)",
+      "cooldown_s": 6,
+      "duration_s": 1.074,
+      "takes": [
+        "crawler_found_raisin.ogg"
+      ]
+    },
+    "crawler_no_no_no": {
+      "file": "crawler_no_no_no.ogg",
+      "speaker": "crawler",
+      "text": "No no no no.",
+      "emotion": "whine",
+      "trigger": "flicked off the ankle by the Wipe",
+      "cooldown_s": 6,
+      "duration_s": 2.459,
+      "takes": [
+        "crawler_no_no_no.ogg"
+      ]
+    },
+    "crawler_hee_hee": {
+      "file": "crawler_hee_hee.ogg",
+      "speaker": "crawler",
+      "text": "Hee hee.",
+      "emotion": "giggle",
+      "trigger": "HIDE tell, giggle from under furniture",
+      "cooldown_s": 2,
+      "duration_s": 0.54,
+      "takes": [
+        "crawler_hee_hee.ogg",
+        "crawler_hee_hee_b.ogg"
+      ]
+    },
+    "ghost_weee": {
+      "file": "ghost_weee.ogg",
+      "speaker": "ghost",
+      "text": "Weee!",
+      "emotion": "giggle",
+      "trigger": "pop ghost billboard, 0.6 s float",
+      "cooldown_s": 1,
+      "duration_s": 0.351,
+      "takes": [
+        "ghost_weee.ogg",
+        "ghost_weee_b.ogg"
+      ]
+    },
+    "ghost_night_night": {
+      "file": "ghost_night_night.ogg",
+      "speaker": "ghost",
+      "text": "Night night.",
+      "emotion": "sleepy",
+      "trigger": "pop ghost billboard, 0.6 s float",
+      "cooldown_s": 1,
+      "duration_s": 1.057,
+      "takes": [
+        "ghost_night_night.ogg",
+        "ghost_night_night_b.ogg"
+      ]
+    },
+    "ghost_again": {
+      "file": "ghost_again.ogg",
+      "speaker": "ghost",
+      "text": "Again!",
+      "emotion": "giggle",
+      "trigger": "pop ghost billboard, 0.6 s float",
+      "cooldown_s": 1,
+      "duration_s": 0.651,
+      "takes": [
+        "ghost_again.ogg",
+        "ghost_again_b.ogg"
+      ]
+    },
+    "bigbean_gimme": {
+      "file": "bigbean_gimme.ogg",
+      "speaker": "bigbean",
+      "text": "GIMME.",
+      "emotion": "scream",
+      "trigger": "Grab phase, arm sweep from the doorway",
+      "cooldown_s": 5,
+      "duration_s": 0.64,
+      "takes": [
+        "bigbean_gimme.ogg"
+      ]
+    },
+    "bigbean_change_my_diaper": {
+      "file": "bigbean_change_my_diaper.ogg",
+      "speaker": "bigbean",
+      "text": "CHANGE. MY. DIAPER.",
+      "emotion": "scream",
+      "trigger": "Demand phase, shared 20 s diaper ring",
+      "cooldown_s": 8,
+      "duration_s": 1.85,
+      "takes": [
+        "bigbean_change_my_diaper.ogg"
+      ]
+    },
+    "bigbean_no_fit": {
+      "file": "bigbean_no_fit.ogg",
+      "speaker": "bigbean",
+      "text": "No fit. NO FIT.",
+      "emotion": "scream",
+      "trigger": "Tantrum phase, floor slaps",
+      "cooldown_s": 8,
+      "duration_s": 1.758,
+      "takes": [
+        "bigbean_no_fit.ogg"
+      ]
+    },
+    "bigbean_hop": {
+      "file": "bigbean_hop.ogg",
+      "speaker": "bigbean",
+      "text": "Hop?",
+      "emotion": "neutral",
+      "trigger": "a Pacifier or Mister Hop thrown in view",
+      "cooldown_s": 10,
+      "duration_s": 0.495,
+      "takes": [
+        "bigbean_hop.ogg"
+      ]
+    },
+    "bigbean_up": {
+      "file": "bigbean_up.ogg",
+      "speaker": "bigbean",
+      "text": "Up.",
+      "emotion": "neutral",
+      "trigger": "Grab phase, arm raised",
+      "cooldown_s": 6,
+      "duration_s": 0.52,
+      "takes": [
+        "bigbean_up.ogg"
+      ]
+    },
+    "bigbean_peek": {
+      "file": "bigbean_peek.ogg",
+      "speaker": "bigbean",
+      "text": "PEEK!",
+      "emotion": "giggle",
+      "trigger": "Peek-a-boo phase, face in a window or door frame",
+      "cooldown_s": 5,
+      "duration_s": 0.649,
+      "takes": [
+        "bigbean_peek.ogg"
+      ]
+    },
+    "bigbean_night_night": {
+      "file": "bigbean_night_night.ogg",
+      "speaker": "bigbean",
+      "text": "Night night.",
+      "emotion": "sleepy",
+      "trigger": "defeated, slides out of the doorway",
+      "cooldown_s": 60,
+      "duration_s": 1.096,
+      "takes": [
+        "bigbean_night_night.ogg"
+      ]
+    },
+    "narrator_room_scan_found": {
+      "file": "narrator_room_scan_found.ogg",
+      "speaker": "narrator",
+      "text": "Room scan found. We'll use it.",
+      "emotion": "monotone",
+      "trigger": "chapter 3 onboarding, mesh-detection or depth-sensing available",
+      "cooldown_s": 60,
+      "duration_s": 2.247,
+      "takes": [
+        "narrator_room_scan_found.ogg"
+      ]
+    },
+    "narrator_no_scan_found": {
+      "file": "narrator_no_scan_found.ogg",
+      "speaker": "narrator",
+      "text": "No scan found. Let's draw your room.",
+      "emotion": "monotone",
+      "trigger": "chapter 3 onboarding, Blueprint path",
+      "cooldown_s": 60,
+      "duration_s": 2.305,
+      "takes": [
+        "narrator_no_scan_found.ogg"
+      ]
+    },
+    "narrator_mark_door": {
+      "file": "narrator_mark_door.ogg",
+      "speaker": "narrator",
+      "text": "Mark the door you're most afraid of.",
+      "emotion": "monotone",
+      "trigger": "Blueprint, first door prompt",
+      "cooldown_s": 30,
+      "duration_s": 1.609,
+      "takes": [
+        "narrator_mark_door.ogg"
+      ]
+    },
+    "narrator_wave_one": {
+      "file": "narrator_wave_one.ogg",
+      "speaker": "narrator",
+      "text": "Wave one.",
+      "emotion": "monotone",
+      "trigger": "first wave start",
+      "cooldown_s": 60,
+      "duration_s": 1.864,
+      "takes": [
+        "narrator_wave_one.ogg"
+      ]
+    },
+    "narrator_wave_clear": {
+      "file": "narrator_wave_clear.ogg",
+      "speaker": "narrator",
+      "text": "Wave clear. Nobody is in bed.",
+      "emotion": "monotone",
+      "trigger": "wave end, lull phase",
+      "cooldown_s": 30,
+      "duration_s": 2.596,
+      "takes": [
+        "narrator_wave_clear.ogg"
+      ]
+    },
+    "narrator_tier_up_double_binky": {
+      "file": "narrator_tier_up_double_binky.ogg",
+      "speaker": "narrator",
+      "text": "Tier up: Double Binky.",
+      "emotion": "monotone",
+      "trigger": "BINKY promotion to Tier 1 (15 lifetime pops)",
+      "cooldown_s": 60,
+      "duration_s": 1.632,
+      "takes": [
+        "narrator_tier_up_double_binky.ogg"
+      ]
+    },
+    "narrator_tier_up_diaper_cannon": {
+      "file": "narrator_tier_up_diaper_cannon.ogg",
+      "speaker": "narrator",
+      "text": "Tier up: Diaper Cannon.",
+      "emotion": "monotone",
+      "trigger": "BINKY promotion to Tier 4 (160 lifetime pops)",
+      "cooldown_s": 60,
+      "duration_s": 1.481,
+      "takes": [
+        "narrator_tier_up_diaper_cannon.ogg"
+      ]
+    },
+    "narrator_door_shimmer": {
+      "file": "narrator_door_shimmer.ogg",
+      "speaker": "narrator",
+      "text": "Something is behind the door.",
+      "emotion": "monotone",
+      "trigger": "first Breacher BEHIND_DOOR, baby monitor crackle",
+      "cooldown_s": 60,
+      "duration_s": 1.458,
+      "takes": [
+        "narrator_door_shimmer.ogg"
+      ]
+    },
+    "narrator_big_bean": {
+      "file": "narrator_big_bean.ogg",
+      "speaker": "narrator",
+      "text": "Something big is in the doorway.",
+      "emotion": "monotone",
+      "trigger": "Big Bean boss intro",
+      "cooldown_s": 60,
+      "duration_s": 1.562,
+      "takes": [
+        "narrator_big_bean.ogg"
+      ]
+    },
+    "narrator_go_to_bed": {
+      "file": "narrator_go_to_bed.ogg",
+      "speaker": "narrator",
+      "text": "Go to bed.",
+      "emotion": "monotone",
+      "trigger": "game over / chapter end card",
+      "cooldown_s": 60,
+      "duration_s": 0.633,
+      "takes": [
+        "narrator_go_to_bed.ogg"
+      ]
+    }
+  }
+}

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GO TO BED!!!</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+  <meta name="theme-color" content="#14121c" />
+  <meta name="description" content="A passthrough mixed-reality shooter for Meta Quest: goblin-toddler copies of your kids pour through your real doors." />
+  <style>
+    :root { color-scheme: dark; --bg: #14121c; --fg: #f4efe6; --accent: #ffcc33; --teal: #3fd6c8; --muted: #9a93a8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Trebuchet MS", "Segoe UI", system-ui, sans-serif; background: radial-gradient(1200px 600px at 50% -10%, #2a2440, var(--bg)); color: var(--fg); min-height: 100vh; }
+    main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+    h1 { font-size: clamp(40px, 10vw, 84px); line-height: 0.95; margin: 8px 0 4px; letter-spacing: -0.02em; color: var(--accent); text-shadow: 0 4px 0 #7a4a00; transform: rotate(-2deg); }
+    .sub { color: var(--muted); margin: 0 0 24px; font-size: 18px; }
+    .card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 18px; margin: 14px 0; }
+    label { display: block; font-size: 14px; color: var(--muted); margin: 10px 0 4px; }
+    input, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: #0f0d16; color: var(--fg); font-size: 16px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    button { font: inherit; cursor: pointer; border-radius: 14px; border: 0; padding: 16px 20px; font-size: 20px; font-weight: 700; }
+    #enter { width: 100%; background: var(--accent); color: #1a1200; box-shadow: 0 6px 0 #a67c00; margin-top: 8px; }
+    #enter:disabled { opacity: 0.5; box-shadow: none; }
+    .small { font-size: 14px; color: var(--muted); }
+    #status { min-height: 1.4em; margin-top: 10px; color: var(--teal); white-space: pre-wrap; }
+    textarea { width: 100%; min-height: 90px; background: #0f0d16; color: var(--fg); border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); font-family: ui-monospace, monospace; font-size: 12px; }
+    .ghost { background: transparent; color: var(--fg); border: 1px solid rgba(255,255,255,0.25); font-size: 14px; padding: 8px 12px; }
+    #xr-container { position: fixed; inset: 0; display: none; }
+    body.in-xr main { display: none; } body.in-xr #xr-container { display: block; }
+    details summary { cursor: pointer; color: var(--muted); }
+  </style>
+  <script type="module" crossorigin src="/Vr-AR-fps-game/assets/index-BKOnHAo9.js"></script>
+</head>
+<body>
+  <main>
+    <p class="small">Meta Quest 2 / 3 · Meta Quest Browser · passthrough</p>
+    <h1>GO TO BED!!!</h1>
+    <p class="sub">Your kids won a cursed night-light. Every door in your living room is about to open. You have a toy dart blaster. It levels up.</p>
+
+    <div class="card">
+      <strong>Family Sheet</strong> <span class="small">(optional, fills the game with your details)</span>
+      <div class="row">
+        <div><label for="parent">What the kids call you</label>
+          <select id="parent"><option>Hey</option><option>Mom</option><option>Dad</option><option>Mama</option><option>Papa</option><option>Mommy</option><option>Daddy</option></select></div>
+        <div><label for="hand">Weapon hand</label>
+          <select id="hand"><option value="right">Right</option><option value="left">Left</option></select></div>
+      </div>
+      <div class="row">
+        <div><label for="kid1">Big kid's name</label><input id="kid1" placeholder="Pickle" maxlength="16" /></div>
+        <div><label for="kid2">Little kid's name</label><input id="kid2" placeholder="Bean" maxlength="16" /></div>
+      </div>
+      <div class="row">
+        <div><label for="comfort">Comfort</label>
+          <select id="comfort"><option value="standing">Standing</option><option value="seated">Seated</option></select></div>
+        <div><label for="chapter">Start at</label>
+          <select id="chapter">
+            <option value="campaign">Full campaign (bar → drive home → bedtime)</option>
+            <option value="bar">Chapter 1 · The Tipsy Goose (VR)</option>
+            <option value="drive">Chapter 2 · Are We Home Yet? (VR)</option>
+            <option value="house" selected>Chapter 3 · Bedtime (passthrough)</option>
+            <option value="range">Practice range (VR, endless)</option>
+          </select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <strong>Options</strong>
+      <div class="row">
+        <div><label for="music">Music</label>
+          <select id="music"><option value="on">On</option><option value="off">Off</option></select></div>
+        <div><label for="flash">Flashing effects</label>
+          <select id="flash"><option value="full">Full confetti</option><option value="reduced">Reduced</option></select></div>
+      </div>
+      <div class="row">
+        <div><label for="vignette">Driving comfort vignette</label>
+          <select id="vignette"><option value="off">Off</option><option value="on">On</option></select></div>
+        <div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <button id="enter" disabled>Checking headset…</button>
+      <div id="status"></div>
+      <p class="small">First time: run <b>Space Setup</b> in your headset settings so the game can find your doors and couch. Then open this page in the Meta Quest Browser and choose <b>Add this page to your library</b> from the browser menu.</p>
+    </div>
+
+    <details class="card">
+      <summary>Controls</summary>
+      <p class="small"><b>Shoot:</b> weapon-hand trigger · <b>Reload:</b> grab the blaster with your other hand and pump it (or press A/X) · <b>Place a door:</b> point your other hand at the bottom of a real door and pull its trigger · <b>Edit doors in play:</b> B/Y · <b>Begin:</b> trigger when the room is ready. Hands work too: pinch = trigger, fist = grab.</p>
+    </details>
+
+    <details class="card">
+      <summary>Diagnostics (copy this into chat if something went wrong)</summary>
+      <textarea id="diag" readonly></textarea>
+      <p><button class="ghost" id="copy">Copy diagnostics</button> <button class="ghost" id="reset">Reset save</button> <span class="small" id="version"></span></p>
+    </details>
+  </main>
+  <div id="xr-container"></div>
+</body>
+</html>

@@ -1,0 +1,703 @@
+{
+  "lines": {
+    "bar_parent_go_to_bed": {
+      "file": "bar_parent_go_to_bed.ogg",
+      "speaker": "parent",
+      "text": "Go to bed.",
+      "emotion": "monotone",
+      "trigger": "chapter start, muttered over the fade-in",
+      "cooldown_s": 60,
+      "duration_s": 0.668,
+      "takes": [
+        "bar_parent_go_to_bed.ogg"
+      ]
+    },
+    "bar_parent_no": {
+      "file": "bar_parent_no.ogg",
+      "speaker": "parent",
+      "text": "No.",
+      "emotion": "monotone",
+      "trigger": "reply to bar_pickle_sip",
+      "cooldown_s": 30,
+      "duration_s": 0.97,
+      "takes": [
+        "bar_parent_no.ogg"
+      ]
+    },
+    "bar_parent_need_minute": {
+      "file": "bar_parent_need_minute.ogg",
+      "speaker": "parent",
+      "text": "I need a minute.",
+      "emotion": "monotone",
+      "trigger": "Patience reaches 0 (\"You lost it.\")",
+      "cooldown_s": 10,
+      "duration_s": 0.959,
+      "takes": [
+        "bar_parent_need_minute.ogg",
+        "bar_parent_need_minute_b.ogg"
+      ]
+    },
+    "bar_parent_leaving": {
+      "file": "bar_parent_leaving.ogg",
+      "speaker": "parent",
+      "text": "We're leaving.",
+      "emotion": "monotone",
+      "trigger": "sound montage after Gus",
+      "cooldown_s": 60,
+      "duration_s": 0.808,
+      "takes": [
+        "bar_parent_leaving.ogg"
+      ]
+    },
+    "bar_marlene_hi": {
+      "file": "bar_marlene_hi.ogg",
+      "speaker": "marlene",
+      "text": "Hi hon. Rough one?",
+      "emotion": "neutral",
+      "trigger": "arrival",
+      "cooldown_s": 60,
+      "duration_s": 1.516,
+      "takes": [
+        "bar_marlene_hi.ogg"
+      ]
+    },
+    "bar_marlene_higher": {
+      "file": "bar_marlene_higher.ogg",
+      "speaker": "marlene",
+      "text": "Little higher, hon.",
+      "emotion": "neutral",
+      "trigger": "goose tutorial, 15 s without five hits",
+      "cooldown_s": 20,
+      "duration_s": 1.365,
+      "takes": [
+        "bar_marlene_higher.ogg"
+      ]
+    },
+    "bar_marlene_pump": {
+      "file": "bar_marlene_pump.ogg",
+      "speaker": "marlene",
+      "text": "Pump it. Like the ketchup.",
+      "emotion": "neutral",
+      "trigger": "drum empty during the tutorial",
+      "cooldown_s": 20,
+      "duration_s": 1.69,
+      "takes": [
+        "bar_marlene_pump.ogg"
+      ]
+    },
+    "bar_marlene_laser": {
+      "file": "bar_marlene_laser.ogg",
+      "speaker": "marlene",
+      "text": "Point and click, hon. Like a laser pointer.",
+      "emotion": "neutral",
+      "trigger": "claw machine, 15 s without a button hit",
+      "cooldown_s": 20,
+      "duration_s": 3.106,
+      "takes": [
+        "bar_marlene_laser.ogg"
+      ]
+    },
+    "bar_marlene_kids_eat_free": {
+      "file": "bar_marlene_kids_eat_free.ogg",
+      "speaker": "marlene",
+      "text": "Kids eat free. Parents pay in other ways.",
+      "emotion": "monotone",
+      "trigger": "the nacho platter lands",
+      "cooldown_s": 60,
+      "duration_s": 2.758,
+      "takes": [
+        "bar_marlene_kids_eat_free.ogg"
+      ]
+    },
+    "bar_marlene_darts": {
+      "file": "bar_marlene_darts.ogg",
+      "speaker": "marlene",
+      "text": "Darts incoming, hon.",
+      "emotion": "neutral",
+      "trigger": "fight group 3 starts",
+      "cooldown_s": 60,
+      "duration_s": 1.644,
+      "takes": [
+        "bar_marlene_darts.ogg"
+      ]
+    },
+    "bar_marlene_gus_kids": {
+      "file": "bar_marlene_gus_kids.ogg",
+      "speaker": "marlene",
+      "text": "Gus, he's got kids.",
+      "emotion": "whine",
+      "trigger": "Gus approaching, 10 s in",
+      "cooldown_s": 60,
+      "duration_s": 2.34,
+      "takes": [
+        "bar_marlene_gus_kids.ogg"
+      ]
+    },
+    "bar_marlene_not_cleaning": {
+      "file": "bar_marlene_not_cleaning.ogg",
+      "speaker": "marlene",
+      "text": "I'm not cleaning that.",
+      "emotion": "monotone",
+      "trigger": "after the Nacho Avalanche",
+      "cooldown_s": 60,
+      "duration_s": 1.702,
+      "takes": [
+        "bar_marlene_not_cleaning.ogg"
+      ]
+    },
+    "bar_marlene_tab": {
+      "file": "bar_marlene_tab.ogg",
+      "speaker": "marlene",
+      "text": "Tab's on Brad.",
+      "emotion": "neutral",
+      "trigger": "sound montage",
+      "cooldown_s": 60,
+      "duration_s": 1.191,
+      "takes": [
+        "bar_marlene_tab.ogg"
+      ]
+    },
+    "bar_pickle_drawing": {
+      "file": "bar_pickle_drawing.ogg",
+      "speaker": "pickle",
+      "text": "I'm drawing you. You look mad.",
+      "emotion": "neutral",
+      "trigger": "arrival, colouring the placemat",
+      "cooldown_s": 60,
+      "duration_s": 2.059,
+      "takes": [
+        "bar_pickle_drawing.ogg"
+      ]
+    },
+    "bar_pickle_shoot_goose": {
+      "file": "bar_pickle_shoot_goose.ogg",
+      "speaker": "pickle",
+      "text": "Shoot the goose!",
+      "emotion": "giggle",
+      "trigger": "goose tutorial starts",
+      "cooldown_s": 30,
+      "duration_s": 1.149,
+      "takes": [
+        "bar_pickle_shoot_goose.ogg"
+      ]
+    },
+    "bar_pickle_moon": {
+      "file": "bar_pickle_moon.ogg",
+      "speaker": "pickle",
+      "text": "I want the moon one.",
+      "emotion": "whine",
+      "trigger": "claw machine beat starts",
+      "cooldown_s": 30,
+      "duration_s": 1.463,
+      "takes": [
+        "bar_pickle_moon.ogg"
+      ]
+    },
+    "bar_pickle_aww": {
+      "file": "bar_pickle_aww.ogg",
+      "speaker": "pickle",
+      "text": "Awww. It dropped it.",
+      "emotion": "whine",
+      "trigger": "claw attempt 1 or 2 drops the prize",
+      "cooldown_s": 4,
+      "duration_s": 1.652,
+      "takes": [
+        "bar_pickle_aww.ogg",
+        "bar_pickle_aww_b.ogg"
+      ]
+    },
+    "bar_pickle_started_it": {
+      "file": "bar_pickle_started_it.ogg",
+      "speaker": "pickle",
+      "text": "He started it. With his face.",
+      "emotion": "neutral",
+      "trigger": "Nacho Avalanche",
+      "cooldown_s": 60,
+      "duration_s": 2.001,
+      "takes": [
+        "bar_pickle_started_it.ogg"
+      ]
+    },
+    "bar_pickle_sharing": {
+      "file": "bar_pickle_sharing.ogg",
+      "speaker": "pickle",
+      "text": "I'm not throwing, I'm sharing.",
+      "emotion": "giggle",
+      "trigger": "Nacho Avalanche, Pickle throws back",
+      "cooldown_s": 60,
+      "duration_s": 1.727,
+      "takes": [
+        "bar_pickle_sharing.ogg"
+      ]
+    },
+    "bar_pickle_friend": {
+      "file": "bar_pickle_friend.ogg",
+      "speaker": "pickle",
+      "text": "Is that man your friend now?",
+      "emotion": "neutral",
+      "trigger": "Brad knocked out",
+      "cooldown_s": 60,
+      "duration_s": 1.84,
+      "takes": [
+        "bar_pickle_friend.ogg"
+      ]
+    },
+    "bar_pickle_sip": {
+      "file": "bar_pickle_sip.ogg",
+      "speaker": "pickle",
+      "text": "Can I have a sip of yours?",
+      "emotion": "neutral",
+      "trigger": "arrival, after the drawing line",
+      "cooldown_s": 60,
+      "duration_s": 1.971,
+      "takes": [
+        "bar_pickle_sip.ogg"
+      ]
+    },
+    "bar_pickle_best_night": {
+      "file": "bar_pickle_best_night.ogg",
+      "speaker": "pickle",
+      "text": "Best night ever.",
+      "emotion": "giggle",
+      "trigger": "sound montage",
+      "cooldown_s": 60,
+      "duration_s": 1.06,
+      "takes": [
+        "bar_pickle_best_night.ogg"
+      ]
+    },
+    "bar_pickle_laugh": {
+      "file": "bar_pickle_laugh.ogg",
+      "speaker": "pickle",
+      "text": "Ha ha ha ha ha!",
+      "emotion": "giggle",
+      "trigger": "sound montage, the door slams",
+      "cooldown_s": 10,
+      "duration_s": 1.418,
+      "takes": [
+        "bar_pickle_laugh.ogg",
+        "bar_pickle_laugh_b.ogg"
+      ]
+    },
+    "bar_bean_uh_oh": {
+      "file": "bar_bean_uh_oh.ogg",
+      "speaker": "bean",
+      "text": "Uh oh.",
+      "emotion": "neutral",
+      "trigger": "a patron goes down near the booth",
+      "cooldown_s": 8,
+      "duration_s": 0.632,
+      "takes": [
+        "bar_bean_uh_oh.ogg",
+        "bar_bean_uh_oh_b.ogg"
+      ]
+    },
+    "bar_bean_again": {
+      "file": "bar_bean_again.ogg",
+      "speaker": "bean",
+      "text": "Again!",
+      "emotion": "giggle",
+      "trigger": "goose spins; sound montage",
+      "cooldown_s": 5,
+      "duration_s": 0.515,
+      "takes": [
+        "bar_bean_again.ogg",
+        "bar_bean_again_b.ogg"
+      ]
+    },
+    "bar_bean_moon": {
+      "file": "bar_bean_moon.ogg",
+      "speaker": "bean",
+      "text": "Moon.",
+      "emotion": "sleepy",
+      "trigger": "the Dreamgate lands in Bean's hands",
+      "cooldown_s": 30,
+      "duration_s": 0.475,
+      "takes": [
+        "bar_bean_moon.ogg"
+      ]
+    },
+    "bar_bean_cheese": {
+      "file": "bar_bean_cheese.ogg",
+      "speaker": "bean",
+      "text": "Cheese.",
+      "emotion": "giggle",
+      "trigger": "Nacho Avalanche",
+      "cooldown_s": 30,
+      "duration_s": 0.708,
+      "takes": [
+        "bar_bean_cheese.ogg"
+      ]
+    },
+    "bar_bean_hop": {
+      "file": "bar_bean_hop.ogg",
+      "speaker": "bean",
+      "text": "Hop.",
+      "emotion": "whine",
+      "trigger": "fight, hugging Mister Hop",
+      "cooldown_s": 30,
+      "duration_s": 0.476,
+      "takes": [
+        "bar_bean_hop.ogg"
+      ]
+    },
+    "bar_bean_double_binky": {
+      "file": "bar_bean_double_binky.ogg",
+      "speaker": "bean",
+      "text": "Ooh. Double Binky.",
+      "emotion": "giggle",
+      "trigger": "Tier 1 promotion",
+      "cooldown_s": 60,
+      "duration_s": 1.42,
+      "takes": [
+        "bar_bean_double_binky.ogg"
+      ]
+    },
+    "bar_kayden_mine": {
+      "file": "bar_kayden_mine.ogg",
+      "speaker": "kayden",
+      "text": "That's mine. My dad said.",
+      "emotion": "neutral",
+      "trigger": "the Dreamgate is won",
+      "cooldown_s": 60,
+      "duration_s": 1.947,
+      "takes": [
+        "bar_kayden_mine.ogg"
+      ]
+    },
+    "bar_kayden_nachos": {
+      "file": "bar_kayden_nachos.ogg",
+      "speaker": "kayden",
+      "text": "I don't even like nachos.",
+      "emotion": "whine",
+      "trigger": "Nacho Avalanche, Kayden throws",
+      "cooldown_s": 60,
+      "duration_s": 2.158,
+      "takes": [
+        "bar_kayden_nachos.ogg"
+      ]
+    },
+    "bar_kayden_dad": {
+      "file": "bar_kayden_dad.ogg",
+      "speaker": "kayden",
+      "text": "Daaaad.",
+      "emotion": "whine",
+      "trigger": "Brad knocked out",
+      "cooldown_s": 30,
+      "duration_s": 0.769,
+      "takes": [
+        "bar_kayden_dad.ogg"
+      ]
+    },
+    "bar_brad_vegetables": {
+      "file": "bar_brad_vegetables.ogg",
+      "speaker": "brad",
+      "text": "He just loves vegetables.",
+      "emotion": "neutral",
+      "trigger": "arrival at Booth 8",
+      "cooldown_s": 60,
+      "duration_s": 1.539,
+      "takes": [
+        "bar_brad_vegetables.ogg"
+      ]
+    },
+    "bar_brad_woah": {
+      "file": "bar_brad_woah.ogg",
+      "speaker": "brad",
+      "text": "Woah woah woah, buddy.",
+      "emotion": "neutral",
+      "trigger": "a dart bounces off his chest",
+      "cooldown_s": 4,
+      "duration_s": 1.736,
+      "takes": [
+        "bar_brad_woah.ogg",
+        "bar_brad_woah_b.ogg"
+      ]
+    },
+    "bar_brad_calm": {
+      "file": "bar_brad_calm.ogg",
+      "speaker": "brad",
+      "text": "I'm calm. I'M CALM.",
+      "emotion": "scream",
+      "trigger": "Brad stands up",
+      "cooldown_s": 30,
+      "duration_s": 6.02,
+      "takes": [
+        "bar_brad_calm.ogg"
+      ]
+    },
+    "bar_brad_kayden_look": {
+      "file": "bar_brad_kayden_look.ogg",
+      "speaker": "brad",
+      "text": "Kayden, don't look at this.",
+      "emotion": "neutral",
+      "trigger": "Brad approaching",
+      "cooldown_s": 30,
+      "duration_s": 1.853,
+      "takes": [
+        "bar_brad_kayden_look.ogg"
+      ]
+    },
+    "bar_brad_lawyer": {
+      "file": "bar_brad_lawyer.ogg",
+      "speaker": "brad",
+      "text": "My lawyer plays pickleball with me.",
+      "emotion": "whine",
+      "trigger": "Brad knocked out",
+      "cooldown_s": 60,
+      "duration_s": 2.421,
+      "takes": [
+        "bar_brad_lawyer.ogg"
+      ]
+    },
+    "bar_brad_trophy": {
+      "file": "bar_brad_trophy.ogg",
+      "speaker": "brad",
+      "text": "That's a participation trophy, not a weapon.",
+      "emotion": "neutral",
+      "trigger": "first forehead hit",
+      "cooldown_s": 60,
+      "duration_s": 2.619,
+      "takes": [
+        "bar_brad_trophy.ogg"
+      ]
+    },
+    "bar_trucker_who_threw": {
+      "file": "bar_trucker_who_threw.ogg",
+      "speaker": "patron",
+      "text": "Who threw that.",
+      "emotion": "monotone",
+      "trigger": "Nacho Avalanche; first peanut",
+      "cooldown_s": 20,
+      "duration_s": 1.423,
+      "takes": [
+        "bar_trucker_who_threw.ogg"
+      ]
+    },
+    "bar_trucker_not_hat": {
+      "file": "bar_trucker_not_hat.ogg",
+      "speaker": "patron",
+      "text": "Not the hat.",
+      "emotion": "whine",
+      "trigger": "headshot knocks the hat off",
+      "cooldown_s": 6,
+      "duration_s": 1.411,
+      "takes": [
+        "bar_trucker_not_hat.ogg",
+        "bar_trucker_not_hat_b.ogg"
+      ]
+    },
+    "bar_trucker_nerf": {
+      "file": "bar_trucker_nerf.ogg",
+      "speaker": "patron",
+      "text": "Marlene, he's got a Nerf.",
+      "emotion": "whine",
+      "trigger": "Trucker Hat hit",
+      "cooldown_s": 12,
+      "duration_s": 2.688,
+      "takes": [
+        "bar_trucker_nerf.ogg",
+        "bar_trucker_nerf_b.ogg"
+      ]
+    },
+    "bar_trucker_bowl": {
+      "file": "bar_trucker_bowl.ogg",
+      "speaker": "patron",
+      "text": "That's my bowl.",
+      "emotion": "neutral",
+      "trigger": "Trucker Hat knocked out",
+      "cooldown_s": 10,
+      "duration_s": 1.144,
+      "takes": [
+        "bar_trucker_bowl.ogg",
+        "bar_trucker_bowl_b.ogg"
+      ]
+    },
+    "bar_jersey_defence": {
+      "file": "bar_jersey_defence.ogg",
+      "speaker": "patron",
+      "text": "Defence! DEFENCE!",
+      "emotion": "scream",
+      "trigger": "double-clap tell before the chest bump",
+      "cooldown_s": 5,
+      "duration_s": 1.548,
+      "takes": [
+        "bar_jersey_defence.ogg",
+        "bar_jersey_defence_b.ogg"
+      ]
+    },
+    "bar_jersey_foam": {
+      "file": "bar_jersey_foam.ogg",
+      "speaker": "patron",
+      "text": "Foam finger says no.",
+      "emotion": "neutral",
+      "trigger": "chest bump lands",
+      "cooldown_s": 10,
+      "duration_s": 2.063,
+      "takes": [
+        "bar_jersey_foam.ogg",
+        "bar_jersey_foam_b.ogg"
+      ]
+    },
+    "bar_jersey_tuesday": {
+      "file": "bar_jersey_tuesday.ogg",
+      "speaker": "patron",
+      "text": "This is my Tuesday.",
+      "emotion": "monotone",
+      "trigger": "Jersey Guy knocked out",
+      "cooldown_s": 8,
+      "duration_s": 1.794,
+      "takes": [
+        "bar_jersey_tuesday.ogg",
+        "bar_jersey_tuesday_b.ogg"
+      ]
+    },
+    "bar_jersey_ref": {
+      "file": "bar_jersey_ref.ogg",
+      "speaker": "patron",
+      "text": "Ref!",
+      "emotion": "scream",
+      "trigger": "Jersey Guy hit",
+      "cooldown_s": 6,
+      "duration_s": 0.488,
+      "takes": [
+        "bar_jersey_ref.ogg",
+        "bar_jersey_ref_b.ogg"
+      ]
+    },
+    "bar_jersey_team_play": {
+      "file": "bar_jersey_team_play.ogg",
+      "speaker": "patron",
+      "text": "Nachos were a team play.",
+      "emotion": "neutral",
+      "trigger": "Jersey Guy spawns",
+      "cooldown_s": 20,
+      "duration_s": 2.154,
+      "takes": [
+        "bar_jersey_team_play.ogg"
+      ]
+    },
+    "bar_lady_boundaries": {
+      "file": "bar_lady_boundaries.ogg",
+      "speaker": "grandma",
+      "text": "Chapter nine: boundaries.",
+      "emotion": "neutral",
+      "trigger": "hardback throw",
+      "cooldown_s": 8,
+      "duration_s": 2.491,
+      "takes": [
+        "bar_lady_boundaries.ogg",
+        "bar_lady_boundaries_b.ogg"
+      ]
+    },
+    "bar_lady_book": {
+      "file": "bar_lady_book.ogg",
+      "speaker": "grandma",
+      "text": "I have a book about this.",
+      "emotion": "neutral",
+      "trigger": "joins the fight",
+      "cooldown_s": 30,
+      "duration_s": 1.598,
+      "takes": [
+        "bar_lady_book.ogg"
+      ]
+    },
+    "bar_lady_duck": {
+      "file": "bar_lady_duck.ogg",
+      "speaker": "grandma",
+      "text": "You're doing great, sweetie. Duck.",
+      "emotion": "neutral",
+      "trigger": "Patience below 35",
+      "cooldown_s": 30,
+      "duration_s": 2.12,
+      "takes": [
+        "bar_lady_duck.ogg"
+      ]
+    },
+    "bar_lady_hardback": {
+      "file": "bar_lady_hardback.ogg",
+      "speaker": "grandma",
+      "text": "Hardback. Not paperback.",
+      "emotion": "neutral",
+      "trigger": "hardback knocks a patron out",
+      "cooldown_s": 12,
+      "duration_s": 1.784,
+      "takes": [
+        "bar_lady_hardback.ogg"
+      ]
+    },
+    "bar_gus_entrance": {
+      "file": "bar_gus_entrance.ogg",
+      "speaker": "gus",
+      "text": "Sir. Ma'am. Parent.",
+      "emotion": "monotone",
+      "trigger": "Gus enters",
+      "cooldown_s": 60,
+      "duration_s": 1.876,
+      "takes": [
+        "bar_gus_entrance.ogg"
+      ]
+    },
+    "bar_gus_please": {
+      "file": "bar_gus_please.ogg",
+      "speaker": "gus",
+      "text": "Please don't.",
+      "emotion": "monotone",
+      "trigger": "every stagger",
+      "cooldown_s": 3,
+      "duration_s": 0.97,
+      "takes": [
+        "bar_gus_please.ogg",
+        "bar_gus_please_b.ogg"
+      ]
+    },
+    "bar_gus_done": {
+      "file": "bar_gus_done.ogg",
+      "speaker": "gus",
+      "text": "You're done.",
+      "emotion": "monotone",
+      "trigger": "third stagger",
+      "cooldown_s": 20,
+      "duration_s": 0.912,
+      "takes": [
+        "bar_gus_done.ogg"
+      ]
+    },
+    "bar_gus_college": {
+      "file": "bar_gus_college.ogg",
+      "speaker": "gus",
+      "text": "I have kids too. They're in college. It gets better.",
+      "emotion": "monotone",
+      "trigger": "reply to bar_marlene_gus_kids",
+      "cooldown_s": 60,
+      "duration_s": 4.709,
+      "takes": [
+        "bar_gus_college.ogg"
+      ]
+    },
+    "bar_gus_watch_door": {
+      "file": "bar_gus_watch_door.ogg",
+      "speaker": "gus",
+      "text": "Watch the door.",
+      "emotion": "monotone",
+      "trigger": "Gus reaches the player",
+      "cooldown_s": 60,
+      "duration_s": 1.156,
+      "takes": [
+        "bar_gus_watch_door.ogg"
+      ]
+    },
+    "bar_gus_plate": {
+      "file": "bar_gus_plate.ogg",
+      "speaker": "gus",
+      "text": "Plate stays with you. House rule.",
+      "emotion": "monotone",
+      "trigger": "sound montage",
+      "cooldown_s": 60,
+      "duration_s": 3.014,
+      "takes": [
+        "bar_gus_plate.ogg"
+      ]
+    }
+  }
+}

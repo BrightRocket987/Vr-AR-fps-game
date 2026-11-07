@@ -1,0 +1,14 @@
+{
+  "pop": { "file": "pop.ogg", "duration_s": 0.162, "loop": false },
+  "thwip": { "file": "thwip.ogg", "duration_s": 0.136, "loop": false },
+  "knock": { "file": "knock.ogg", "duration_s": 0.226, "loop": false },
+  "door_kick": { "file": "door_kick.ogg", "duration_s": 0.456, "loop": false },
+  "portal_hum": { "file": "portal_hum.ogg", "duration_s": 4.007, "loop": true },
+  "squeak_inflate": { "file": "squeak_inflate.ogg", "duration_s": 0.456, "loop": false },
+  "confetti": { "file": "confetti.ogg", "duration_s": 0.606, "loop": false },
+  "diaper_plap": { "file": "diaper_plap.ogg", "duration_s": 0.147, "loop": false },
+  "tier_up": { "file": "tier_up.ogg", "duration_s": 0.976, "loop": false },
+  "ui_click": { "file": "ui_click.ogg", "duration_s": 0.052, "loop": false },
+  "scream_siren": { "file": "scream_siren.ogg", "duration_s": 1.507, "loop": false },
+  "stink_cloud": { "file": "stink_cloud.ogg", "duration_s": 1.806, "loop": false }
+}
