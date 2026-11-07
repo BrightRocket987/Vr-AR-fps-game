@@ -176,7 +176,13 @@ export class House implements Chapter {
         this.stats.spawned++;
       }),
       ctx.bus.on('wave:start', ({ name, index }) => {
-        this.hud.say(`Wave ${index + 1}: ${name}`, '', 3.5);
+        const fam = ctx.save.data.family;
+        const subs = ['', `Copies of ${fam.kid1} and ${fam.kid2} incoming.`, `${fam.kid1} found the couch.`, `${fam.kid2} is at the door.`, `Somebody needs a diaper change.`, `Everyone is awake, ${fam.parent === 'Hey' ? 'friend' : fam.parent}.`];
+        this.hud.say(`Wave ${index + 1}: ${name}`, subs[Math.min(index, subs.length - 1)], 3.5);
+        if (index + 1 > ctx.save.data.bestWave) {
+          ctx.save.data.bestWave = index + 1;
+          ctx.save.persist();
+        }
         this.voice.sfx('tier_up', null, 0.5);
         if (index === 0) this.voice.sayId('narrator_wave_one', null);
         this.openDoorsForWave(index);
@@ -542,6 +548,11 @@ export class House implements Chapter {
       this.setPhase('down');
       this.hud.say('You lost it.', `A ${source} got you. Deep breath. Count to three.`, 3);
     }
+  }
+
+  /** The adopted room, serialised, so a playtester's real room can be replayed in the emulator. */
+  roomJSON(): unknown {
+    return this.room.toJSON();
   }
 
   /** For tests and the diagnostics export. */

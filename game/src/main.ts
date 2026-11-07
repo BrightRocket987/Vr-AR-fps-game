@@ -72,7 +72,8 @@ async function main(): Promise<void> {
 
   const refreshDiag = () => {
     const d = app.diagnostics();
-    diag.value = JSON.stringify({ ...d, chapter: debug.snapshot(), save: { pops: save.data.lifetimePops, bestWave: save.data.bestWave } }, null, 1);
+    const room = (debug.chapter as House | null)?.roomJSON?.();
+    diag.value = JSON.stringify({ ...d, chapter: debug.snapshot(), room, save: { pops: save.data.lifetimePops, bestWave: save.data.bestWave } }, null, 1);
   };
   $<HTMLButtonElement>('copy').onclick = () => {
     refreshDiag();
