@@ -1,0 +1,318 @@
+# GO TO BED!!! - Chapter 2 "Are We Home Yet?" voice lines (pack: drive).
+# Built with: LINES=assets-src/dialogue/lines-drive.yaml MANIFEST=manifest-drive.json ID_PREFIX=drive_ tools/build-voices.sh
+# Same schema as lines.yaml. TTS cannot say Family Sheet names: lines are generic, the HUD subtitle shows the names.
+# Played by game/src/chapters/Drive.ts with voice.sayId(id, at) (scripted beats) and voice.say(speaker) (barks).
+lines:
+  # ---------------------------------------------------------------- Pickle (kid1, the older one, right rear)
+  - id: drive_pickle_tablet_broke
+    speaker: pickle
+    text: "My tablet broke!"
+    emotion: neutral
+    trigger: Tablet need ASK
+    cooldown_s: 20
+  - id: drive_pickle_tablet_whine
+    speaker: pickle
+    text: "My tablet broke. It's broken. It broke."
+    emotion: whine
+    trigger: Tablet need WHINE (8 s)
+    cooldown_s: 20
+  - id: drive_pickle_tablet_cry
+    speaker: pickle
+    text: "It's got a crack and it's glowing!"
+    emotion: scream
+    trigger: Tablet need CRY (14 s)
+    cooldown_s: 20
+  - id: drive_pickle_tablet_again
+    speaker: pickle
+    text: "My tablet broke AGAIN."
+    emotion: whine
+    trigger: second Tablet need ASK
+    cooldown_s: 30
+  - id: drive_pickle_tablet_thanks
+    speaker: pickle
+    text: "Yay! It works!"
+    emotion: giggle
+    trigger: Tablet handed back
+    cooldown_s: 10
+  - id: drive_pickle_pee
+    speaker: pickle
+    text: "I have to pee!"
+    emotion: neutral
+    trigger: Pee level 1 (cannot be solved)
+    cooldown_s: 20
+  - id: drive_pickle_pee_bad
+    speaker: pickle
+    text: "I have to pee really bad."
+    emotion: whine
+    trigger: Pee level 2 (+30 s)
+    cooldown_s: 20
+  - id: drive_pickle_pee_cry
+    speaker: pickle
+    text: "I'm not going to make it!"
+    emotion: scream
+    trigger: Pee level 3 (+60 s)
+    cooldown_s: 20
+  - id: drive_pickle_pee_frantic
+    speaker: pickle
+    text: "It's coming! It's coming! Drive faster!"
+    emotion: scream
+    trigger: Pee level 4+, the frantic pull into the driveway
+    cooldown_s: 12
+  - id: drive_pickle_touching
+    speaker: pickle
+    text: "He's touching me!"
+    emotion: whine
+    trigger: Touching need ASK
+    cooldown_s: 20
+  - id: drive_pickle_touching_cry
+    speaker: pickle
+    text: "He is STILL touching me!"
+    emotion: scream
+    trigger: Touching need CRY
+    cooldown_s: 20
+  - id: drive_pickle_there_yet
+    speaker: pickle
+    text: "Are we there yet?"
+    emotion: neutral
+    trigger: ambient, every 60-90 s
+    cooldown_s: 40
+  - id: drive_pickle_there_yet_now
+    speaker: pickle
+    text: "Are we there yet now?"
+    emotion: whine
+    trigger: ambient, 20 s after the first ask
+    cooldown_s: 40
+  - id: drive_pickle_moon
+    speaker: pickle
+    text: "Why is the moon in the car?"
+    emotion: neutral
+    trigger: the Dreamgate glows in the USB port, 0:05
+    cooldown_s: 60
+  - id: drive_pickle_gooey
+    speaker: pickle
+    text: "Why is the window gooey?"
+    emotion: neutral
+    trigger: first gremlin popped through the glass
+    cooldown_s: 60
+  - id: drive_pickle_grandma_nicer
+    speaker: pickle
+    text: "Grandma drives nicer."
+    emotion: neutral
+    trigger: after a hazard hit
+    cooldown_s: 30
+  - id: drive_pickle_sideways
+    speaker: pickle
+    text: "We're going sideways. Is that allowed?"
+    emotion: neutral
+    trigger: no hand on the wheel, the car drifts
+    cooldown_s: 25
+  - id: drive_pickle_brad
+    speaker: pickle
+    text: "Brad's truck is faster."
+    emotion: neutral
+    trigger: Brad's pickup brake-checks
+    cooldown_s: 60
+  - id: drive_pickle_deer
+    speaker: pickle
+    text: "That deer had a cape."
+    emotion: neutral
+    trigger: the deer gremlin
+    cooldown_s: 60
+  - id: drive_pickle_no_head
+    speaker: pickle
+    text: "That truck has no driver."
+    emotion: neutral
+    trigger: Mr. Jingles reveal
+    cooldown_s: 60
+  - id: drive_pickle_ice_cream
+    speaker: pickle
+    text: "Can we get ice cream?"
+    emotion: whine
+    trigger: boss, repeated
+    cooldown_s: 15
+  - id: drive_pickle_didnt_want
+    speaker: pickle
+    text: "I didn't want ice cream anyway."
+    emotion: neutral
+    trigger: boss finish
+    cooldown_s: 60
+  - id: drive_pickle_hi_grandma
+    speaker: pickle
+    text: "Hi Grandma! We're in the car!"
+    emotion: giggle
+    trigger: Grandma on speakerphone
+    cooldown_s: 60
+  - id: drive_pickle_waah
+    speaker: pickle
+    text: "WAAAAAH!"
+    emotion: scream
+    trigger: meltdown (need reached 20 s)
+    cooldown_s: 5
+  # ---------------------------------------------------------------- Bean (kid2, the toddler, left rear)
+  - id: drive_bean_nack
+    speaker: bean
+    text: "Nack."
+    emotion: neutral
+    trigger: Hungry need ASK
+    cooldown_s: 10
+  - id: drive_bean_nack_whine
+    speaker: bean
+    text: "NACK. NACK. NACK."
+    emotion: whine
+    trigger: Hungry need WHINE
+    cooldown_s: 10
+  - id: drive_bean_hop_hurt
+    speaker: bean
+    text: "Hop hurt!"
+    emotion: scream
+    trigger: Hungry need CRY (he ate the bunny's ear)
+    cooldown_s: 20
+  - id: drive_bean_yum
+    speaker: bean
+    text: "Mmm. Nack."
+    emotion: giggle
+    trigger: snack bag handed back
+    cooldown_s: 10
+  - id: drive_bean_bump
+    speaker: bean
+    text: "Bump!"
+    emotion: giggle
+    trigger: potholes, rumble strip
+    cooldown_s: 3
+  - id: drive_bean_uh_oh
+    speaker: bean
+    text: "Uh oh."
+    emotion: neutral
+    trigger: any hazard hit
+    cooldown_s: 6
+  - id: drive_bean_moon
+    speaker: bean
+    text: "Moon."
+    emotion: neutral
+    trigger: Dreamgate flash
+    cooldown_s: 15
+  - id: drive_bean_hi
+    speaker: bean
+    text: "Hi."
+    emotion: giggle
+    trigger: to a gremlin on the window or dashboard
+    cooldown_s: 8
+  - id: drive_bean_truck
+    speaker: bean
+    text: "Truck."
+    emotion: neutral
+    trigger: any truck
+    cooldown_s: 15
+  - id: drive_bean_waah
+    speaker: bean
+    text: "WAAAAAH!"
+    emotion: scream
+    trigger: meltdown
+    cooldown_s: 5
+  - id: drive_bean_home
+    speaker: bean
+    text: "Are we home?"
+    emotion: sleepy
+    trigger: the driveway
+    cooldown_s: 60
+  # ---------------------------------------------------------------- Grandma (speakerphone)
+  - id: drive_grandma_bar
+    speaker: grandma
+    text: "Did you take them to that bar again?"
+    emotion: neutral
+    trigger: phone call
+    cooldown_s: 60
+  - id: drive_grandma_hands
+    speaker: grandma
+    text: "Both hands on the wheel, dear."
+    emotion: neutral
+    trigger: phone call
+    cooldown_s: 60
+  - id: drive_grandma_bye
+    speaker: grandma
+    text: "Call me when you're home. Drive nicer."
+    emotion: neutral
+    trigger: phone call ends
+    cooldown_s: 60
+  # ---------------------------------------------------------------- Mr. Jingles (the truck's speaker)
+  - id: drive_jingles_ice_cream
+    speaker: jingles
+    text: "ICE CREAM."
+    emotion: monotone
+    trigger: reveal
+    cooldown_s: 10
+  - id: drive_jingles_hard_feelings
+    speaker: jingles
+    text: "Soft serve. Hard feelings."
+    emotion: monotone
+    trigger: phase 1, throwing cones
+    cooldown_s: 30
+  - id: drive_jingles_sprinkles
+    speaker: jingles
+    text: "Sprinkles are free. Everything else costs."
+    emotion: monotone
+    trigger: phase 2, the serving window opens
+    cooldown_s: 30
+  - id: drive_jingles_come_back
+    speaker: jingles
+    text: "Come back."
+    emotion: monotone
+    trigger: phase 3, overdrive
+    cooldown_s: 15
+  - id: drive_jingles_nice_night
+    speaker: jingles
+    text: "Have a nice night."
+    emotion: monotone
+    trigger: the truck swerves into the hedge
+    cooldown_s: 60
+  # ---------------------------------------------------------------- Parent (the player's mutters)
+  - id: drive_parent_driving
+    speaker: parent
+    text: "I'm driving."
+    emotion: monotone
+    trigger: a need while a hazard is close
+    cooldown_s: 30
+  - id: drive_parent_no
+    speaker: parent
+    text: "No."
+    emotion: monotone
+    trigger: "Can we get ice cream?"
+    cooldown_s: 20
+  - id: drive_parent_almost
+    speaker: parent
+    text: "We're almost home."
+    emotion: monotone
+    trigger: "Are we there yet?"
+    cooldown_s: 30
+  - id: drive_parent_pull_over
+    speaker: parent
+    text: "Don't make me pull over."
+    emotion: monotone
+    trigger: a meltdown
+    cooldown_s: 40
+  # ---------------------------------------------------------------- gremlins on the car
+  - id: drive_clinger_let_me_in
+    speaker: clinger
+    text: "Let me in!"
+    emotion: giggle
+    trigger: a window clinger lands
+    cooldown_s: 8
+  - id: drive_clinger_fries
+    speaker: clinger
+    text: "Your car smells like fries."
+    emotion: giggle
+    trigger: a window clinger pounds the glass
+    cooldown_s: 15
+  - id: drive_scamp_live_here
+    speaker: scamp
+    text: "Hi. I live here now."
+    emotion: giggle
+    trigger: a meltdown gremlin climbs onto the dashboard
+    cooldown_s: 20
+  # ---------------------------------------------------------------- the Dreamgate
+  - id: drive_narrator_take_me
+    speaker: narrator
+    text: "Take me inside."
+    emotion: sleepy
+    trigger: engine off in the driveway
+    cooldown_s: 60

@@ -1,1 +1,631 @@
-{ "lines": {} }
+{
+  "lines": {
+    "drive_pickle_tablet_broke": {
+      "file": "drive_pickle_tablet_broke.ogg",
+      "speaker": "pickle",
+      "text": "My tablet broke!",
+      "emotion": "neutral",
+      "trigger": "Tablet need ASK",
+      "cooldown_s": 20,
+      "duration_s": 1.122,
+      "takes": [
+        "drive_pickle_tablet_broke.ogg"
+      ]
+    },
+    "drive_pickle_tablet_whine": {
+      "file": "drive_pickle_tablet_whine.ogg",
+      "speaker": "pickle",
+      "text": "My tablet broke. It's broken. It broke.",
+      "emotion": "whine",
+      "trigger": "Tablet need WHINE (8 s)",
+      "cooldown_s": 20,
+      "duration_s": 3.223,
+      "takes": [
+        "drive_pickle_tablet_whine.ogg"
+      ]
+    },
+    "drive_pickle_tablet_cry": {
+      "file": "drive_pickle_tablet_cry.ogg",
+      "speaker": "pickle",
+      "text": "It's got a crack and it's glowing!",
+      "emotion": "scream",
+      "trigger": "Tablet need CRY (14 s)",
+      "cooldown_s": 20,
+      "duration_s": 1.946,
+      "takes": [
+        "drive_pickle_tablet_cry.ogg"
+      ]
+    },
+    "drive_pickle_tablet_again": {
+      "file": "drive_pickle_tablet_again.ogg",
+      "speaker": "pickle",
+      "text": "My tablet broke AGAIN.",
+      "emotion": "whine",
+      "trigger": "second Tablet need ASK",
+      "cooldown_s": 30,
+      "duration_s": 1.742,
+      "takes": [
+        "drive_pickle_tablet_again.ogg"
+      ]
+    },
+    "drive_pickle_tablet_thanks": {
+      "file": "drive_pickle_tablet_thanks.ogg",
+      "speaker": "pickle",
+      "text": "Yay! It works!",
+      "emotion": "giggle",
+      "trigger": "Tablet handed back",
+      "cooldown_s": 10,
+      "duration_s": 1.49,
+      "takes": [
+        "drive_pickle_tablet_thanks.ogg",
+        "drive_pickle_tablet_thanks_b.ogg"
+      ]
+    },
+    "drive_pickle_pee": {
+      "file": "drive_pickle_pee.ogg",
+      "speaker": "pickle",
+      "text": "I have to pee!",
+      "emotion": "neutral",
+      "trigger": "Pee level 1 (cannot be solved)",
+      "cooldown_s": 20,
+      "duration_s": 1.044,
+      "takes": [
+        "drive_pickle_pee.ogg"
+      ]
+    },
+    "drive_pickle_pee_bad": {
+      "file": "drive_pickle_pee_bad.ogg",
+      "speaker": "pickle",
+      "text": "I have to pee really bad.",
+      "emotion": "whine",
+      "trigger": "Pee level 2 (+30 s)",
+      "cooldown_s": 20,
+      "duration_s": 2.038,
+      "takes": [
+        "drive_pickle_pee_bad.ogg"
+      ]
+    },
+    "drive_pickle_pee_cry": {
+      "file": "drive_pickle_pee_cry.ogg",
+      "speaker": "pickle",
+      "text": "I'm not going to make it!",
+      "emotion": "scream",
+      "trigger": "Pee level 3 (+60 s)",
+      "cooldown_s": 20,
+      "duration_s": 1.435,
+      "takes": [
+        "drive_pickle_pee_cry.ogg"
+      ]
+    },
+    "drive_pickle_pee_frantic": {
+      "file": "drive_pickle_pee_frantic.ogg",
+      "speaker": "pickle",
+      "text": "It's coming! It's coming! Drive faster!",
+      "emotion": "scream",
+      "trigger": "Pee level 4+, the frantic pull into the driveway",
+      "cooldown_s": 12,
+      "duration_s": 2.566,
+      "takes": [
+        "drive_pickle_pee_frantic.ogg",
+        "drive_pickle_pee_frantic_b.ogg"
+      ]
+    },
+    "drive_pickle_touching": {
+      "file": "drive_pickle_touching.ogg",
+      "speaker": "pickle",
+      "text": "He's touching me!",
+      "emotion": "whine",
+      "trigger": "Touching need ASK",
+      "cooldown_s": 20,
+      "duration_s": 1.374,
+      "takes": [
+        "drive_pickle_touching.ogg"
+      ]
+    },
+    "drive_pickle_touching_cry": {
+      "file": "drive_pickle_touching_cry.ogg",
+      "speaker": "pickle",
+      "text": "He is STILL touching me!",
+      "emotion": "scream",
+      "trigger": "Touching need CRY",
+      "cooldown_s": 20,
+      "duration_s": 1.382,
+      "takes": [
+        "drive_pickle_touching_cry.ogg"
+      ]
+    },
+    "drive_pickle_there_yet": {
+      "file": "drive_pickle_there_yet.ogg",
+      "speaker": "pickle",
+      "text": "Are we there yet?",
+      "emotion": "neutral",
+      "trigger": "ambient, every 60-90 s",
+      "cooldown_s": 40,
+      "duration_s": 1.175,
+      "takes": [
+        "drive_pickle_there_yet.ogg"
+      ]
+    },
+    "drive_pickle_there_yet_now": {
+      "file": "drive_pickle_there_yet_now.ogg",
+      "speaker": "pickle",
+      "text": "Are we there yet now?",
+      "emotion": "whine",
+      "trigger": "ambient, 20 s after the first ask",
+      "cooldown_s": 40,
+      "duration_s": 1.628,
+      "takes": [
+        "drive_pickle_there_yet_now.ogg"
+      ]
+    },
+    "drive_pickle_moon": {
+      "file": "drive_pickle_moon.ogg",
+      "speaker": "pickle",
+      "text": "Why is the moon in the car?",
+      "emotion": "neutral",
+      "trigger": "the Dreamgate glows in the USB port, 0:05",
+      "cooldown_s": 60,
+      "duration_s": 1.496,
+      "takes": [
+        "drive_pickle_moon.ogg"
+      ]
+    },
+    "drive_pickle_gooey": {
+      "file": "drive_pickle_gooey.ogg",
+      "speaker": "pickle",
+      "text": "Why is the window gooey?",
+      "emotion": "neutral",
+      "trigger": "first gremlin popped through the glass",
+      "cooldown_s": 60,
+      "duration_s": 1.451,
+      "takes": [
+        "drive_pickle_gooey.ogg"
+      ]
+    },
+    "drive_pickle_grandma_nicer": {
+      "file": "drive_pickle_grandma_nicer.ogg",
+      "speaker": "pickle",
+      "text": "Grandma drives nicer.",
+      "emotion": "neutral",
+      "trigger": "after a hazard hit",
+      "cooldown_s": 30,
+      "duration_s": 1.827,
+      "takes": [
+        "drive_pickle_grandma_nicer.ogg"
+      ]
+    },
+    "drive_pickle_sideways": {
+      "file": "drive_pickle_sideways.ogg",
+      "speaker": "pickle",
+      "text": "We're going sideways. Is that allowed?",
+      "emotion": "neutral",
+      "trigger": "no hand on the wheel, the car drifts",
+      "cooldown_s": 25,
+      "duration_s": 2.985,
+      "takes": [
+        "drive_pickle_sideways.ogg"
+      ]
+    },
+    "drive_pickle_brad": {
+      "file": "drive_pickle_brad.ogg",
+      "speaker": "pickle",
+      "text": "Brad's truck is faster.",
+      "emotion": "neutral",
+      "trigger": "Brad's pickup brake-checks",
+      "cooldown_s": 60,
+      "duration_s": 1.696,
+      "takes": [
+        "drive_pickle_brad.ogg"
+      ]
+    },
+    "drive_pickle_deer": {
+      "file": "drive_pickle_deer.ogg",
+      "speaker": "pickle",
+      "text": "That deer had a cape.",
+      "emotion": "neutral",
+      "trigger": "the deer gremlin",
+      "cooldown_s": 60,
+      "duration_s": 1.213,
+      "takes": [
+        "drive_pickle_deer.ogg"
+      ]
+    },
+    "drive_pickle_no_head": {
+      "file": "drive_pickle_no_head.ogg",
+      "speaker": "pickle",
+      "text": "That truck has no driver.",
+      "emotion": "neutral",
+      "trigger": "Mr. Jingles reveal",
+      "cooldown_s": 60,
+      "duration_s": 1.463,
+      "takes": [
+        "drive_pickle_no_head.ogg"
+      ]
+    },
+    "drive_pickle_ice_cream": {
+      "file": "drive_pickle_ice_cream.ogg",
+      "speaker": "pickle",
+      "text": "Can we get ice cream?",
+      "emotion": "whine",
+      "trigger": "boss, repeated",
+      "cooldown_s": 15,
+      "duration_s": 1.792,
+      "takes": [
+        "drive_pickle_ice_cream.ogg",
+        "drive_pickle_ice_cream_b.ogg"
+      ]
+    },
+    "drive_pickle_didnt_want": {
+      "file": "drive_pickle_didnt_want.ogg",
+      "speaker": "pickle",
+      "text": "I didn't want ice cream anyway.",
+      "emotion": "neutral",
+      "trigger": "boss finish",
+      "cooldown_s": 60,
+      "duration_s": 2.217,
+      "takes": [
+        "drive_pickle_didnt_want.ogg"
+      ]
+    },
+    "drive_pickle_hi_grandma": {
+      "file": "drive_pickle_hi_grandma.ogg",
+      "speaker": "pickle",
+      "text": "Hi Grandma! We're in the car!",
+      "emotion": "giggle",
+      "trigger": "Grandma on speakerphone",
+      "cooldown_s": 60,
+      "duration_s": 2.188,
+      "takes": [
+        "drive_pickle_hi_grandma.ogg"
+      ]
+    },
+    "drive_pickle_waah": {
+      "file": "drive_pickle_waah.ogg",
+      "speaker": "pickle",
+      "text": "WAAAAAH!",
+      "emotion": "scream",
+      "trigger": "meltdown (need reached 20 s)",
+      "cooldown_s": 5,
+      "duration_s": 0.515,
+      "takes": [
+        "drive_pickle_waah.ogg",
+        "drive_pickle_waah_b.ogg"
+      ]
+    },
+    "drive_bean_nack": {
+      "file": "drive_bean_nack.ogg",
+      "speaker": "bean",
+      "text": "Nack.",
+      "emotion": "neutral",
+      "trigger": "Hungry need ASK",
+      "cooldown_s": 10,
+      "duration_s": 0.443,
+      "takes": [
+        "drive_bean_nack.ogg",
+        "drive_bean_nack_b.ogg"
+      ]
+    },
+    "drive_bean_nack_whine": {
+      "file": "drive_bean_nack_whine.ogg",
+      "speaker": "bean",
+      "text": "NACK. NACK. NACK.",
+      "emotion": "whine",
+      "trigger": "Hungry need WHINE",
+      "cooldown_s": 10,
+      "duration_s": 1.696,
+      "takes": [
+        "drive_bean_nack_whine.ogg",
+        "drive_bean_nack_whine_b.ogg"
+      ]
+    },
+    "drive_bean_hop_hurt": {
+      "file": "drive_bean_hop_hurt.ogg",
+      "speaker": "bean",
+      "text": "Hop hurt!",
+      "emotion": "scream",
+      "trigger": "Hungry need CRY (he ate the bunny's ear)",
+      "cooldown_s": 20,
+      "duration_s": 0.856,
+      "takes": [
+        "drive_bean_hop_hurt.ogg"
+      ]
+    },
+    "drive_bean_yum": {
+      "file": "drive_bean_yum.ogg",
+      "speaker": "bean",
+      "text": "Mmm. Nack.",
+      "emotion": "giggle",
+      "trigger": "snack bag handed back",
+      "cooldown_s": 10,
+      "duration_s": 1.181,
+      "takes": [
+        "drive_bean_yum.ogg",
+        "drive_bean_yum_b.ogg"
+      ]
+    },
+    "drive_bean_bump": {
+      "file": "drive_bean_bump.ogg",
+      "speaker": "bean",
+      "text": "Bump!",
+      "emotion": "giggle",
+      "trigger": "potholes, rumble strip",
+      "cooldown_s": 3,
+      "duration_s": 0.4,
+      "takes": [
+        "drive_bean_bump.ogg",
+        "drive_bean_bump_b.ogg"
+      ]
+    },
+    "drive_bean_uh_oh": {
+      "file": "drive_bean_uh_oh.ogg",
+      "speaker": "bean",
+      "text": "Uh oh.",
+      "emotion": "neutral",
+      "trigger": "any hazard hit",
+      "cooldown_s": 6,
+      "duration_s": 0.498,
+      "takes": [
+        "drive_bean_uh_oh.ogg",
+        "drive_bean_uh_oh_b.ogg"
+      ]
+    },
+    "drive_bean_moon": {
+      "file": "drive_bean_moon.ogg",
+      "speaker": "bean",
+      "text": "Moon.",
+      "emotion": "neutral",
+      "trigger": "Dreamgate flash",
+      "cooldown_s": 15,
+      "duration_s": 0.516,
+      "takes": [
+        "drive_bean_moon.ogg",
+        "drive_bean_moon_b.ogg"
+      ]
+    },
+    "drive_bean_hi": {
+      "file": "drive_bean_hi.ogg",
+      "speaker": "bean",
+      "text": "Hi.",
+      "emotion": "giggle",
+      "trigger": "to a gremlin on the window or dashboard",
+      "cooldown_s": 8,
+      "duration_s": 0.576,
+      "takes": [
+        "drive_bean_hi.ogg",
+        "drive_bean_hi_b.ogg"
+      ]
+    },
+    "drive_bean_truck": {
+      "file": "drive_bean_truck.ogg",
+      "speaker": "bean",
+      "text": "Truck.",
+      "emotion": "neutral",
+      "trigger": "any truck",
+      "cooldown_s": 15,
+      "duration_s": 0.553,
+      "takes": [
+        "drive_bean_truck.ogg",
+        "drive_bean_truck_b.ogg"
+      ]
+    },
+    "drive_bean_waah": {
+      "file": "drive_bean_waah.ogg",
+      "speaker": "bean",
+      "text": "WAAAAAH!",
+      "emotion": "scream",
+      "trigger": "meltdown",
+      "cooldown_s": 5,
+      "duration_s": 0.61,
+      "takes": [
+        "drive_bean_waah.ogg",
+        "drive_bean_waah_b.ogg"
+      ]
+    },
+    "drive_bean_home": {
+      "file": "drive_bean_home.ogg",
+      "speaker": "bean",
+      "text": "Are we home?",
+      "emotion": "sleepy",
+      "trigger": "the driveway",
+      "cooldown_s": 60,
+      "duration_s": 0.999,
+      "takes": [
+        "drive_bean_home.ogg"
+      ]
+    },
+    "drive_grandma_bar": {
+      "file": "drive_grandma_bar.ogg",
+      "speaker": "grandma",
+      "text": "Did you take them to that bar again?",
+      "emotion": "neutral",
+      "trigger": "phone call",
+      "cooldown_s": 60,
+      "duration_s": 1.904,
+      "takes": [
+        "drive_grandma_bar.ogg"
+      ]
+    },
+    "drive_grandma_hands": {
+      "file": "drive_grandma_hands.ogg",
+      "speaker": "grandma",
+      "text": "Both hands on the wheel, dear.",
+      "emotion": "neutral",
+      "trigger": "phone call",
+      "cooldown_s": 60,
+      "duration_s": 2.204,
+      "takes": [
+        "drive_grandma_hands.ogg"
+      ]
+    },
+    "drive_grandma_bye": {
+      "file": "drive_grandma_bye.ogg",
+      "speaker": "grandma",
+      "text": "Call me when you're home. Drive nicer.",
+      "emotion": "neutral",
+      "trigger": "phone call ends",
+      "cooldown_s": 60,
+      "duration_s": 2.226,
+      "takes": [
+        "drive_grandma_bye.ogg"
+      ]
+    },
+    "drive_jingles_ice_cream": {
+      "file": "drive_jingles_ice_cream.ogg",
+      "speaker": "jingles",
+      "text": "ICE CREAM.",
+      "emotion": "monotone",
+      "trigger": "reveal",
+      "cooldown_s": 10,
+      "duration_s": 1.091,
+      "takes": [
+        "drive_jingles_ice_cream.ogg",
+        "drive_jingles_ice_cream_b.ogg"
+      ]
+    },
+    "drive_jingles_hard_feelings": {
+      "file": "drive_jingles_hard_feelings.ogg",
+      "speaker": "jingles",
+      "text": "Soft serve. Hard feelings.",
+      "emotion": "monotone",
+      "trigger": "phase 1, throwing cones",
+      "cooldown_s": 30,
+      "duration_s": 2.136,
+      "takes": [
+        "drive_jingles_hard_feelings.ogg"
+      ]
+    },
+    "drive_jingles_sprinkles": {
+      "file": "drive_jingles_sprinkles.ogg",
+      "speaker": "jingles",
+      "text": "Sprinkles are free. Everything else costs.",
+      "emotion": "monotone",
+      "trigger": "phase 2, the serving window opens",
+      "cooldown_s": 30,
+      "duration_s": 2.926,
+      "takes": [
+        "drive_jingles_sprinkles.ogg"
+      ]
+    },
+    "drive_jingles_come_back": {
+      "file": "drive_jingles_come_back.ogg",
+      "speaker": "jingles",
+      "text": "Come back.",
+      "emotion": "monotone",
+      "trigger": "phase 3, overdrive",
+      "cooldown_s": 15,
+      "duration_s": 4.156,
+      "takes": [
+        "drive_jingles_come_back.ogg"
+      ]
+    },
+    "drive_jingles_nice_night": {
+      "file": "drive_jingles_nice_night.ogg",
+      "speaker": "jingles",
+      "text": "Have a nice night.",
+      "emotion": "monotone",
+      "trigger": "the truck swerves into the hedge",
+      "cooldown_s": 60,
+      "duration_s": 1.045,
+      "takes": [
+        "drive_jingles_nice_night.ogg"
+      ]
+    },
+    "drive_parent_driving": {
+      "file": "drive_parent_driving.ogg",
+      "speaker": "parent",
+      "text": "I'm driving.",
+      "emotion": "monotone",
+      "trigger": "a need while a hazard is close",
+      "cooldown_s": 30,
+      "duration_s": 0.913,
+      "takes": [
+        "drive_parent_driving.ogg"
+      ]
+    },
+    "drive_parent_no": {
+      "file": "drive_parent_no.ogg",
+      "speaker": "parent",
+      "text": "No.",
+      "emotion": "monotone",
+      "trigger": "Can we get ice cream?",
+      "cooldown_s": 20,
+      "duration_s": 0.89,
+      "takes": [
+        "drive_parent_no.ogg"
+      ]
+    },
+    "drive_parent_almost": {
+      "file": "drive_parent_almost.ogg",
+      "speaker": "parent",
+      "text": "We're almost home.",
+      "emotion": "monotone",
+      "trigger": "Are we there yet?",
+      "cooldown_s": 30,
+      "duration_s": 1.077,
+      "takes": [
+        "drive_parent_almost.ogg"
+      ]
+    },
+    "drive_parent_pull_over": {
+      "file": "drive_parent_pull_over.ogg",
+      "speaker": "parent",
+      "text": "Don't make me pull over.",
+      "emotion": "monotone",
+      "trigger": "a meltdown",
+      "cooldown_s": 40,
+      "duration_s": 1.466,
+      "takes": [
+        "drive_parent_pull_over.ogg"
+      ]
+    },
+    "drive_clinger_let_me_in": {
+      "file": "drive_clinger_let_me_in.ogg",
+      "speaker": "clinger",
+      "text": "Let me in!",
+      "emotion": "giggle",
+      "trigger": "a window clinger lands",
+      "cooldown_s": 8,
+      "duration_s": 0.946,
+      "takes": [
+        "drive_clinger_let_me_in.ogg",
+        "drive_clinger_let_me_in_b.ogg"
+      ]
+    },
+    "drive_clinger_fries": {
+      "file": "drive_clinger_fries.ogg",
+      "speaker": "clinger",
+      "text": "Your car smells like fries.",
+      "emotion": "giggle",
+      "trigger": "a window clinger pounds the glass",
+      "cooldown_s": 15,
+      "duration_s": 1.927,
+      "takes": [
+        "drive_clinger_fries.ogg"
+      ]
+    },
+    "drive_scamp_live_here": {
+      "file": "drive_scamp_live_here.ogg",
+      "speaker": "scamp",
+      "text": "Hi. I live here now.",
+      "emotion": "giggle",
+      "trigger": "a meltdown gremlin climbs onto the dashboard",
+      "cooldown_s": 20,
+      "duration_s": 1.86,
+      "takes": [
+        "drive_scamp_live_here.ogg"
+      ]
+    },
+    "drive_narrator_take_me": {
+      "file": "drive_narrator_take_me.ogg",
+      "speaker": "narrator",
+      "text": "Take me inside.",
+      "emotion": "sleepy",
+      "trigger": "engine off in the driveway",
+      "cooldown_s": 60,
+      "duration_s": 1.678,
+      "takes": [
+        "drive_narrator_take_me.ogg"
+      ]
+    }
+  }
+}

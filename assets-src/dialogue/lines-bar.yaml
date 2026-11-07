@@ -1,0 +1,368 @@
+# GO TO BED!!! - Chapter 1 "The Tipsy Goose" voice lines (pack: bar)
+# Source of truth for: LINES=assets-src/dialogue/lines-bar.yaml MANIFEST=manifest-bar.json ID_PREFIX=bar_ tools/build-voices.sh
+# Lines come from docs/02-chapter1-bar.md section 12 and the chapter 1 humans table in docs/01-game-design.md.
+# Same schema as lines.yaml. No spoken line carries a Family Sheet name: subtitles show the typed names instead
+# (src/bar/lines.ts maps each id to its on-screen speaker label).
+# Speakers: Trucker Hat and Jersey Guy use the "patron" voice; the Book Club Lady uses the "grandma" voice.
+lines:
+  # ------------------------------------------------------------ The Parent
+  - id: bar_parent_go_to_bed
+    speaker: parent
+    text: "Go to bed."
+    emotion: monotone
+    trigger: chapter start, muttered over the fade-in
+    cooldown_s: 60
+  - id: bar_parent_no
+    speaker: parent
+    text: "No."
+    emotion: monotone
+    trigger: reply to bar_pickle_sip
+    cooldown_s: 30
+  - id: bar_parent_need_minute
+    speaker: parent
+    text: "I need a minute."
+    emotion: monotone
+    trigger: Patience reaches 0 ("You lost it.")
+    cooldown_s: 10
+  - id: bar_parent_leaving
+    speaker: parent
+    text: "We're leaving."
+    emotion: monotone
+    trigger: sound montage after Gus
+    cooldown_s: 60
+
+  # ------------------------------------------------------------ Marlene
+  - id: bar_marlene_hi
+    speaker: marlene
+    text: "Hi hon. Rough one?"
+    emotion: neutral
+    trigger: arrival
+    cooldown_s: 60
+  - id: bar_marlene_higher
+    speaker: marlene
+    text: "Little higher, hon."
+    emotion: neutral
+    trigger: goose tutorial, 15 s without five hits
+    cooldown_s: 20
+  - id: bar_marlene_pump
+    speaker: marlene
+    text: "Pump it. Like the ketchup."
+    emotion: neutral
+    trigger: drum empty during the tutorial
+    cooldown_s: 20
+  - id: bar_marlene_laser
+    speaker: marlene
+    text: "Point and click, hon. Like a laser pointer."
+    emotion: neutral
+    trigger: claw machine, 15 s without a button hit
+    cooldown_s: 20
+  - id: bar_marlene_kids_eat_free
+    speaker: marlene
+    text: "Kids eat free. Parents pay in other ways."
+    emotion: monotone
+    trigger: the nacho platter lands
+    cooldown_s: 60
+  - id: bar_marlene_darts
+    speaker: marlene
+    text: "Darts incoming, hon."
+    emotion: neutral
+    trigger: fight group 3 starts
+    cooldown_s: 60
+  - id: bar_marlene_gus_kids
+    speaker: marlene
+    text: "Gus, he's got kids."
+    emotion: whine
+    trigger: Gus approaching, 10 s in
+    cooldown_s: 60
+  - id: bar_marlene_not_cleaning
+    speaker: marlene
+    text: "I'm not cleaning that."
+    emotion: monotone
+    trigger: after the Nacho Avalanche
+    cooldown_s: 60
+  - id: bar_marlene_tab
+    speaker: marlene
+    text: "Tab's on Brad."
+    emotion: neutral
+    trigger: sound montage
+    cooldown_s: 60
+
+  # ------------------------------------------------------------ Pickle ({KID1})
+  - id: bar_pickle_drawing
+    speaker: pickle
+    text: "I'm drawing you. You look mad."
+    emotion: neutral
+    trigger: arrival, colouring the placemat
+    cooldown_s: 60
+  - id: bar_pickle_shoot_goose
+    speaker: pickle
+    text: "Shoot the goose!"
+    emotion: giggle
+    trigger: goose tutorial starts
+    cooldown_s: 30
+  - id: bar_pickle_moon
+    speaker: pickle
+    text: "I want the moon one."
+    emotion: whine
+    trigger: claw machine beat starts
+    cooldown_s: 30
+  - id: bar_pickle_aww
+    speaker: pickle
+    text: "Awww. It dropped it."
+    emotion: whine
+    trigger: claw attempt 1 or 2 drops the prize
+    cooldown_s: 4
+  - id: bar_pickle_started_it
+    speaker: pickle
+    text: "He started it. With his face."
+    emotion: neutral
+    trigger: Nacho Avalanche
+    cooldown_s: 60
+  - id: bar_pickle_sharing
+    speaker: pickle
+    text: "I'm not throwing, I'm sharing."
+    emotion: giggle
+    trigger: Nacho Avalanche, Pickle throws back
+    cooldown_s: 60
+  - id: bar_pickle_friend
+    speaker: pickle
+    text: "Is that man your friend now?"
+    emotion: neutral
+    trigger: Brad knocked out
+    cooldown_s: 60
+  - id: bar_pickle_sip
+    speaker: pickle
+    text: "Can I have a sip of yours?"
+    emotion: neutral
+    trigger: arrival, after the drawing line
+    cooldown_s: 60
+  - id: bar_pickle_best_night
+    speaker: pickle
+    text: "Best night ever."
+    emotion: giggle
+    trigger: sound montage
+    cooldown_s: 60
+  - id: bar_pickle_laugh
+    speaker: pickle
+    text: "Ha ha ha ha ha!"
+    emotion: giggle
+    trigger: sound montage, the door slams
+    cooldown_s: 10
+
+  # ------------------------------------------------------------ Bean ({KID2})
+  - id: bar_bean_uh_oh
+    speaker: bean
+    text: "Uh oh."
+    emotion: neutral
+    trigger: a patron goes down near the booth
+    cooldown_s: 8
+  - id: bar_bean_again
+    speaker: bean
+    text: "Again!"
+    emotion: giggle
+    trigger: goose spins; sound montage
+    cooldown_s: 5
+  - id: bar_bean_moon
+    speaker: bean
+    text: "Moon."
+    emotion: sleepy
+    trigger: the Dreamgate lands in Bean's hands
+    cooldown_s: 30
+  - id: bar_bean_cheese
+    speaker: bean
+    text: "Cheese."
+    emotion: giggle
+    trigger: Nacho Avalanche
+    cooldown_s: 30
+  - id: bar_bean_hop
+    speaker: bean
+    text: "Hop."
+    emotion: whine
+    trigger: fight, hugging Mister Hop
+    cooldown_s: 30
+  - id: bar_bean_double_binky
+    speaker: bean
+    text: "Ooh. Double Binky."
+    emotion: giggle
+    trigger: Tier 1 promotion
+    cooldown_s: 60
+
+  # ------------------------------------------------------------ Kayden
+  - id: bar_kayden_mine
+    speaker: kayden
+    text: "That's mine. My dad said."
+    emotion: neutral
+    trigger: the Dreamgate is won
+    cooldown_s: 60
+  - id: bar_kayden_nachos
+    speaker: kayden
+    text: "I don't even like nachos."
+    emotion: whine
+    trigger: Nacho Avalanche, Kayden throws
+    cooldown_s: 60
+  - id: bar_kayden_dad
+    speaker: kayden
+    text: "Daaaad."
+    emotion: whine
+    trigger: Brad knocked out
+    cooldown_s: 30
+
+  # ------------------------------------------------------------ Brad
+  - id: bar_brad_vegetables
+    speaker: brad
+    text: "He just loves vegetables."
+    emotion: neutral
+    trigger: arrival at Booth 8
+    cooldown_s: 60
+  - id: bar_brad_woah
+    speaker: brad
+    text: "Woah woah woah, buddy."
+    emotion: neutral
+    trigger: a dart bounces off his chest
+    cooldown_s: 4
+  - id: bar_brad_calm
+    speaker: brad
+    text: "I'm calm. I'M CALM."
+    emotion: scream
+    trigger: Brad stands up
+    cooldown_s: 30
+  - id: bar_brad_kayden_look
+    speaker: brad
+    text: "Kayden, don't look at this."
+    emotion: neutral
+    trigger: Brad approaching
+    cooldown_s: 30
+  - id: bar_brad_lawyer
+    speaker: brad
+    text: "My lawyer plays pickleball with me."
+    emotion: whine
+    trigger: Brad knocked out
+    cooldown_s: 60
+  - id: bar_brad_trophy
+    speaker: brad
+    text: "That's a participation trophy, not a weapon."
+    emotion: neutral
+    trigger: first forehead hit
+    cooldown_s: 60
+
+  # ------------------------------------------------------------ Trucker Hat (patron voice)
+  - id: bar_trucker_who_threw
+    speaker: patron
+    text: "Who threw that."
+    emotion: monotone
+    trigger: Nacho Avalanche; first peanut
+    cooldown_s: 20
+  - id: bar_trucker_not_hat
+    speaker: patron
+    text: "Not the hat."
+    emotion: whine
+    trigger: headshot knocks the hat off
+    cooldown_s: 6
+  - id: bar_trucker_nerf
+    speaker: patron
+    text: "Marlene, he's got a Nerf."
+    emotion: whine
+    trigger: Trucker Hat hit
+    cooldown_s: 12
+  - id: bar_trucker_bowl
+    speaker: patron
+    text: "That's my bowl."
+    emotion: neutral
+    trigger: Trucker Hat knocked out
+    cooldown_s: 10
+
+  # ------------------------------------------------------------ Jersey Guy (patron voice)
+  - id: bar_jersey_defence
+    speaker: patron
+    text: "Defence! DEFENCE!"
+    emotion: scream
+    trigger: double-clap tell before the chest bump
+    cooldown_s: 5
+  - id: bar_jersey_foam
+    speaker: patron
+    text: "Foam finger says no."
+    emotion: neutral
+    trigger: chest bump lands
+    cooldown_s: 10
+  - id: bar_jersey_tuesday
+    speaker: patron
+    text: "This is my Tuesday."
+    emotion: monotone
+    trigger: Jersey Guy knocked out
+    cooldown_s: 8
+  - id: bar_jersey_ref
+    speaker: patron
+    text: "Ref!"
+    emotion: scream
+    trigger: Jersey Guy hit
+    cooldown_s: 6
+  - id: bar_jersey_team_play
+    speaker: patron
+    text: "Nachos were a team play."
+    emotion: neutral
+    trigger: Jersey Guy spawns
+    cooldown_s: 20
+
+  # ------------------------------------------------------------ Book Club Lady (grandma voice)
+  - id: bar_lady_boundaries
+    speaker: grandma
+    text: "Chapter nine: boundaries."
+    emotion: neutral
+    trigger: hardback throw
+    cooldown_s: 8
+  - id: bar_lady_book
+    speaker: grandma
+    text: "I have a book about this."
+    emotion: neutral
+    trigger: joins the fight
+    cooldown_s: 30
+  - id: bar_lady_duck
+    speaker: grandma
+    text: "You're doing great, sweetie. Duck."
+    emotion: neutral
+    trigger: Patience below 35
+    cooldown_s: 30
+  - id: bar_lady_hardback
+    speaker: grandma
+    text: "Hardback. Not paperback."
+    emotion: neutral
+    trigger: hardback knocks a patron out
+    cooldown_s: 12
+
+  # ------------------------------------------------------------ Gus
+  - id: bar_gus_entrance
+    speaker: gus
+    text: "Sir. Ma'am. Parent."
+    emotion: monotone
+    trigger: Gus enters
+    cooldown_s: 60
+  - id: bar_gus_please
+    speaker: gus
+    text: "Please don't."
+    emotion: monotone
+    trigger: every stagger
+    cooldown_s: 3
+  - id: bar_gus_done
+    speaker: gus
+    text: "You're done."
+    emotion: monotone
+    trigger: third stagger
+    cooldown_s: 20
+  - id: bar_gus_college
+    speaker: gus
+    text: "I have kids too. They're in college. It gets better."
+    emotion: monotone
+    trigger: reply to bar_marlene_gus_kids
+    cooldown_s: 60
+  - id: bar_gus_watch_door
+    speaker: gus
+    text: "Watch the door."
+    emotion: monotone
+    trigger: Gus reaches the player
+    cooldown_s: 60
+  - id: bar_gus_plate
+    speaker: gus
+    text: "Plate stays with you. House rule."
+    emotion: monotone
+    trigger: sound montage
+    cooldown_s: 60
