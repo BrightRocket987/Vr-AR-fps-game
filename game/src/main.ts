@@ -1,5 +1,32 @@
-import { XRApp, type Chapter } from './app/XRApp';
+import { XRApp, type Chapter, type DebugChapter, type XRMode } from './app/XRApp';
+import { Bar } from './chapters/Bar';
+import { Drive } from './chapters/Drive';
+import { EndCard } from './chapters/EndCard';
 import { House } from './chapters/House';
+
+/** Chapter names → constructors. 'campaign' on the landing page plays bar → drive → house → end. */
+function makeChapter(name: string): Chapter | null {
+  switch (name) {
+    case 'bar':
+      return new Bar();
+    case 'drive':
+      return new Drive();
+    case 'house':
+      return new House();
+    case 'range':
+      return new House({ preset: 'bar' });
+    case 'end':
+      return new EndCard();
+    default:
+      return null;
+  }
+}
+
+export function sequenceFor(choice: string): string[] {
+  if (choice === 'campaign') return ['bar', 'drive', 'house', 'end'];
+  if (choice === 'range') return ['range'];
+  return [choice, 'end'];
+}
 
 declare const __APP_VERSION__: string;
 
@@ -16,6 +43,9 @@ interface DebugApi {
   diagnostics(): unknown;
   shoot(): boolean;
   begin(): void;
+  finish(): void;
+  /** Names of every chapter started in this session, in order. */
+  history: string[];
   error?: string;
 }
 
@@ -29,7 +59,15 @@ async function main(): Promise<void> {
   const emulate = params.get('emulate');
   if (emulate) {
     const [{ XRDevice, metaQuest3, metaQuest2 }, { SyntheticEnvironmentModule }] = await Promise.all([import('iwer'), import('@iwer/sem')]);
-    const device = new XRDevice(emulate === 'quest2' ? metaQuest2 : metaQuest3);
+    // 'quest2real' mirrors what a real Quest 2 grants: no room mesh, no depth, no depth-based hit-test
+    // (IWER's stock metaQuest2 preset is more permissive than the hardware).
+    const config =
+      emulate === 'quest2real'
+        ? { ...metaQuest2, supportedFeatures: metaQuest2.supportedFeatures.filter((f) => !['mesh-detection', 'depth-sensing', 'hit-test'].includes(f)) }
+        : emulate === 'quest2'
+          ? metaQuest2
+          : metaQuest3;
+    const device = new XRDevice(config);
     device.installRuntime({ forceInstall: true });
     if (params.get('hands') === '1') (device as unknown as { primaryInputMode: string }).primaryInputMode = 'hand';
     device.installSEM(SyntheticEnvironmentModule);
@@ -48,6 +86,7 @@ async function main(): Promise<void> {
 
   const app = new XRApp($('xr-container'));
   app.version = version;
+  app.chapterFactory = makeChapter;
   const save = app.save;
   // Family Sheet ↔ save
   const f = save.data.family;
@@ -63,16 +102,22 @@ async function main(): Promise<void> {
     chapter: null,
     ready: false,
     mode: 'none',
-    snapshot: () => (debug.chapter as House | null)?.snapshot?.() ?? {},
+    snapshot: () => ({ chapter: debug.chapter?.name ?? null, ...((debug.chapter as (Chapter & DebugChapter) | null)?.snapshot?.() ?? {}) }),
     diagnostics: () => app.diagnostics(),
-    shoot: () => (debug.chapter as House | null)?.debugShootNearest?.() ?? false,
-    begin: () => (debug.chapter as House | null)?.debugBegin?.(),
+    shoot: () => (debug.chapter as (Chapter & DebugChapter) | null)?.debugShootNearest?.() ?? false,
+    begin: () => (debug.chapter as (Chapter & DebugChapter) | null)?.debugBegin?.(),
+    finish: () => (debug.chapter as (Chapter & DebugChapter) | null)?.debugFinish?.(),
+    history: [],
+  };
+  app.onChapterChange = (c) => {
+    debug.chapter = c;
+    debug.history.push(c.name);
   };
   (window as unknown as { __gtb: DebugApi }).__gtb = debug;
 
   const refreshDiag = () => {
     const d = app.diagnostics();
-    const room = (debug.chapter as House | null)?.roomJSON?.();
+    const room = (debug.chapter as (Chapter & DebugChapter) | null)?.roomJSON?.();
     diag.value = JSON.stringify({ ...d, chapter: debug.snapshot(), room, save: { pops: save.data.lifetimePops, bestWave: save.data.bestWave } }, null, 1);
   };
   $<HTMLButtonElement>('copy').onclick = () => {
@@ -94,7 +139,8 @@ async function main(): Promise<void> {
     return;
   }
   enter.disabled = false;
-  enter.textContent = support.ar ? 'Enter your living room' : 'Enter (VR only: no passthrough on this device)';
+  enter.textContent = support.ar ? 'Start' : 'Start (VR only: no passthrough on this device)';
+  const mode: XRMode = support.ar ? 'immersive-ar' : 'immersive-vr';
   status.textContent = `${support.ar ? 'Passthrough available.' : 'No passthrough; VR fallback.'} Lifetime pops: ${save.data.lifetimePops}.`;
 
   const start = async () => {
@@ -107,11 +153,10 @@ async function main(): Promise<void> {
       comfort: $<HTMLSelectElement>('comfort').value as 'standing' | 'seated',
     };
     save.persist();
-    const chapter: Chapter = new House({ preset: $<HTMLSelectElement>('chapter').value === 'range' ? 'bar' : undefined });
-    debug.chapter = chapter;
+    const choice = $<HTMLSelectElement>('chapter').value;
     document.body.classList.add('in-xr');
     try {
-      const mode = await app.enter(true, chapter);
+      await app.enter(mode, sequenceFor(choice));
       debug.mode = mode;
       debug.ready = true;
       status.textContent = `In session (${mode}).`;

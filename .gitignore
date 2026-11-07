@@ -6,3 +6,4 @@ voices/
 *.log
 game/test-results/
 game/tests/xr/out/
+build/

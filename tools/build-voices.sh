@@ -9,13 +9,22 @@
 # Voices are downloaded once into $VOICES_DIR. The manifest is always rewritten from the files on disk.
 #
 # Usage:  tools/build-voices.sh            (from anywhere)
-# Env:    PIPER_VENV   venv dir with piper-tts + pyyaml (default: $WORK/tts-venv, created with uv if missing)
+#         LINES=assets-src/dialogue/lines-bar.yaml MANIFEST=manifest-bar.json ID_PREFIX=bar_ tools/build-voices.sh
+# Env:    LINES        lines YAML           (default: assets-src/dialogue/lines.yaml)
+#         MANIFEST     manifest file name written into game/public/assets/voice/ (default: manifest.json);
+#                      the game merges manifest.json + manifest-bar/-drive/-boss.json (src/dialogue/Voice.ts)
+#         ID_PREFIX    if set, every id in LINES must start with it (keeps packs from colliding)
+#         DOWNLOAD_ONLY=1  create the venv and fetch the voice models, then exit
+#         PIPER_VENV   venv dir with piper-tts + pyyaml (default: $WORK/tts-venv, created with uv if missing)
 #         VOICES_DIR   Piper voice models   (default: $WORK/voices)
 #         WORK         scratch dir          (default: $REPO/build/voice)
 #         FORCE=1      rebuild everything
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-LINES="$REPO/assets-src/dialogue/lines.yaml"
+LINES="${LINES:-$REPO/assets-src/dialogue/lines.yaml}"
+case "$LINES" in /*) ;; *) LINES="$REPO/$LINES" ;; esac
+MANIFEST="${MANIFEST:-manifest.json}"
+ID_PREFIX="${ID_PREFIX:-}"
 OUT="$REPO/game/public/assets/voice"
 WORK="${WORK:-$REPO/build/voice}"
 PIPER_VENV="${PIPER_VENV:-$WORK/tts-venv}"
@@ -41,8 +50,10 @@ for v in en_US-ljspeech-medium en_US-bryce-medium en_US-norman-medium; do
   [ -f "$VOICES_DIR/$v.onnx" ] || "$PIPER_VENV/bin/python" -I -m piper.download_voices "$v" --data-dir "$VOICES_DIR"
 done
 
+[ "${DOWNLOAD_ONLY:-0}" = "1" ] && { echo "venv + voices ready in $WORK"; exit 0; }
+
 # 3. synthesise + process + manifest (Python drives Piper's API so each voice loads once)
-export LINES OUT WORK VOICES_DIR HAVE_RB FORCE="${FORCE:-0}" SCRIPT="${BASH_SOURCE[0]}"
+export LINES OUT WORK VOICES_DIR HAVE_RB MANIFEST ID_PREFIX FORCE="${FORCE:-0}" SCRIPT="${BASH_SOURCE[0]}"
 exec "$PIPER_VENV/bin/python" -I - <<'PY'
 import json, os, re, subprocess, sys, wave
 from pathlib import Path
@@ -54,14 +65,32 @@ LINES, OUT, WORK, VOICES = (Path(os.environ[k]) for k in ("LINES", "OUT", "WORK"
 HAVE_RB = os.environ["HAVE_RB"] == "1"
 FORCE = os.environ["FORCE"] == "1"
 SR = 22050                         # Piper medium voices
-KIDS = {"scamp", "clinger", "potato", "breacher", "stinky", "siren", "zombie", "crawler", "ghost"}
-VOICE_OF = {**{k: "en_US-ljspeech-medium" for k in KIDS}, "bigbean": "en_US-bryce-medium", "narrator": "en_US-norman-medium"}
+KIDS = {"scamp", "clinger", "potato", "breacher", "stinky", "siren", "zombie", "crawler", "ghost"}   # gremlins
+# The player's real children and other kids (not monsters): gentler preset, no distortion.
+REAL_KIDS = {"pickle": 1.10, "bean": 1.18, "kayden": 1.08, "kid": 1.12}
+# Adults: (voice, pitch multiplier, extra filters)
+ADULTS = {
+    "marlene": ("en_US-ljspeech-medium", 0.96, []),          # bartender
+    "grandma": ("en_US-ljspeech-medium", 0.88, ["tremolo=f=4:d=0.15"]),
+    "gus": ("en_US-bryce-medium", 0.84, []),                  # bouncer
+    "brad": ("en_US-norman-medium", 1.04, []),
+    "patron": ("en_US-bryce-medium", 0.96, []),
+    "jingles": ("en_US-norman-medium", 1.0, ["aecho=0.8:0.6:40:0.3"]),   # ice-cream truck speaker
+    "parent": ("en_US-norman-medium", 0.97, []),              # the player's muttered lines
+}
+VOICE_OF = {**{k: "en_US-ljspeech-medium" for k in KIDS}, **{k: "en_US-ljspeech-medium" for k in REAL_KIDS},
+            **{k: v[0] for k, v in ADULTS.items()}, "bigbean": "en_US-bryce-medium", "narrator": "en_US-norman-medium"}
 N_B_TAKES = 15                     # second take for the 15 most repeated (lowest cooldown) lines
 # prosody per emotion: (length_scale, noise_scale, noise_w_scale); Piper defaults are 1.0 / 0.667 / 0.8
 PROSODY = {"neutral": (1.0, 0.667, 0.8), "whine": (1.15, 0.8, 0.9), "scream": (0.9, 0.8, 1.0),
            "giggle": (0.95, 0.75, 0.9), "sleepy": (1.25, 0.5, 0.6), "monotone": (1.05, 0.25, 0.3)}
 
 data = yaml.safe_load(LINES.read_text())["lines"]
+ID_PREFIX = os.environ.get("ID_PREFIX", "")
+MANIFEST = os.environ.get("MANIFEST", "manifest.json")
+if ID_PREFIX:
+    bad = [l["id"] for l in data if not l["id"].startswith(ID_PREFIX)]
+    assert not bad, f"ids must start with {ID_PREFIX!r}: {bad[:5]}"
 ids = [l["id"] for l in data]
 assert len(ids) == len(set(ids)), "duplicate ids"
 for l in data:
@@ -86,6 +115,19 @@ def chain(speaker, emotion, take):
             f += ["tremolo=f=5:d=0.3"]
         if emotion in ("scream", "whine"):
             f += ["highpass=f=150"]
+    elif speaker in REAL_KIDS:
+        p = REAL_KIDS[speaker] * (1.05 if emotion in ("scream", "whine") else 1.0) * take_mul
+        if HAVE_RB:
+            f += [f"asetrate={SR}*1.12", f"aresample={SR}", "atempo=1/1.12", f"rubberband=pitch={p:.4f}:formant=preserved"]
+        else:
+            r = 1.25 * take_mul
+            f += [f"asetrate={SR}*{r:.4f}", f"aresample={SR}", f"atempo={1/r:.4f}"]
+    elif speaker in ADULTS:
+        _, p, extra = ADULTS[speaker]
+        p *= take_mul
+        if abs(p - 1.0) > 1e-3:
+            f += [f"rubberband=pitch={p:.4f}:formant=preserved"] if HAVE_RB else [f"asetrate={SR}*{p:.4f}", f"aresample={SR}", f"atempo={1/p:.4f}"]
+        f += extra
     elif speaker == "bigbean":
         p = 0.85 * take_mul
         f += [f"rubberband=pitch={p:.4f}"] if HAVE_RB else [f"asetrate={SR}*{p:.4f}", f"aresample={SR}", f"atempo={1/p:.4f}"]
@@ -148,6 +190,6 @@ for l in data:
     manifest["lines"][l["id"]] = {
         "file": main.name, "speaker": l["speaker"], "text": l["text"], "emotion": l["emotion"],
         "trigger": l["trigger"], "cooldown_s": l["cooldown_s"], "duration_s": duration(main), "takes": files}
-(OUT / "manifest.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
-print(f"voices: {built} built, {skipped} up to date, {len(data)} lines in manifest -> {OUT}")
+(OUT / MANIFEST).write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
+print(f"voices: {built} built, {skipped} up to date, {len(data)} lines in {MANIFEST} -> {OUT}")
 PY

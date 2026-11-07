@@ -13,6 +13,9 @@ export interface LineDef {
   takes?: string[];
 }
 
+/** Voice manifests merged at load (ids must be unique across them: prefix per pack, e.g. bar_, drive_, boss_). */
+export const VOICE_MANIFESTS = ['manifest.json', 'manifest-bar.json', 'manifest-drive.json', 'manifest-boss.json'];
+
 interface VoiceManifest {
   lines: Record<string, LineDef>;
 }
@@ -52,12 +55,18 @@ export class Voice implements VoiceLike {
   }
 
   async load(): Promise<void> {
-    try {
-      const r = await fetch(`${this.baseUrl}/voice/manifest.json`);
-      if (r.ok) this.lines = ((await r.json()) as VoiceManifest).lines ?? {};
-    } catch {
-      /* no voices yet */
-    }
+    // One manifest per content pack so chapters can be voiced independently; missing ones are skipped.
+    const manifests = await Promise.all(
+      VOICE_MANIFESTS.map(async (name) => {
+        try {
+          const r = await fetch(`${this.baseUrl}/voice/${name}`);
+          return r.ok ? (((await r.json()) as VoiceManifest).lines ?? {}) : {};
+        } catch {
+          return {};
+        }
+      }),
+    );
+    this.lines = Object.assign({}, ...manifests) as Record<string, LineDef>;
     try {
       const r = await fetch(`${this.baseUrl}/sfx/manifest.json`);
       if (r.ok) this.sfxDefs = (await r.json()) as SfxManifest;
@@ -67,6 +76,11 @@ export class Voice implements VoiceLike {
     this.bus.emit('log', { text: `voice manifest: ${Object.keys(this.lines).length} lines, ${Object.keys(this.sfxDefs).length} sfx` });
     // Preload the most common SFX.
     for (const n of ['pop', 'thwip', 'squeak_inflate', 'knock', 'tier_up']) void this.buffer(this.sfxPath(n));
+  }
+
+  /** True if a line id exists in any loaded manifest. */
+  has(id: string): boolean {
+    return id in this.lines;
   }
 
   get lineCount(): number {

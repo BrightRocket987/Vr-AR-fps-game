@@ -652,6 +652,25 @@ export class House implements Chapter {
     if (this.phase === 'setup') this.beginPlay();
   }
 
+  private completed = false;
+
+  /** End the chapter and hand over to the next one (the end card in a campaign). */
+  protected finishChapter(extraLines: string[] = []): void {
+    if (this.completed) return;
+    this.completed = true;
+    this.director?.clear();
+    this.ctx.complete({
+      title: 'Chapter 3 · Bedtime',
+      pops: this.progression.sessionPops,
+      lines: [`Reached wave ${this.director?.waveNumber ?? 0}`, `Room: ${this.stats.roomSource}`, ...extraLines],
+    });
+  }
+
+  /** Debug/test hook: jump to the end of the chapter. */
+  debugFinish(): void {
+    this.finishChapter(['(skipped)']);
+  }
+
   dispose(): void {
     for (const u of this.unsub) u();
     this.wipe?.dispose();
