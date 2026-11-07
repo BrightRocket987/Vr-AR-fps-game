@@ -18,7 +18,22 @@ export interface GameEvents {
   'room:ready': { source: string; doors: number; couches: number };
   'diaper:ring': { id: number; seconds: number };
   'diaper:changed': { id: number };
-  'diaper:detonated': { id: number };
+  'diaper:detonated': { id: number; position: Vector3 };
+  'diaper:popped': { id: number; position: Vector3 };
+  'stinky:cloud': { position: Vector3; radius: number; seconds: number; fireRatePenalty: number };
+  'clinger:attached': { id: number };
+  'clinger:detached': { id: number; reason: string };
+  'potato:cushion': { id: number; seconds: number };
+  'potato:evicted': { id: number };
+  'siren:inhale': { id: number };
+  'siren:scream': { id: number; position: Vector3; radius: number };
+  'siren:shushed': { id: number };
+  'wipe:slap': { targetId: number };
+  'wipe:slam': { doorId: string };
+  'portal:open': { doorId: string };
+  'portal:close': { doorId: string };
+  'spawn:request': { type: string; position: Vector3; facing: Vector3 };
+  'hint': { text: string; sub: string; seconds: number };
   'voice:line': { id: string; speaker: string };
   'log': { text: string };
 }

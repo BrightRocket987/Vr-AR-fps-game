@@ -168,5 +168,9 @@ const FALLBACK_SFX: Record<string, string> = {
   thwip_fast: 'thwip',
   reload: 'ui_click',
   glug: 'ui_click',
-  door_kick: 'knock',
+  ouch: 'diaper_plap',
+  slap: 'knock',
+  slam: 'door_kick',
+  scream: 'scream_siren',
+  cloud: 'stink_cloud',
 };

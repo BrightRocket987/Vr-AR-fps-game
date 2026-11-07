@@ -131,6 +131,17 @@ export class House implements Chapter {
       seats: this.seats,
       gremlins: () => this.director.alive,
       reducedFlash: ctx.save.data.options.reducedFlash,
+      weaponHand: () => ctx.input.weaponHand,
+      offHand: () => ctx.input.offHand,
+      nav: null,
+      openDoors: () => this.doorVisuals.filter((d) => d.open).map((d) => d.door),
+      setDoorOpen: (doorId, open) => {
+        const dv = this.doorVisuals.find((d) => d.door.id === doorId);
+        if (dv && dv.open !== open) {
+          dv.setOpen(open);
+          ctx.bus.emit(open ? 'portal:open' : 'portal:close', { doorId });
+        }
+      },
     };
     this.gremlinWorld = world;
     this.director = new Director(this.room, ctx.bus, () => this.spawnSources(), () => ctx.headPosition(this.head), ctx.isQuest2 ? 14 / 20 : 1);
@@ -281,12 +292,12 @@ export class House implements Chapter {
     const virtual = m.source === 'virtual' || m.doors.some((d) => d.source === 'virtual');
     if (virtual) {
       this.hud.say(m.source === 'virtual' ? 'No room scan found' : 'Scan found, but no door', 'A virtual door is ahead of you. To move it: point your other hand at the bottom of a real door and pull its trigger. Then pull the blaster trigger to begin.', 0);
-      this.voice.sayId('sys_no_scan', null);
+      this.voice.sayId(m.source === 'virtual' ? 'narrator_no_scan_found' : 'narrator_mark_door', null);
       this.placingDoor = true;
       this.setPhase('setup');
     } else {
       this.hud.say('Room scan found', `${m.doors.length} door${m.doors.length === 1 ? '' : 's'}, ${m.couches.length} couch${m.couches.length === 1 ? '' : 'es'}. Pull the trigger to begin. Shoot the gremlins. Nothing else.`, 0);
-      this.voice.sayId('sys_scan_found', null);
+      this.voice.sayId('narrator_room_scan_found', null);
       this.setPhase('setup');
     }
   }
@@ -394,7 +405,7 @@ export class House implements Chapter {
     this.cursor.visible = false;
     this.setPhase('play');
     this.hud.say('Bedtime', 'Nobody is going to bed.', 3);
-    this.voice.sayId('sys_begin', null);
+    this.voice.sayId('narrator_go_to_bed', null);
     this.director.start();
   }
 

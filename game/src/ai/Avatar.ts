@@ -10,6 +10,8 @@ import {
   LoopRepeat,
   Mesh,
   MeshStandardMaterial,
+  NearestFilter,
+  NearestMipmapNearestFilter,
   Object3D,
   SRGBColorSpace,
   SphereGeometry,
@@ -82,6 +84,9 @@ export class AvatarFactory {
       if (t.status === 'fulfilled') {
         t.value.flipY = false;
         t.value.colorSpace = SRGBColorSpace;
+        t.value.magFilter = NearestFilter;
+        t.value.minFilter = NearestMipmapNearestFilter;
+        t.value.needsUpdate = true;
         this.palettes.push(t.value);
       }
     }
@@ -161,9 +166,12 @@ class GltfAvatar implements Avatar {
       this.actions.set(clip.name, action);
     }
     if (this.current === action && !once) return;
+    // Kenney's held poses (sit, crouch, holding-*) are 0.17 s clips: play them once and clamp, or they snap.
+    const isPose = clip.duration < 0.4 && !['idle', 'walk', 'sprint'].includes(clip.name);
+    const clamp = once || isPose;
     action.reset();
-    action.setLoop(once ? LoopOnce : LoopRepeat, Infinity);
-    action.clampWhenFinished = once;
+    action.setLoop(clamp ? LoopOnce : LoopRepeat, Infinity);
+    action.clampWhenFinished = clamp;
     action.enabled = true;
     action.setEffectiveWeight(1);
     if (this.current && this.current !== action) this.current.crossFadeTo(action, fadeS, false);

@@ -1,7 +1,8 @@
 import { Color, Group, Object3D, Vector3 } from 'three';
 import type { EventBus } from '../core/EventBus';
 import type { PopFx } from '../combat/PopFx';
-import type { RoomModel, Seat } from '../room/RoomModel';
+import type { Door, RoomModel, Seat } from '../room/RoomModel';
+import type { Nav } from '../room/Nav';
 import type { Avatar } from './Avatar';
 
 export interface PlayerLike {
@@ -42,6 +43,19 @@ export class SeatManager {
   }
 }
 
+/** What enemies may know about a player's hand (for clinging, slams, wipes). */
+export interface HandLike {
+  connected: boolean;
+  position: Vector3;
+  velocity: Vector3;
+  speed: number;
+  squeeze: boolean;
+  trigger: boolean;
+  /** Grip-space forward (-Z). */
+  forward(out?: Vector3): Vector3;
+  pulse(intensity: number, ms: number): void;
+}
+
 export interface GremlinWorld {
   room: RoomModel;
   bus: EventBus;
@@ -53,6 +67,15 @@ export interface GremlinWorld {
   /** All living gremlins (for crowd behaviours). */
   gremlins: () => Gremlin[];
   reducedFlash: boolean;
+  /** The weapon hand and the off (WIPE) hand. */
+  weaponHand: () => HandLike;
+  offHand: () => HandLike;
+  /** Optional pathfinding; null means straight-line movement with local sliding. */
+  nav: Nav | null;
+  /** Portal doors currently open (spawn points for Breachers etc.). */
+  openDoors: () => Door[];
+  /** Ask the chapter to open/close a door's portal (Breacher breach, Lullaby close). */
+  setDoorOpen: (doorId: string, open: boolean) => void;
 }
 
 export interface GremlinOpts {
@@ -187,9 +210,13 @@ export abstract class Gremlin {
    */
   protected moveToward(target: Vector3, speed: number, dt: number, stopAt = 0.05): number {
     const pos = this.root.position;
-    const dir = tmp.set(target.x - pos.x, 0, target.z - pos.z);
+    const finalDist = Math.hypot(target.x - pos.x, target.z - pos.z);
+    if (finalDist <= stopAt) return finalDist;
+    // Pathfinding, when available, supplies the immediate waypoint.
+    const waypoint = this.w.nav?.next(pos, target, this.radius) ?? target;
+    const dir = tmp.set(waypoint.x - pos.x, 0, waypoint.z - pos.z);
     const dist = dir.length();
-    if (dist <= stopAt) return dist;
+    if (dist < 1e-4) return finalDist;
     dir.divideScalar(dist);
     const step = Math.min(dist, speed * dt);
     let nx = pos.x + dir.x * step, nz = pos.z + dir.z * step;
@@ -224,9 +251,20 @@ export abstract class Gremlin {
     return Math.hypot(target.x - pos.x, target.z - pos.z);
   }
 
+  /** Convenience for subclasses: a HandLike for the player's off hand (may be disconnected). */
+  protected get offHand(): HandLike {
+    return this.w.offHand();
+  }
+
+  protected get weaponHand(): HandLike {
+    return this.w.weaponHand();
+  }
+
   /** Random reachable floor point within `radius` of `around`, at least `minFromPlayer` from the player. */
   protected pickPoint(around: Vector3, radius: number, minFromPlayer = 1.0): Vector3 {
     const p = this.w.player.position(tmp2);
+    const navPoint = this.w.nav?.randomPoint(around, radius, this.radius);
+    if (navPoint && Math.hypot(navPoint.x - p.x, navPoint.z - p.z) >= minFromPlayer) return this.target.copy(navPoint);
     for (let i = 0; i < 12; i++) {
       const a = Math.random() * Math.PI * 2;
       const r = radius * (0.4 + 0.6 * Math.random());
