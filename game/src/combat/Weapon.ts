@@ -146,6 +146,8 @@ export class Weapon {
     // Reload gestures (always allowed, even with a partial mag).
     if (hand.buttonAJustPressed && this.ammo < this.tier.mag) this.beginReload(0.5, 'button');
     const nearGun = off.connected && off.position.distanceTo(this.body.getWorldPosition(tmpV2)) < 0.16;
+    // Tracked hands have no squeeze or buttons: an off-hand pinch on the blaster reloads any tier.
+    if (off.isHand && nearGun && off.triggerJustPressed && this.ammo < this.tier.mag) this.beginReload(0.4, 'pinch');
     switch (this.tier.reload) {
       case 'pump': {
         if (!this.pumpGrabbed && nearGun && off.squeezeJustPressed) {
