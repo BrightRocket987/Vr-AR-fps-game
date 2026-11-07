@@ -3,16 +3,9 @@ import type { AppContext, Chapter, DebugChapter } from '../app/XRApp';
 import { AvatarFactory } from '../ai/Avatar';
 import { Director, ENDLESS_WAVES, WAVES, type SpawnSource } from '../ai/Director';
 import { Gremlin, SeatManager, type GremlinWorld, type PlayerLike } from '../ai/Gremlin';
-import { Scamp } from '../ai/Scamp';
-import { Breacher } from '../ai/Breacher';
-import { Stinky } from '../ai/Stinky';
 import { Wipe } from '../ai/Wipe';
-import { CouchPotato } from '../ai/CouchPotato';
-import { Clinger } from '../ai/Clinger';
-import { Siren } from '../ai/Siren';
-import { TabletZombie } from '../ai/TabletZombie';
-import { Crawler } from '../ai/Crawler';
 import { BigBean } from '../ai/BigBean';
+import { registerRoster } from '../ai/Roster';
 import { PopFx } from '../combat/PopFx';
 import { Progression } from '../combat/Progression';
 import { Weapon } from '../combat/Weapon';
@@ -51,7 +44,6 @@ export function finaleRank(damageTaken: number): string {
 const SLEEPY_BLUE = new Color(0x9ad5ff);
 
 /** Tint that turns a Kenney goblin into a blue-faced Tablet Zombie. */
-const ZOMBIE_TINT = new Color(0.62, 0.82, 1.35);
 
 /**
  * Chapter 3 · Bedtime. Finds the room (scan import or virtual fallback, hand-placed door), opens the doors,
@@ -190,25 +182,14 @@ export class House implements Chapter, DebugChapter {
     this.gremlinWorld = world;
     // The practice range is endless with no boss; the chapter ends with Big Bean.
     this.director = new Director(this.room, ctx.bus, () => this.spawnSources(), () => ctx.headPosition(this.head), ctx.isQuest2 ? 14 / 20 : 1, this.preset === 'bar' ? ENDLESS_WAVES : WAVES);
-    this.director.register('scamp', { cost: 1, create: () => new Scamp(world, this.avatars.create(this.variant++, 0.6)) });
-    this.wipe = new Wipe(world);
-    this.director.register('potato', { cost: 3, sources: ['couch', 'door', 'crack'], create: () => new CouchPotato(world, this.avatars.create(this.variant++, 0.65)) });
-    this.director.register('clinger', { cost: 2, sources: ['window', 'couch', 'door', 'crack'], create: () => new Clinger(world, this.avatars.create(this.variant++, 0.5)) });
-    this.director.register('siren', { cost: 3, sources: ['door', 'crack'], create: () => new Siren(world, this.avatars.create(this.variant++, 0.7)) });
-    this.director.register('stinky', { cost: 2, sources: ['crack', 'door'], create: () => new Stinky(world, this.avatars.create(this.variant++, 0.5)) });
-    this.director.register('breacher', {
-      cost: 5,
-      sources: ['door'],
-      create: () => {
-        // Never knock on the door Big Bean is wedged in.
-        const open = world.openDoors().filter((d) => d.id !== this.bossDoorId);
-        const fallback = this.room.portalDoors.find((d) => d.id !== this.bossDoorId) ?? this.room.largestDoor() ?? undefined;
-        const door = open.length ? open[Math.floor(Math.random() * open.length)] : fallback;
-        return new Breacher(world, this.avatars.create(this.variant++, 0.75), door);
-      },
+    registerRoster({
+      director: this.director,
+      world,
+      avatars: this.avatars,
+      nextVariant: () => this.variant++,
+      bossDoorId: () => this.bossDoorId,
     });
-    this.director.register('zombie', { cost: 3, sources: ['door'], create: () => new TabletZombie(world, this.avatars.create(this.variant++, 0.6, ZOMBIE_TINT)) });
-    this.director.register('crawler', { cost: 1, sources: ['crack', 'door'], create: () => new Crawler(world, this.avatars.create(this.variant++, 0.35)) });
+    this.wipe = new Wipe(world);
     this.director.register('bigbean', { cost: 0, sources: ['door'], create: () => this.createBigBean() });
     this.weapon = new Weapon(ctx.input, ctx.bus, this.fx, this.voice, () => this.director.alive);
     this.weapon.setTier(this.progression.tier);

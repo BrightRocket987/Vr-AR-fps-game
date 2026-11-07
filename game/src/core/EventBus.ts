@@ -36,6 +36,35 @@ export interface GameEvents {
   'hint': { text: string; sub: string; seconds: number };
   'voice:line': { id: string; speaker: string };
   'log': { text: string };
+
+  // ---- Cross-system contracts. Emitting is always safe: a consumer may not exist yet (see the build contracts). ----
+  /** A flat score bonus (set pieces, style moments) for the chapter score. */
+  'score:bonus': { points: number; label: string };
+  /** A style tag earned outside a pop (e.g. 'Caught & Returned', 'Mid-air'), with optional flat points. */
+  'score:style': { label: string; points?: number };
+  /** The chapter reached a checkpoint ('A'..'D'); the checkpoint system records it for restarts. */
+  'checkpoint': { chapter: string; id: string; label: string };
+  /** Caps this chapter's rank (Taxi mode caps at B, the duck rule, ...). */
+  'rank:cap': { chapter: string; cap: string; reason: string };
+  /** Progress toward a badge (achievement); amount defaults to 1. */
+  'badge:progress': { id: string; amount?: number };
+  /** Ask the pickup system to drop a pickup (drop-table type or a pickup id) at a floor point. */
+  'pickup:drop': { type: string; position: Vector3 };
+  /** The player collected (or used) a pickup. */
+  'pickup:collected': { type: string };
+  /** A lure (the Pacifier) is active: gremlins within radius may switch to LURED until it ends. */
+  'lure:active': { position: Vector3; radius: number; seconds: number };
+  'lure:ended': Record<string, never>;
+  /** A shush (gesture or Shush-time): gremlins within radius go quiet / freeze for the given seconds. */
+  'shush': { position: Vector3; radius: number; seconds: number };
+  /** A world time-scale request (Shush-time, Grandma Brake, promotion moment); scale 1 = normal speed. */
+  'time:scale': { scale: number; seconds: number; reason: string };
+  /** The player recentred the view (XRReferenceSpace 'reset'): re-align anything anchored to the real world. */
+  'view:recentered': Record<string, never>;
+  /** The app paused or resumed the running chapter (wrist menu, boundary fence). */
+  'app:paused': { paused: boolean; reason: string };
+  /** An enemy projectile was caught by the player's hand (Juice Box, pint glass, cone, popsicle ...). */
+  'projectile:caught': { kind: string };
 }
 
 type Handler<T> = (payload: T) => void;

@@ -14,7 +14,21 @@ export interface LineDef {
 }
 
 /** Voice manifests merged at load (ids must be unique across them: prefix per pack, e.g. bar_, drive_, boss_). */
-export const VOICE_MANIFESTS = ['manifest.json', 'manifest-bar.json', 'manifest-drive.json', 'manifest-boss.json'];
+export const VOICE_MANIFESTS = [
+  'manifest.json',
+  'manifest-bar.json',
+  'manifest-drive.json',
+  'manifest-boss.json',
+  // Content packs (one per build area; ids prefixed ch1x_, ch2x_, ch2y_, ch3x_, ch3y_, roster_, weapon_, sys_).
+  'manifest-ch1x.json',
+  'manifest-ch2x.json',
+  'manifest-ch2y.json',
+  'manifest-ch3x.json',
+  'manifest-ch3y.json',
+  'manifest-roster.json',
+  'manifest-weapon.json',
+  'manifest-sys.json',
+];
 
 interface VoiceManifest {
   lines: Record<string, LineDef>;

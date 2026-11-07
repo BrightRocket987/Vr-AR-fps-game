@@ -5,7 +5,9 @@
 # (asetrate/atempo + rubberband formant-preserving pitch, tremolo for zombies, highpass for screams,
 # two-pass loudnorm to -16 LUFS / -1.5 dBTP, aresample 48 kHz, libopus 48 kbps mono).
 #
-# Idempotent: a line is skipped when its .ogg is newer than lines.yaml (and than this script). FORCE=1 rebuilds all.
+# Idempotent: a line is skipped when its .ogg exists and the pack's manifest already lists it with the same speaker,
+# emotion and text (or, for lines the manifest lacks, when the .ogg is newer than the lines file and this script), so
+# appending lines to a pack never regenerates the others. FORCE=1 rebuilds all.
 # Voices are downloaded once into $VOICES_DIR. The manifest is always rewritten from the files on disk.
 #
 # Usage:  tools/build-voices.sh            (from anywhere)
@@ -65,7 +67,8 @@ LINES, OUT, WORK, VOICES = (Path(os.environ[k]) for k in ("LINES", "OUT", "WORK"
 HAVE_RB = os.environ["HAVE_RB"] == "1"
 FORCE = os.environ["FORCE"] == "1"
 SR = 22050                         # Piper medium voices
-KIDS = {"scamp", "clinger", "potato", "breacher", "stinky", "siren", "zombie", "crawler", "ghost"}   # gremlins
+KIDS = {"scamp", "clinger", "potato", "breacher", "stinky", "siren", "zombie", "crawler", "ghost",
+        "chucker", "rusher", "climber", "stack", "tank"}   # gremlins
 # The player's real children and other kids (not monsters): gentler preset, no distortion.
 REAL_KIDS = {"pickle": 1.10, "bean": 1.18, "kayden": 1.08, "kid": 1.12}
 # Adults: (voice, pitch multiplier, extra filters)
@@ -77,9 +80,12 @@ ADULTS = {
     "patron": ("en_US-bryce-medium", 0.96, []),
     "jingles": ("en_US-norman-medium", 1.0, ["aecho=0.8:0.6:40:0.3"]),   # ice-cream truck speaker
     "parent": ("en_US-norman-medium", 0.97, []),              # the player's muttered lines
+    "staff": ("en_US-ljspeech-medium", 1.02, []),             # bar staff (the birthday sundae)
+    "dj": ("en_US-bryce-medium", 1.06, ["highpass=f=300", "lowpass=f=3400"]),   # car radio DJ
 }
 VOICE_OF = {**{k: "en_US-ljspeech-medium" for k in KIDS}, **{k: "en_US-ljspeech-medium" for k in REAL_KIDS},
-            **{k: v[0] for k, v in ADULTS.items()}, "bigbean": "en_US-bryce-medium", "narrator": "en_US-norman-medium"}
+            **{k: v[0] for k, v in ADULTS.items()}, "bigbean": "en_US-bryce-medium", "queen": "en_US-ljspeech-medium",
+            "narrator": "en_US-norman-medium"}
 N_B_TAKES = 15                     # second take for the 15 most repeated (lowest cooldown) lines
 # prosody per emotion: (length_scale, noise_scale, noise_w_scale); Piper defaults are 1.0 / 0.667 / 0.8
 PROSODY = {"neutral": (1.0, 0.667, 0.8), "whine": (1.15, 0.8, 0.9), "scream": (0.9, 0.8, 1.0),
@@ -131,6 +137,10 @@ def chain(speaker, emotion, take):
     elif speaker == "bigbean":
         p = 0.85 * take_mul
         f += [f"rubberband=pitch={p:.4f}"] if HAVE_RB else [f"asetrate={SR}*{p:.4f}", f"aresample={SR}", f"atempo={1/p:.4f}"]
+    elif speaker == "queen":   # Queen Pickle: Pickle's preset, then -4 st with formants kept, a little hall
+        p = REAL_KIDS["pickle"] * 0.79 * take_mul
+        f += [f"rubberband=pitch={p:.4f}:formant=preserved"] if HAVE_RB else [f"asetrate={SR}*{p:.4f}", f"aresample={SR}", f"atempo={1/p:.4f}"]
+        f += ["aecho=0.8:0.5:60:0.25"]
     else:  # narrator untouched
         if take == "b":
             f += [f"rubberband=pitch={take_mul:.4f}:formant=preserved"] if HAVE_RB else []
@@ -158,6 +168,10 @@ def duration(path):
     return round(float(r.stdout.strip()), 3)
 
 stamp = max(LINES.stat().st_mtime, Path(os.environ["SCRIPT"]).stat().st_mtime)
+try:   # lines already built for this pack, as the manifest on disk records them
+    previous = json.loads((OUT / MANIFEST).read_text()).get("lines", {})
+except (OSError, ValueError):
+    previous = {}
 voices = {}
 def voice(name):
     if name not in voices:
@@ -167,9 +181,11 @@ def voice(name):
 built = skipped = 0
 for l in data:
     takes = ["a"] + (["b"] if l["id"] in b_take_ids else [])
+    prev = previous.get(l["id"])
+    unchanged = bool(prev) and all(prev.get(k) == l[k] for k in ("speaker", "emotion", "text"))
     for take in takes:
         ogg = OUT / (f"{l['id']}.ogg" if take == "a" else f"{l['id']}_b.ogg")
-        if not FORCE and ogg.exists() and ogg.stat().st_mtime > stamp:
+        if not FORCE and ogg.exists() and (unchanged or ogg.stat().st_mtime > stamp):
             skipped += 1
             continue
         ls, ns, nw = PROSODY[l["emotion"]]
