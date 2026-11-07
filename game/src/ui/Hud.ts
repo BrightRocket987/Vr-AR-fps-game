@@ -27,6 +27,8 @@ export class Hud {
   private readonly cardTex: CanvasTexture;
   private readonly flash: Sprite;
   private flashLife = 0;
+  private readonly cushion: Sprite;
+  private cushionLife = 0;
   private cardText = '';
   private cardSub = '';
   private cardLife = 0;
@@ -56,6 +58,16 @@ export class Hud {
     this.flash.scale.set(4, 4, 1);
     this.flash.renderOrder = 60;
     this.group.add(this.flash);
+    this.cushion = new Sprite(new SpriteMaterial({ color: 0x8a5a2b, transparent: true, opacity: 0, depthTest: false }));
+    this.cushion.scale.set(1.2, 0.9, 1);
+    this.cushion.renderOrder = 61;
+    this.cushion.visible = false;
+    this.group.add(this.cushion);
+  }
+
+  /** A thrown cushion covers the view for `seconds`. */
+  block(seconds: number): void {
+    this.cushionLife = seconds;
   }
 
   /** Show a message in front of the player for `seconds` (0 = until replaced). */
@@ -100,6 +112,12 @@ export class Hud {
       this.flash.material.opacity = Math.max(0, this.flashLife / 0.35) * 0.35;
       this.flash.visible = true;
     } else this.flash.visible = false;
+    if (this.cushionLife > 0) {
+      this.cushionLife -= dt;
+      this.cushion.position.copy(h).addScaledVector(this.forward(new Vector3()), 0.4);
+      this.cushion.material.opacity = Math.min(0.9, this.cushionLife * 3);
+      this.cushion.visible = true;
+    } else this.cushion.visible = false;
 
     this.redrawTimer -= dt;
     if (this.redrawTimer <= 0) {

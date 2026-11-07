@@ -5,7 +5,7 @@ on:
     paths: ['game/**', '.github/workflows/pages.yml']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -13,7 +13,9 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    outputs:
+      pages: ${{ steps.pages.outcome }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,13 +26,27 @@ jobs:
         working-directory: game
       - run: npm run build
         working-directory: game
-      - uses: actions/configure-pages@v5
+      # Official path: needs the Pages site to exist (Settings → Pages → Source: GitHub Actions, one click).
+      - id: pages
+        uses: actions/configure-pages@v5
         with: { enablement: true }
-      - uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
+      - if: steps.pages.outcome == 'success'
+        uses: actions/upload-pages-artifact@v3
         with: { path: game/dist }
+      # Fallback: publish the build to a gh-pages branch, which GitHub serves once Pages is enabled for it.
+      - if: steps.pages.outcome != 'success'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: game/dist
+          publish_branch: gh-pages
+          force_orphan: true
+          commit_message: 'Deploy ${{ github.sha }}'
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    if: needs.build.outputs.pages == 'success'
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

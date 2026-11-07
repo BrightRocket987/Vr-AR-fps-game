@@ -50,6 +50,10 @@ export class Weapon {
   private readonly muzzle = new Group();
   private readonly ammoPips: Mesh[] = [];
   hint = '';
+  /** 1 = normal. Stink clouds lower it (0.7 = 30 % slower fire). */
+  rateMultiplier = 1;
+  /** Aim jitter in degrees while a Clinger hangs off the weapon hand. */
+  swayDeg = 0;
 
   constructor(
     private readonly input: Input,
@@ -222,9 +226,16 @@ export class Weapon {
 
   private fire(): void {
     this.ammo--;
-    this.cooldown = 1 / this.tier.rate;
+    this.cooldown = 1 / (this.tier.rate * Math.max(0.2, this.rateMultiplier));
     const origin = this.muzzle.getWorldPosition(new Vector3());
     const baseDir = this.forward(new Vector3());
+    if (this.swayDeg > 0) {
+      const a = (Math.random() * this.swayDeg * Math.PI) / 180;
+      const r = Math.random() * Math.PI * 2;
+      const side = new Vector3().crossVectors(baseDir, new Vector3(0, 1, 0)).normalize();
+      const up = new Vector3().crossVectors(side, baseDir).normalize();
+      baseDir.addScaledVector(side, Math.sin(a) * Math.cos(r)).addScaledVector(up, Math.sin(a) * Math.sin(r)).normalize();
+    }
     const hand = this.input.weaponHand;
     hand.pulse(this.tier.tier >= 4 ? 0.9 : 0.5, this.tier.tier >= 4 ? 120 : 30);
     this.voice.sfx(this.tier.tier >= 3 ? 'thwip_fast' : 'thwip', this.root, 0.8);

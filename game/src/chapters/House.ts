@@ -1,4 +1,4 @@
-import { BoxGeometry, Color, DoubleSide, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry, RingGeometry, Vector3 } from 'three';
+import { BoxGeometry, Color, DoubleSide, Group, Mesh, MeshBasicMaterial, MeshStandardMaterial, PlaneGeometry, RingGeometry, SphereGeometry, Vector3 } from 'three';
 import type { AppContext, Chapter } from '../app/XRApp';
 import { AvatarFactory } from '../ai/Avatar';
 import { Director, type SpawnSource } from '../ai/Director';
@@ -10,6 +10,7 @@ import { Weapon } from '../combat/Weapon';
 import { Voice } from '../dialogue/Voice';
 import { RoomModel, type Door } from '../room/RoomModel';
 import { SceneImport } from '../room/SceneImport';
+import { GridNav } from '../room/GridNav';
 import { Hud } from '../ui/Hud';
 import { sessionExtras } from '../xr/webxr-extras';
 
@@ -97,6 +98,8 @@ export class House implements Chapter {
   private placingDoor = false;
   private readonly cursor: Mesh;
   private roomStableSince = -1;
+  private readonly nav = new GridNav(0.1);
+  private clouds: { mesh: Mesh; life: number; radius: number; penalty: number }[] = [];
   readonly stats = { spawned: 0, popped: 0, damageTaken: 0, roomSource: 'none', doors: 0, couches: 0, labels: '' };
 
   constructor() {
@@ -133,7 +136,7 @@ export class House implements Chapter {
       reducedFlash: ctx.save.data.options.reducedFlash,
       weaponHand: () => ctx.input.weaponHand,
       offHand: () => ctx.input.offHand,
-      nav: null,
+      nav: this.nav,
       openDoors: () => this.doorVisuals.filter((d) => d.open).map((d) => d.door),
       setDoorOpen: (doorId, open) => {
         const dv = this.doorVisuals.find((d) => d.door.id === doorId);
@@ -168,6 +171,25 @@ export class House implements Chapter {
         this.openDoorsForWave(index);
       }),
       ctx.bus.on('wave:clear', () => this.hud.say('Wave clear', 'Breathe. They are regrouping.', 3)),
+      ctx.bus.on('hint', ({ text, sub, seconds }) => this.hud.say(text, sub, seconds)),
+      ctx.bus.on('spawn:request', ({ type, position, facing }) => {
+        this.director.spawn(type, { kind: 'crack', position: position.clone(), facing: facing.clone() });
+      }),
+      ctx.bus.on('stinky:cloud', ({ position, radius, seconds, fireRatePenalty }) => this.addCloud(position, radius, seconds, fireRatePenalty)),
+      ctx.bus.on('potato:cushion', ({ seconds }) => this.hud.block(seconds)),
+      ctx.bus.on('clinger:attached', () => { this.weapon.swayDeg = 6; }),
+      ctx.bus.on('clinger:detached', () => { this.weapon.swayDeg = 0; }),
+      ctx.bus.on('siren:scream', ({ position, radius }) => {
+        this.hud.say('AAAAAAAAAA', 'Everyone heard that.', 1.5);
+        for (const g of this.director.alive) {
+          if (g.type === 'scamp' && g.position.distanceTo(position) < radius && (g.state === 'roam' || g.state === 'sit')) {
+            this.seats.release(g.seat);
+            g.seat = null;
+            g.setState('chase');
+          }
+        }
+      }),
+      ctx.bus.on('diaper:changed', () => this.hud.say('Changed!', '+50. A friendly ghost, a clean start.', 2)),
     );
     // Kick off asset loads without blocking the session.
     void Promise.all([this.voice.load(), this.avatars.load()]).then(() => {
@@ -289,6 +311,7 @@ export class House implements Chapter {
     this.ctx.log(`room ${m.source}: doors=${m.doors.length} couches=${m.couches.length} volumes=${m.volumes.length} area=${m.area().toFixed(1)} labels=[${this.stats.labels}]`);
     this.buildRoomVisuals();
     this.makeCracks();
+    this.nav.rebuild(m);
     const virtual = m.source === 'virtual' || m.doors.some((d) => d.source === 'virtual');
     if (virtual) {
       this.hud.say(m.source === 'virtual' ? 'No room scan found' : 'Scan found, but no door', 'A virtual door is ahead of you. To move it: point your other hand at the bottom of a real door and pull its trigger. Then pull the blaster trigger to begin.', 0);
@@ -394,6 +417,7 @@ export class House implements Chapter {
     this.stats.doors = this.room.doors.length;
     this.buildRoomVisuals();
     this.makeCracks();
+    this.nav.rebuild(this.room);
     this.voice.sfx('ui_click', null, 0.8);
     this.ctx.input.offHand.pulse(0.6, 60);
     this.hud.say('Door placed', 'Point and pull again to move it. Pull the blaster trigger to begin.', 0);
@@ -427,6 +451,7 @@ export class House implements Chapter {
     this.playTime += dt;
     this.sinceDamage += dt;
     if (this.sinceDamage > 5 && this.patience < 100) this.patience = Math.min(100, this.patience + 4 * dt);
+    this.updateClouds(dt);
     this.weapon.update(dt, nowMs);
     this.director.update(dt);
     for (const g of this.director.alive) g.update(dt);
@@ -448,6 +473,35 @@ export class House implements Chapter {
         }
       }
     } else this.cursor.visible = false;
+  }
+
+  /** Stink clouds: a green fog sphere that slows the weapon while you stand in it. */
+  private addCloud(position: Vector3, radius: number, seconds: number, penalty: number): void {
+    const mesh = new Mesh(new SphereGeometry(radius, 16, 12), new MeshBasicMaterial({ color: 0x7fcf3a, transparent: true, opacity: 0.25, depthWrite: false }));
+    mesh.position.copy(position).add(new Vector3(0, radius * 0.6, 0));
+    this.roomGroup.add(mesh);
+    this.clouds.push({ mesh, life: seconds, radius, penalty });
+    this.voice.sfx('stink_cloud', mesh, 0.8);
+    if (this.clouds.length > 3) {
+      const old = this.clouds.shift()!;
+      this.roomGroup.remove(old.mesh);
+    }
+  }
+
+  private updateClouds(dt: number): void {
+    let mult = 1;
+    const h = this.ctx.headPosition(new Vector3());
+    for (let i = this.clouds.length - 1; i >= 0; i--) {
+      const c = this.clouds[i];
+      c.life -= dt;
+      (c.mesh.material as MeshBasicMaterial).opacity = Math.min(0.25, c.life * 0.2);
+      if (c.mesh.position.distanceTo(h) < c.radius) mult = Math.min(mult, 1 - c.penalty);
+      if (c.life <= 0) {
+        this.roomGroup.remove(c.mesh);
+        this.clouds.splice(i, 1);
+      }
+    }
+    this.weapon.rateMultiplier = mult;
   }
 
   private damage(amount: number, source: string): void {
