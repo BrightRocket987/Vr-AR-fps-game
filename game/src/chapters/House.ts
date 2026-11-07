@@ -12,6 +12,7 @@ import { RoomModel, type Door } from '../room/RoomModel';
 import { SceneImport } from '../room/SceneImport';
 import { GridNav } from '../room/GridNav';
 import { Hud } from '../ui/Hud';
+import { buildBarRange } from './BarRange';
 import { sessionExtras } from '../xr/webxr-extras';
 
 type Phase = 'waiting' | 'setup' | 'play' | 'down';
@@ -69,8 +70,14 @@ class DoorVisual {
  * Chapter 3 · Bedtime. Finds the room (scan import or virtual fallback, hand-placed door), opens the doors,
  * runs the director, and owns the player's patience. Everything heavy lives in the systems it composes.
  */
+export interface HouseOptions {
+  /** 'bar' draws an enclosed VR bar over the passthrough (the practice range) instead of using the real room. */
+  preset?: 'bar';
+}
+
 export class House implements Chapter {
   readonly name = 'house';
+  private readonly preset: HouseOptions['preset'];
   private ctx!: AppContext;
   private phase: Phase = 'waiting';
   private phaseTime = 0;
@@ -102,7 +109,8 @@ export class House implements Chapter {
   private clouds: { mesh: Mesh; life: number; radius: number; penalty: number }[] = [];
   readonly stats = { spawned: 0, popped: 0, damageTaken: 0, roomSource: 'none', doors: 0, couches: 0, labels: '' };
 
-  constructor() {
+  constructor(opts: HouseOptions = {}) {
+    this.preset = opts.preset;
     this.cursor = new Mesh(new RingGeometry(0.08, 0.1, 24), new MeshBasicMaterial({ color: 0xffcc33, side: DoubleSide }));
     this.cursor.rotation.x = -Math.PI / 2;
     this.cursor.visible = false;
@@ -213,7 +221,7 @@ export class House implements Chapter {
   update(dt: number, frame: XRFrame | undefined, nowMs: number): void {
     this.phaseTime += dt;
     const ref = this.ctx.refSpace();
-    if (frame && ref) this.sceneImport.update(frame, ref, nowMs);
+    if (frame && ref && this.preset !== 'bar') this.sceneImport.update(frame, ref, nowMs);
     this.fx.update(dt);
     this.hud.update(dt);
 
@@ -236,7 +244,7 @@ export class House implements Chapter {
         }
         break;
     }
-    if (this.phase === 'play' || this.phase === 'setup') {
+    if ((this.phase === 'play' || this.phase === 'setup') && this.preset !== 'bar') {
       const occ = this.sceneImport.updateOccluder();
       if (occ && occ !== this.occluder) {
         if (this.occluder) this.roomGroup.remove(this.occluder);
@@ -265,6 +273,14 @@ export class House implements Chapter {
 
   /** Wait up to 3 s for planes; once they stop changing for 0.8 s (or time runs out) build the room. */
   private updateWaiting(nowMs: number): void {
+    if (this.preset === 'bar') {
+      if (this.phaseTime < 0.3) return; // wait for a valid head pose
+      const head = this.ctx.headPosition(new Vector3());
+      const model = buildBarRange(this.roomGroup, new Vector3(head.x, 0, head.z), `${import.meta.env.BASE_URL}assets`);
+      this.adoptRoom(model);
+      this.hud.say('Practice range', 'A quiet bar. Gremlins come through the kitchen door. Pull the trigger to begin.', 0);
+      return;
+    }
     const stable = this.sceneImport.stableFor(nowMs);
     const session = this.ctx.session();
     if (this.sceneImport.hasData) {

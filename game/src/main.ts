@@ -56,6 +56,7 @@ async function main(): Promise<void> {
   $<HTMLInputElement>('kid2').value = f.kid2 === 'Bean' ? '' : f.kid2;
   $<HTMLSelectElement>('hand').value = f.weaponHand;
   $<HTMLSelectElement>('comfort').value = f.comfort;
+  if (params.get('chapter')) $<HTMLSelectElement>('chapter').value = params.get('chapter') as string;
 
   const debug: DebugApi = {
     app,
@@ -105,7 +106,7 @@ async function main(): Promise<void> {
       comfort: $<HTMLSelectElement>('comfort').value as 'standing' | 'seated',
     };
     save.persist();
-    const chapter: Chapter = new House();
+    const chapter: Chapter = new House({ preset: $<HTMLSelectElement>('chapter').value === 'range' ? 'bar' : undefined });
     debug.chapter = chapter;
     document.body.classList.add('in-xr');
     try {

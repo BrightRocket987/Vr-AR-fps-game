@@ -23,6 +23,7 @@ const args = Object.fromEntries(process.argv.slice(2).map((a, i, arr) => (a.star
 const rooms = (args.room ?? 'living_room,kitchen,bedroom,none').split(',');
 const device = args.device ?? 'quest3';
 const seconds = Number(args.seconds ?? 18);
+const chapter = args.chapter ?? 'house';
 const base = '/Vr-AR-fps-game/';
 
 if (!fs.existsSync(path.join(dist, 'index.html'))) {
@@ -54,8 +55,8 @@ for (const room of rooms) {
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 300)); });
-  const url = `http://localhost:${port}${base}?emulate=${device}&room=${room}&autostart=1`;
-  console.log(`\n▶ ${device} / ${room}`);
+  const url = `http://localhost:${port}${base}?emulate=${device}&room=${room}&autostart=1&chapter=${chapter}`;
+  console.log(`\n▶ ${device} / ${room} / ${chapter}`);
   await page.goto(url);
   try {
     await page.waitForFunction(() => window.__gtb && (window.__gtb.ready || window.__gtb.error), null, { timeout: 60000 });
@@ -75,13 +76,13 @@ for (const room of rooms) {
   }
   const snap = await page.evaluate(() => window.__gtb?.snapshot());
   const diag = await page.evaluate(() => window.__gtb?.diagnostics());
-  await page.screenshot({ path: path.join(outDir, `${device}-${room}.png`) });
+  await page.screenshot({ path: path.join(outDir, `${device}-${room}-${chapter}.png`) });
   const checks = [];
   const check = (name, ok, info = '') => { checks.push(`${ok ? '✓' : '✗'} ${name}${info ? ' ' + info : ''}`); if (!ok) failures++; };
   check('session started', !!diag && diag.mode !== 'none', diag?.mode);
   check('no page errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   check('room adopted', !!snap && snap.phase && snap.phase !== 'waiting', `${snap?.room?.source} doors=${snap?.room?.doors} couches=${snap?.room?.couches}`);
-  if (room !== 'none') check('scene room has a door or couch', (snap?.room?.doors ?? 0) + (snap?.room?.couches ?? 0) > 0, snap?.labels);
+  if (room !== 'none' && chapter === 'house') check('scene room has a door or couch', (snap?.room?.doors ?? 0) + (snap?.room?.couches ?? 0) > 0, snap?.labels);
   check('gremlins spawned', (snap?.spawned ?? 0) > 0, `spawned=${snap?.spawned} alive=${snap?.alive}`);
   check('gremlins popped', (snap?.popped ?? 0) > 0, `popped=${snap?.popped} shots=${shots} pops=${snap?.pops}`);
   check('no NaN positions', snap?.anyNaN === false);
