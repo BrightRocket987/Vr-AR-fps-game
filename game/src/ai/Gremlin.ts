@@ -118,6 +118,10 @@ export abstract class Gremlin {
   private inflate = 0;
   private lastSay = -10;
   private readonly target = new Vector3();
+  /** Cached navigation waypoint (see moveToward). */
+  private navWaypoint: Vector3 | null = null;
+  private readonly navTarget = new Vector3(1e9, 0, 1e9);
+  private navAge = 99;
 
   constructor(protected readonly w: GremlinWorld, readonly avatar: Avatar, opts: GremlinOpts) {
     this.hp = opts.hp;
@@ -213,8 +217,21 @@ export abstract class Gremlin {
     const pos = this.root.position;
     const finalDist = Math.hypot(target.x - pos.x, target.z - pos.z);
     if (finalDist <= stopAt) return finalDist;
-    // Pathfinding, when available, supplies the immediate waypoint.
-    const waypoint = this.w.nav?.next(pos, target, this.radius) ?? target;
+    // Pathfinding, when available, supplies the immediate waypoint. Re-plan at most ~3x/s, or when the waypoint
+    // is reached or the target moved 30 cm: A* every frame for 14+ gremlins is too much CPU for a Quest 2.
+    let waypoint: Vector3 = target;
+    const nav = this.w.nav;
+    if (nav) {
+      this.navAge += dt;
+      const targetMoved = this.navTarget.distanceToSquared(target) > 0.09;
+      const reached = this.navWaypoint !== null && Math.hypot(this.navWaypoint.x - pos.x, this.navWaypoint.z - pos.z) < 0.12;
+      if (this.navWaypoint === null || targetMoved || reached || this.navAge > 0.3) {
+        this.navWaypoint = nav.next(pos, target, this.radius);
+        this.navTarget.copy(target);
+        this.navAge = 0;
+      }
+      waypoint = this.navWaypoint ?? target;
+    }
     const dir = tmp.set(waypoint.x - pos.x, 0, waypoint.z - pos.z);
     const dist = dir.length();
     if (dist < 1e-4) return finalDist;

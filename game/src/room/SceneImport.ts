@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, Matrix4, Mesh, MeshBasicMaterial, NotEqualStencilFunc, Quaternion, Vector2, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, Matrix4, Mesh, NotEqualStencilFunc, Quaternion, ShaderMaterial, Vector2, Vector3 } from 'three';
 import { RoomModel } from './RoomModel';
 import { normaliseLabel, sceneFrame, type XRMeshLike, type XRPlaneLike } from '../xr/webxr-extras';
 
@@ -22,6 +22,8 @@ interface MeshRecord {
 }
 
 const UP = new Vector3(0, 1, 0);
+/** How far the scan occluder is pushed behind real surfaces (m). */
+export const OCCLUDER_PUSH_M = 0.05;
 
 /**
  * Reads WebXR plane-detection / mesh-detection every frame and turns the result into a RoomModel.
@@ -203,7 +205,19 @@ export class SceneImport {
       this.occluder.geometry.dispose();
       this.occluder.geometry = geo;
     } else {
-      const mat = new MeshBasicMaterial({ colorWrite: false });
+      // Depth-only, pushed 5 cm away from the eye: scanned meshes sit a few cm off the detected planes, and without
+      // the push they would swallow floor cracks, seat markers, door frames and gremlin feet that sit on real surfaces.
+      const mat = new ShaderMaterial({
+        vertexShader: `void main() {
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          float d = length(mv.xyz);
+          mv.xyz *= (d + ${OCCLUDER_PUSH_M.toFixed(3)}) / max(d, 1e-4);
+          gl_Position = projectionMatrix * mv;
+        }`,
+        fragmentShader: `void main() { gl_FragColor = vec4(0.0); }`,
+        colorWrite: false,
+        depthWrite: true,
+      });
       mat.stencilWrite = true;
       mat.stencilFunc = NotEqualStencilFunc; // never write depth inside portal masks (stencil ref 1)
       mat.stencilRef = 1;
